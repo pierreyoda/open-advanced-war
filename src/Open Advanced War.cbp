@@ -63,8 +63,15 @@
 		<Unit filename="Engine.cpp" />
 		<Unit filename="Engine.hpp" />
 		<Unit filename="constantes.hpp" />
+		<Unit filename="db\Building.hpp" />
 		<Unit filename="db\Database.cpp" />
 		<Unit filename="db\Database.hpp" />
+		<Unit filename="db\DatabaseItem.hpp" />
+		<Unit filename="db\Faction.hpp" />
+		<Unit filename="db\Propulsion.hpp" />
+		<Unit filename="db\Tile.hpp" />
+		<Unit filename="db\Unit.hpp" />
+		<Unit filename="db\Weapon.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="tools\ImageManager.cpp" />
 		<Unit filename="tools\ImageManager.hpp" />

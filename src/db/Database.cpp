@@ -1,9 +1,10 @@
 #include "Database.hpp"
 
+using namespace std;
+
 namespace db
 {
-
-    Database::Database()
+    Database::Database(const string &moduleName) : DatabaseItem(moduleName)
     {
 
     }
