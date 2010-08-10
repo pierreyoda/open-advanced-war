@@ -1,7 +1,39 @@
+/*
+Open Advanced War is an open turn by turn strategic game directly inspired of advance(/famicon) wars (c).
+Copyright (C) 2010  Pierre-Yves Diallo (Pierreyoda)
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 3
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+Website: https://sourceforge.net/projects/openadvancedwar/<br />
+E-mail: pierreyoda33@gmail.com
+*/
+/**
+* \mainpage Open Advanced War
+* Open Advanced War is an open turn by turn strategic game directly inspired of advance(/famicon) wars (c).
+*
+* Copyright (C) 2010  Pierre-Yves Diallo (Pierreyoda).
+*
+* Website: https://sourceforge.net/projects/openadvancedwar/<br />
+* E-mail: pierreyoda33@gmail.com
+*
+* License : GPL (v3) - See main.cpp or gpl3.txt<br />
+*/
+
 #include <iostream>
 #include <string>
 #include <vector>
-#include <locale>
 extern "C"
 {
     #include <lua.h>
@@ -11,33 +43,6 @@ extern "C"
 #include <luabind/luabind.hpp>
 #include "Engine.hpp"
 
-struct WStringTool
-{
-    static std::string narrow(const std::wstring& ws)
-    {
-        std::vector<char> buffer(ws.size());
-        std::locale loc("english");
-        std::use_facet< std::ctype<wchar_t> >(loc).narrow(ws.data(), ws.data() + ws.size(), '?', &buffer[0]);
-
-        return std::string(&buffer[0], buffer.size());
-    /*std::string s;
-    s.assign(ws.begin(), ws.end());
-    return s;*/
-    }
-
-    static std::wstring widen(const std::string& s)
-    {
-        std::vector<wchar_t> buffer(s.size());
-        std::locale loc("english");
-        std::use_facet< std::ctype<wchar_t> >(loc).widen(s.data(), s.data() + s.size(), &buffer[0]);
-
-        return std::wstring(&buffer[0], buffer.size());
-        /*std::wstring ws;
-        ws.assign(s.begin(), s.end());
-        return ws;*/
-    }
-};
-
 using namespace std;
 using namespace luabind;
 
@@ -45,7 +50,7 @@ struct Hello
 {
     Hello(const string &a) : b(a) { }
 
-    void speek(const wstring &toSay) { wcout << toSay << "\n"; }
+    void speek(const string &toSay) { cout << toSay << "\n"; }
     void speek(const int &toSay) { cout << toSay << "\n"; }
     void blah() { cout << b << "\n"; }
 
@@ -61,15 +66,9 @@ int main(int argc, char *argv[])
 
     module(luaState)
     [
-        class_<WStringTool>("wstring")
-            .scope
-            [
-                def("L", &WStringTool::widen)
-            ]
-        ,
         class_<Hello>("Hello")
             .def(constructor<string>())
-            .def("speek", (void(Hello::*)(const wstring&))&Hello::speek)
+            .def("speek", (void(Hello::*)(const string&))&Hello::speek)
             .def("speek", (void(Hello::*)(const int&))&Hello::speek)
             .def("blah", &Hello::blah)
     ];
@@ -93,6 +92,10 @@ int main(int argc, char *argv[])
     {
         cerr << error.what() << "\n";
     }
+
+    cout << "--- Starting UTF-8 test (compiled) ---\n";
+    cout << sf::String("é_(éèç").ToAnsiString() << "\n";
+    cout << "--- Ending UTF-8 test (compiled) ---\n";
 
     Engine engine;
     engine.run();

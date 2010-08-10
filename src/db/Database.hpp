@@ -8,6 +8,7 @@
 #include "Propulsion.hpp"
 #include "Unit.hpp"
 #include "Faction.hpp"
+#include "TranslationProvider.hpp"
 
 namespace db
 {
@@ -39,6 +40,7 @@ namespace db
             std::list<Propulsion> m_propulsions; /**<  List of propulsions. */
             std::list<Unit> m_units; /**<  List of "shared" units. */
             std::list<Faction> m_factions; /**<  List of factions. */
+            l_translation m_translations; /** < List of translations. **/
     };
 
     template<class Archive>
@@ -46,7 +48,16 @@ namespace db
     {
         ar &boost::serialization::base_object<DatabaseItem>(db);
         ar &db.m_tiles, &db.m_buildings, &db.m_weapons, &db.m_propulsions,
-            &db.m_units, &db.m_factions;
+            &db.m_units, &db.m_factions, &db.m_translations;
+    }
+
+    void importFromXml(const std::string &file, Database &db)
+    {
+
+    }
+    void exportToXml(const std::string &file, const Database &db)
+    {
+
     }
 
 } /* End of namespace db */

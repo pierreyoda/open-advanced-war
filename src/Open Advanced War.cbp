@@ -70,6 +70,8 @@
 		<Unit filename="db\Faction.hpp" />
 		<Unit filename="db\Propulsion.hpp" />
 		<Unit filename="db\Tile.hpp" />
+		<Unit filename="db\TranslationProvider.cpp" />
+		<Unit filename="db\TranslationProvider.hpp" />
 		<Unit filename="db\Unit.hpp" />
 		<Unit filename="db\Weapon.hpp" />
 		<Unit filename="main.cpp" />

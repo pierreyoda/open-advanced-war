@@ -1,9 +1,12 @@
 #ifndef DATABASEITEM_HPP
 #define DATABASEITEM_HPP
 
+#include <list>
 #include <string>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/version.hpp>
+
+typedef std::list<std::string> l_string;
 
 namespace db
 {
@@ -23,7 +26,7 @@ namespace db
         * \brief m_name accessor
         * \return The item name (m_name).
         */
-        const std::string &name() { return m_name; }
+        const std::string &name() const { return m_name; }
 
         private:
             const std::string m_name; /**<  Item name. */
