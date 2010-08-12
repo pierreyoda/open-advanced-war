@@ -70,33 +70,19 @@ int main(int argc, char *argv[])
         [
             class_<db::TranslationProvider>("TranslationProvider")
                 .def("tr", &db::TranslationProvider::tr)
-                //.def("tr", (std::string &db::TranslationProvider::tr)
+                /*.def("tr", (string(db::TranslationProvider::*)(const string&))
+                    &db::TranslationProvider::tr)*/
                 .def("selectLang", &db::TranslationProvider::selectLang)
                 .def("translateItem", &db::TranslationProvider::translateItem)
         ]
     ];
 
     db::Database db("Vanilla");
+    Hello test("Test class from C++");
+    globals(luaState())["test"] = &test;
+    globals(luaState())["trans"] = &db.translationsRef();
 
-    try
-    {
-        Hello test("Test class from C++");
-        globals(luaState())["test"] = &test;
-            globals(luaState())["trans"] = &db.translationsRef();
-        if (luaL_dofile(luaState(), "test.lua") != 0)
-            throw string(lua_tostring(luaState(), -1));
-        /*if (lua_pcall(luaState, 0, LUA_MULTRET, 0) != 0)
-            throw string(lua_tostring(luaState, -1));*/
-        cout << "All was OK!\n";
-    }
-    catch (const string &error)
-    {
-        cerr << "[LUA] Script error : " << error << "\n";
-    }
-    catch (const exception &error)
-    {
-        cerr << error.what() << "\n";
-    }
+    luaState.include("test.lua");
 
     /*cout << "--- Starting UTF-8 test (compiled) ---\n";
     cout << sf::String(L"é_(éèç").ToAnsiString() << "\n";

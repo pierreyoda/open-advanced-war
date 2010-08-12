@@ -11,6 +11,7 @@ extern "C"
 }
 #include <luabind/luabind.hpp>
 #include <boost/algorithm/string.hpp>
+#include <algorithm>
 
 /** \brief Handles lua interpreter.
 */
@@ -38,36 +39,31 @@ class LuaVM
         lua_State *operator()() { return luaVm; }
         lua_State *getLua() { return luaVm; }
 
-    private:
-        void include(const std::string toInclude)
+        /** \brief Makes load required file(s) by Lua embedded interpretor.
+         *
+         * \param toInclude A file to load, or some files separated by ';' (relative or absolute path).
+         */
+        void include(const std::string &toInclude)
         {
             std::vector<std::string> files;
             boost::algorithm::split(files, toInclude, boost::is_any_of(";"));
             for (unsigned int i = 0; i < files.size(); i++)
             {
-                bool ok = true;
-                for (std::list<std::string>::iterator iter =
-                    filesAlreadyLoaded.begin(); iter != filesAlreadyLoaded.end();
-                    iter++)
+                const std::string &file = files[i];
+                std::list<std::string>::const_iterator iter = std::find(
+                    filesAlreadyLoaded.begin(), filesAlreadyLoaded.end(), file);
+                if (iter != filesAlreadyLoaded.end())
                 {
-                    if (*iter == files[i])
-                    {
-                        ok = false;
-                        break;
-                    }
-                }
-                if (!ok)
-                {
-                    std::cerr << "Warning : '" << files[i] << "' is already loaded. Skipping...\n";
+                    std::cerr << "Warning : '" << file << "' is already loaded. Skipping...\n";
                     continue;
                 }
-                if (luaL_dofile(luaVm, files[i].c_str()) != 0)
+                filesAlreadyLoaded.push_back(file);
+                if (luaL_dofile(luaVm, file.c_str()) != 0)
                     std::cerr <<  std::string(lua_tostring(luaVm, -1)) << "\n";
-                else
-                    filesAlreadyLoaded.push_back(files[i]);
             }
         }
 
+    private:
         lua_State *luaVm;
         std::list<std::string> filesAlreadyLoaded;
 };

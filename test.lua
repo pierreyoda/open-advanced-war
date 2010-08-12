@@ -24,7 +24,7 @@ print(trans:tr("soldier", true))
 print "* Ending database test *"
 -- / Translation Test
 
--- "Pre-processor" test
+print "Pre-processor test:"
 test = "from 'test.lua'"
 vm:include("test_included.lua") -- Can be included only once ; separe by ";"
 print(test2)
