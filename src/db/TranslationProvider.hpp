@@ -7,7 +7,8 @@
 
 namespace db
 {
-    typedef std::list< std::pair<std::string, std::string> > l_itemTranslation;
+    typedef std::pair<const std::string, std::string> p_string; // Maybe a pointer for first string?
+    typedef std::list<p_string> l_itemTranslation;
     /** \brief Contains translations from english to another language.
     */
     struct TranslationHandler : public DatabaseItem
@@ -23,7 +24,10 @@ namespace db
         {
             return (name == this->name());
         }
-        l_itemTranslation translations; // needs to be replaced by a better solution (vector<string>?)
+        l_itemTranslation &translationsRef() { return m_translations; }
+
+        private:
+            l_itemTranslation m_translations;
     };
 
     template<class Archive>
@@ -42,38 +46,47 @@ namespace db
             /** \brief Default constructor.
             */
             TranslationProvider();
+            ~TranslationProvider();
 
             /**
-            * \brief Returns the required item's tranlation in the required language.
-            * \param lang Required item (example : "Save", "Soldier", "cancel").
-            * \param item Required language (example : "fr", "arab", "spanish").
+            * \brief Returns the required item's tranlation in the selected language.
+            * \see selectLang()
+            * \param item Required item (example : "Save", "Soldier", "cancel").
             * \param add Add "item" and/or "lang" if not existing (true by default).
             * \return Item's translation if "lang" and "item" exist. In case of error : returns "item".
             */
-            std::string tr(const std::string &lang, const std::string &item,
-                const bool &add = true);
+            std::string tr(const std::string &item, const bool &add = true);
             /**
             * \see tr()
             **/
-            std::string operator()(const std::string &lang,
-                const std::string &item)
+            std::string operator()(const std::string &item)
             {
-                return tr(lang, item);
+                return tr(item);
             }
+            /**
+            * \brief Select the required language to avoid excessive std::find call.
+            * \param lang Language to select (add if not existing).
+            */
+            void selectLang(const std::string &lang);
+            /**
+            * \brief Translates the selected item in the selected language.
+            * \param item Item to translate.
+            * \param tr Item's translation in the selected language.
+            * \see selectLang()
+            */
+            void translateItem(const std::string &item, const std::string &tr);
 
         private:
             l_string::iterator checkItem(const std::string &item,
                 const bool &add);
-            l_translation::iterator checkLang(const std::string &lang,
-                const bool &add);
 
             std::list<std::string> m_items; /** < Items to be translated (in english). **/
             l_translation m_translations; /** < Translations. **/
+            TranslationHandler *m_selectedLang;
     };
     template<class Archive>
     void serialize(Archive &ar, TranslationProvider &tr, const unsigned int &version)
     {
-        ar &boost::serialization::base_object<DatabaseItem>(tr);
         ar &tr.m_items, &tr.m_translations;
     }
 } /* End of namespace db */

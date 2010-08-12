@@ -16,6 +16,7 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
+					<Add option="-lsfml-audio-s-d" />
 					<Add option="-lsfml-graphics-s-d" />
 					<Add option="-lsfml-window-s-d" />
 					<Add option="-lsfml-system-s-d" />
@@ -37,6 +38,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-lsfml-audio-s-d" />
 					<Add option="-lsfml-graphics-s" />
 					<Add option="-lsfml-window-s" />
 					<Add option="-lsfml-system-s" />
@@ -51,10 +53,13 @@
 			<Add directory="$(#boost.include)" />
 			<Add directory="$(#lua.include)" />
 			<Add directory="$(#luabind.include)" />
+			<Add directory="F:\Prog\sfgui2\include" />
+			<Add directory="F:\Prog\sfgui2\ext\yaml-cpp-0.2.2\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-static-libgcc" />
 			<Add option="-llua51" />
+			<Add library="..\libyaml-cpp.a" />
 			<Add directory="$(#sfml2.lib)" />
 			<Add directory="$(#boost.lib)" />
 			<Add directory="$(#lua.lib)" />
@@ -74,6 +79,29 @@
 		<Unit filename="db\TranslationProvider.hpp" />
 		<Unit filename="db\Unit.hpp" />
 		<Unit filename="db\Weapon.hpp" />
+		<Unit filename="extern\sfgui\Align.cpp" />
+		<Unit filename="extern\sfgui\AudioWidget.cpp" />
+		<Unit filename="extern\sfgui\BaseWidgetFactory.cpp" />
+		<Unit filename="extern\sfgui\Button.cpp" />
+		<Unit filename="extern\sfgui\Checkbox.cpp" />
+		<Unit filename="extern\sfgui\Container.cpp" />
+		<Unit filename="extern\sfgui\DefaultImage.cpp" />
+		<Unit filename="extern\sfgui\Editbox.cpp" />
+		<Unit filename="extern\sfgui\GUI.cpp" />
+		<Unit filename="extern\sfgui\Image.cpp" />
+		<Unit filename="extern\sfgui\Label.cpp" />
+		<Unit filename="extern\sfgui\ListViewFactory.cpp" />
+		<Unit filename="extern\sfgui\Radiobutton.cpp" />
+		<Unit filename="extern\sfgui\Scrollbar.cpp" />
+		<Unit filename="extern\sfgui\Skin.cpp" />
+		<Unit filename="extern\sfgui\SpriteItemView.cpp" />
+		<Unit filename="extern\sfgui\Spritebox.cpp" />
+		<Unit filename="extern\sfgui\StringUtils.cpp" />
+		<Unit filename="extern\sfgui\TextStyle.cpp" />
+		<Unit filename="extern\sfgui\Widget.cpp" />
+		<Unit filename="extern\sfgui\WidgetFactory.cpp" />
+		<Unit filename="extern\sfgui\YAML.cpp" />
+		<Unit filename="lua\LuaVirtualMachine.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="tools\ImageManager.cpp" />
 		<Unit filename="tools\ImageManager.hpp" />

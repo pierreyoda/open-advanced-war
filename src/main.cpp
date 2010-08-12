@@ -34,14 +34,9 @@ E-mail: pierreyoda33@gmail.com
 #include <iostream>
 #include <string>
 #include <vector>
-extern "C"
-{
-    #include <lua.h>
-    #include <lualib.h>
-    #include <lauxlib.h>
-}
-#include <luabind/luabind.hpp>
 #include "Engine.hpp"
+#include "db/Database.hpp"
+#include "lua/LuaVirtualMachine.hpp"
 
 using namespace std;
 using namespace luabind;
@@ -60,25 +55,36 @@ struct Hello
 
 int main(int argc, char *argv[])
 {
-    lua_State *luaState = lua_open();
-    luaL_openlibs(luaState);
-    open(luaState);
+    lua_State *luaVm = 0;
+    LuaVM luaState(luaVm);
+    globals(luaState())["vm"] = &luaState;
 
-    module(luaState)
+    module(luaState())
     [
         class_<Hello>("Hello")
             .def(constructor<string>())
             .def("speek", (void(Hello::*)(const string&))&Hello::speek)
             .def("speek", (void(Hello::*)(const int&))&Hello::speek)
             .def("blah", &Hello::blah)
+        , namespace_("db")
+        [
+            class_<db::TranslationProvider>("TranslationProvider")
+                .def("tr", &db::TranslationProvider::tr)
+                //.def("tr", (std::string &db::TranslationProvider::tr)
+                .def("selectLang", &db::TranslationProvider::selectLang)
+                .def("translateItem", &db::TranslationProvider::translateItem)
+        ]
     ];
+
+    db::Database db("Vanilla");
 
     try
     {
         Hello test("Test class from C++");
-        globals(luaState)["test"] = &test;
-        if (luaL_dofile(luaState, "test.lua") != 0)
-            throw string(lua_tostring(luaState, -1));
+        globals(luaState())["test"] = &test;
+            globals(luaState())["trans"] = &db.translationsRef();
+        if (luaL_dofile(luaState(), "test.lua") != 0)
+            throw string(lua_tostring(luaState(), -1));
         /*if (lua_pcall(luaState, 0, LUA_MULTRET, 0) != 0)
             throw string(lua_tostring(luaState, -1));*/
         cout << "All was OK!\n";
@@ -86,21 +92,18 @@ int main(int argc, char *argv[])
     catch (const string &error)
     {
         cerr << "[LUA] Script error : " << error << "\n";
-        lua_pop(luaState, 1);
     }
-    catch(const exception &error)
+    catch (const exception &error)
     {
         cerr << error.what() << "\n";
     }
 
-    cout << "--- Starting UTF-8 test (compiled) ---\n";
-    cout << sf::String("é_(éèç").ToAnsiString() << "\n";
-    cout << "--- Ending UTF-8 test (compiled) ---\n";
+    /*cout << "--- Starting UTF-8 test (compiled) ---\n";
+    cout << sf::String(L"é_(éèç").ToAnsiString() << "\n";
+    cout << "--- Ending UTF-8 test (compiled) ---\n";*/
 
     Engine engine;
     engine.run();
-
-    lua_close(luaState);
 
     return EXIT_SUCCESS;
 }

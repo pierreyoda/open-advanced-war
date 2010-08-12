@@ -4,25 +4,73 @@ using namespace std;
 
 namespace db
 {
-    TranslationProvider::TranslationProvider()
+    TranslationProvider::TranslationProvider() : m_selectedLang(0)
     {
 
     }
-
-    string TranslationProvider::tr(const string &lang, const string &item,
-        const bool &add)
+    TranslationProvider::~TranslationProvider()
     {
-        l_string::iterator iter = checkItem(item, add);
-        l_translation::iterator iter2 = checkLang(lang, add);
-        if (iter == m_items.end() || iter2 == m_translations.end())
+        m_items.clear();
+        m_selectedLang = 0;
+        m_translations.clear();
+        delete m_selectedLang;
+    }
+
+    void TranslationProvider::selectLang(const string &lang)
+    {
+        if (lang.empty()) // Invalid string format
+            return;
+        if (m_selectedLang != 0 && *m_selectedLang == lang) // Already selected
+            return;
+        for (l_translation::iterator iter = m_translations.begin();
+            iter != m_translations.end(); iter++)
+        {
+            if (iter->name() == lang)
+            {
+                m_selectedLang = &*iter;
+                return;
+            }
+        }
+        m_translations.insert(m_translations.begin(), lang);
+        m_selectedLang = &*m_translations.begin();
+    }
+
+    void TranslationProvider::translateItem(const string &item, const string &tr)
+    {
+        if (m_selectedLang == 0)
+            return;
+        l_itemTranslation &translations = m_selectedLang->translationsRef();
+        for (l_itemTranslation::iterator iter = translations.begin();
+            iter != translations.end(); iter++)
+        {
+            if (iter->first == item)
+            {
+                iter->second = tr;
+                return;
+            }
+        }
+        translations.push_back(p_string(item, tr));
+    }
+
+    string TranslationProvider::tr(const string &item, const bool &add)
+    {
+        if (item.empty())
             return item;
-        const l_itemTranslation &translations = iter2->translations;
+        l_string::iterator iter = checkItem(item, add);
+        if (iter == m_items.end() || m_selectedLang == 0)
+            return item;
+        const l_itemTranslation &translations = m_selectedLang->translationsRef();
         for (l_itemTranslation::const_iterator iter = translations.begin();
             iter != translations.end(); iter++)
         {
-            // To implement
+            if (iter->first == item)
+            {
+                if (iter->second.empty())
+                    return item;
+                return iter->second;
+            }
         }
-        return "";
+        return item;
     }
 
     l_string::iterator TranslationProvider::checkItem(const string &item,
@@ -32,23 +80,8 @@ namespace db
             m_items.end(), item);
         if (iter == m_items.end() && add)
         {
-            m_items.push_back(item);
-            return find(m_items.begin(), m_items.end(), item); // not optimized
-        }
-        return iter;
-    }
-
-    l_translation::iterator TranslationProvider::checkLang(const string &lang,
-        const bool &add)
-    {
-        l_translation::iterator iter = find(m_translations.begin(),
-            m_translations.end(), lang);
-        if (iter == m_translations.end() && add)
-        {
-            m_translations.push_back(TranslationHandler(lang));
-            return find(m_translations.begin(),
-                m_translations.end(), lang); /* not optimized
-(but here not very important because there are not thousands of languages) */
+            m_items.insert(m_items.begin(), item);
+            return m_items.begin();
         }
         return iter;
     }

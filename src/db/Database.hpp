@@ -28,10 +28,12 @@ namespace db
         public:
             /**
             * \brief Default constructor.
-            * \param moduleName The module name (example : "moduleWWII").
+            * \param moduleName The module name (example : "Vanilla", "WWII").
             */
-            Database(const std::string &moduleName = "base");
+            Database(const std::string &moduleName);
             ~Database();
+
+            TranslationProvider &translationsRef() { return m_translations; }
 
         private:
             std::list<Tile> m_tiles; /**<  List of tiles. */
@@ -40,7 +42,7 @@ namespace db
             std::list<Propulsion> m_propulsions; /**<  List of propulsions. */
             std::list<Unit> m_units; /**<  List of "shared" units. */
             std::list<Faction> m_factions; /**<  List of factions. */
-            l_translation m_translations; /** < List of translations. **/
+            TranslationProvider m_translations; /** < Provides translations. **/
     };
 
     template<class Archive>
@@ -51,16 +53,16 @@ namespace db
             &db.m_units, &db.m_factions, &db.m_translations;
     }
 
-    void importFromXml(const std::string &file, Database &db)
-    {
-
-    }
-    void exportToXml(const std::string &file, const Database &db)
-    {
-
-    }
-
 } /* End of namespace db */
+
+/*void importFromXml(const std::string &file, db::Database &db)
+{
+
+}
+void exportToXml(const std::string &file, const db::Database &db)
+{
+
+}*/
 
 BOOST_CLASS_VERSION(db::Database, 1)
 
