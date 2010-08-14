@@ -13,14 +13,6 @@
 namespace db
 {
     /**
-    * \brief Contains informations to create an animated sprite.
-    */
-    struct AnimInfos
-    {
-
-    };
-
-    /**
     * \brief Handles the module database. Contains all game informations (example : units).
      */
     class Database : public DatabaseItem

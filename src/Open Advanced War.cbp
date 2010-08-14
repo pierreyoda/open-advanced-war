@@ -67,6 +67,8 @@
 		</Linker>
 		<Unit filename="Engine.cpp" />
 		<Unit filename="Engine.hpp" />
+		<Unit filename="GameGlobals.cpp" />
+		<Unit filename="GameGlobals.hpp" />
 		<Unit filename="constantes.hpp" />
 		<Unit filename="db\Building.hpp" />
 		<Unit filename="db\Database.cpp" />
@@ -79,6 +81,7 @@
 		<Unit filename="db\TranslationProvider.hpp" />
 		<Unit filename="db\Unit.hpp" />
 		<Unit filename="db\Weapon.hpp" />
+		<Unit filename="db\XSpriteItem.hpp" />
 		<Unit filename="extern\sfgui\Align.cpp" />
 		<Unit filename="extern\sfgui\AudioWidget.cpp" />
 		<Unit filename="extern\sfgui\BaseWidgetFactory.cpp" />
@@ -101,11 +104,13 @@
 		<Unit filename="extern\sfgui\Widget.cpp" />
 		<Unit filename="extern\sfgui\WidgetFactory.cpp" />
 		<Unit filename="extern\sfgui\YAML.cpp" />
+		<Unit filename="lua\LuaDatabase.hpp" />
 		<Unit filename="lua\LuaVirtualMachine.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="tools\ImageManager.cpp" />
 		<Unit filename="tools\ImageManager.hpp" />
 		<Unit filename="tools\ResourceManager.hpp" />
+		<Unit filename="tools\Singleton.hpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

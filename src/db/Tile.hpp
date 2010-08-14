@@ -1,7 +1,7 @@
 #ifndef TILE_HPP
 #define TILE_HPP
 
-#include "DatabaseItem.hpp"
+#include "XSpriteItem.hpp"
 
 namespace db
 {

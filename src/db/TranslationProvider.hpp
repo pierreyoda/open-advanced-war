@@ -55,7 +55,8 @@ namespace db
             * \param add Add "item" and/or "lang" if not existing (true by default).
             * \return Item's translation if "lang" and "item" exist. In case of error : returns "item".
             */
-            std::string tr(const std::string &item, const bool &add = true);
+            std::string tr(const std::string &item, const bool &add);
+            std::string tr(const std::string &item) { return tr(item, true); } // Needed for lua side.
             /**
             * \see tr()
             **/

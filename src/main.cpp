@@ -69,9 +69,10 @@ int main(int argc, char *argv[])
         , namespace_("db")
         [
             class_<db::TranslationProvider>("TranslationProvider")
-                .def("tr", &db::TranslationProvider::tr)
-                /*.def("tr", (string(db::TranslationProvider::*)(const string&))
-                    &db::TranslationProvider::tr)*/
+                .def("tr", (string(db::TranslationProvider::*)(const string&))
+                    &db::TranslationProvider::tr)
+                .def("tr", (string(db::TranslationProvider::*)(const string&, const bool&))
+                    &db::TranslationProvider::tr)
                 .def("selectLang", &db::TranslationProvider::selectLang)
                 .def("translateItem", &db::TranslationProvider::translateItem)
         ]
@@ -83,10 +84,6 @@ int main(int argc, char *argv[])
     globals(luaState())["trans"] = &db.translationsRef();
 
     luaState.include("test.lua");
-
-    /*cout << "--- Starting UTF-8 test (compiled) ---\n";
-    cout << sf::String(L"é_(éèç").ToAnsiString() << "\n";
-    cout << "--- Ending UTF-8 test (compiled) ---\n";*/
 
     Engine engine;
     engine.run();

@@ -74,7 +74,7 @@ namespace db
     }
 
     l_string::iterator TranslationProvider::checkItem(const string &item,
-    const bool &add)
+        const bool &add)
     {
         l_string::iterator iter = find(m_items.begin(),
             m_items.end(), item);

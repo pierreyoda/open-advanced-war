@@ -4,14 +4,9 @@
 #include <list>
 #include <string>
 #include <vector>
-extern "C"
-{
-    #include <lua.h>
-    #include <lualib.h>
-}
-#include <luabind/luabind.hpp>
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
+#include "LuaDatabase.hpp"
 
 /** \brief Handles lua interpreter.
 */
@@ -30,6 +25,7 @@ class LuaVM
                 luabind::class_<LuaVM>("VM")
                     .def("include", &LuaVM::include)
             ];
+            exportDatabase(luaVm);
         }
         ~LuaVM()
         {
