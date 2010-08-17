@@ -35,7 +35,7 @@ class LuaVM
         lua_State *operator()() { return luaVm; }
         lua_State *getLua() { return luaVm; }
 
-        /** \brief Makes load required file(s) by Lua embedded interpretor.
+        /** \brief Makes load required file(s) by Lua embedded interpretor. Use this instead of 'require'.
          *
          * \param toInclude A file to load, or some files separated by ';' (relative or absolute path).
          */
@@ -46,7 +46,7 @@ class LuaVM
             for (unsigned int i = 0; i < files.size(); i++)
             {
                 const std::string &file = files[i];
-                std::list<std::string>::const_iterator iter = std::find(
+                l_string::const_iterator iter = std::find(
                     filesAlreadyLoaded.begin(), filesAlreadyLoaded.end(), file);
                 if (iter != filesAlreadyLoaded.end())
                 {
@@ -54,14 +54,25 @@ class LuaVM
                     continue;
                 }
                 filesAlreadyLoaded.push_back(file);
-                if (luaL_dofile(luaVm, file.c_str()) != 0)
-                    std::cerr <<  std::string(lua_tostring(luaVm, -1)) << "\n";
+                try
+                {
+                    if (luaL_dofile(luaVm, file.c_str()) != 0)
+                        throw std::string(lua_tostring(luaVm, -1));
+                }
+                catch (const std::string &error)
+                {
+                    std::cerr << error << "\n";
+                }
+                catch (const std::exception &exception)
+                {
+                    std::cerr << exception.what() << "\n";
+                }
             }
         }
 
     private:
         lua_State *luaVm;
-        std::list<std::string> filesAlreadyLoaded;
+        l_string filesAlreadyLoaded;
 };
 
 #endif /* LUAVIRTUALMACHINE_HPP */

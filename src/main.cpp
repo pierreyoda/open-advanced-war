@@ -88,5 +88,5 @@ int main(int argc, char *argv[])
     Engine engine;
     engine.run();
 
-    return EXIT_SUCCESS;
+    return 0;
 }

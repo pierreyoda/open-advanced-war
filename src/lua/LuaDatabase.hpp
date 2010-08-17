@@ -15,8 +15,13 @@ void exportDatabase(lua_State *lua)
     using namespace luabind;
     module(lua, "db")
     [
+        // DatabaseItem
+        class_<DatabaseItem>("DatabaseItem")
+            .def("name", &DatabaseItem::name)
+        // Database
+        //class_<Database>("Database")
         // Frame
-        class_<Frame>("Frame")
+        , class_<Frame>("Frame")
             .def(constructor<const unsigned int&, const unsigned int&,
                 const float&>())
             .def(constructor<const unsigned int&, const unsigned int&,
@@ -27,13 +32,18 @@ void exportDatabase(lua_State *lua)
             .def_readwrite("h", &Frame::h)
             .def_readwrite("duration", &Frame::duration)
         // Animation
-        , class_<Animation>("Anim")
+        , class_<Animation, bases<DatabaseItem> >("Anim")
             .def(constructor<const std::string&, const std::string&>())
             .def("addFrame", &Animation::addFrame)
-        // XSprite
-        , class_<XSpriteItem>("XSprite")
-            .def(constructor<const std::string &>())
+            .def("image", &Animation::image)
+        // XSpriteItem
+        , class_<XSpriteItem, bases<DatabaseItem> >("XSprite")
             .def("addAnim", &XSpriteItem::addAnim)
+        // Tile
+        , class_<Tile, bases<XSpriteItem> >("Tile")
+            .def(constructor<const std::string&>())
+            .def(constructor<const std::string&, const bool&>())
+            .def("setProtection", &Tile::setProtection)
     ];
 }
 

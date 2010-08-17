@@ -8,7 +8,7 @@ namespace db
     /**
     * \brief Contains informations to create a building.
     */
-    class Building : public DatabaseItem
+    class Building : public XSpriteItem
     {
         public:
             /**
@@ -16,7 +16,7 @@ namespace db
             * \param name The building name (example : "City" or "Tank factory").
             */
             Building(const std::string &name, const int &gainPerTurn) :
-                DatabaseItem(name), m_gainPerTurn(gainPerTurn)
+                XSpriteItem(name), m_gainPerTurn(gainPerTurn)
             { }
 
         private:
@@ -26,7 +26,7 @@ namespace db
     template<class Archive>
     void serialize(Archive &ar, Building &building, const unsigned int &version)
     {
-        ar &boost::serialization::base_object<DatabaseItem>(building);
+        ar &boost::serialization::base_object<XSpriteItem>(building);
         ar &building.m_gainPerTurn;
     }
 } /* End of namespace db */

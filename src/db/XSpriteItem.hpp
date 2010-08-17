@@ -1,6 +1,7 @@
 #ifndef XSPRITEITEM_HPP
 #define XSPRITEITEM_HPP
 
+#include <vector>
 #include "DatabaseItem.hpp"
 #include "../GameGlobals.hpp"
 
@@ -23,7 +24,7 @@ namespace db
         }
 
         unsigned int x, y, w, h;
-        float duration;
+        float duration; /** < Frame's duration. */
     };
     template<class Archive>
     void serialize(Archive &ar, Frame &frame, const unsigned int &version)
@@ -44,10 +45,15 @@ namespace db
             m_frames.push_back(frame);
             return *this;
         }
+        /** \brief m_image accessor
+        *
+        * \return Image filename.
+        */
+        const std::string &image() const { return m_image; }
 
         private:
-            std::list<Frame> m_frames;
-            const std::string m_image;
+            std::vector<Frame> m_frames; /**< Frames. */
+            const std::string m_image; /** < Image filename. */
     };
     template<class Archive>
     void serialize(Archive &ar, Animation &anim, const unsigned int &version)
@@ -60,6 +66,7 @@ namespace db
     */
     struct XSpriteItem : public DatabaseItem
     {
+        typedef std::list<Animation> l_anim;
         XSpriteItem(const std::string &name) : DatabaseItem(name)
         { }
 
@@ -75,9 +82,10 @@ namespace db
                 m_anims.push_back(anim);
             return *this;
         }
+        const l_anim &animsConstRef() const { return m_anims; }
 
         private:
-            std::list<Animation> m_anims;
+            l_anim m_anims;
     };
     template<class Archive>
     void serialize(Archive &ar, XSpriteItem &xsprite, const unsigned int &version)

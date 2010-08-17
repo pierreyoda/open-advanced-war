@@ -21,6 +21,7 @@
 					<Add option="-lsfml-window-s-d" />
 					<Add option="-lsfml-system-s-d" />
 					<Add option="-lluabindd" />
+					<Add option="-lboost_filesystem-mgw44-mt-sd-1_43" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -43,6 +44,7 @@
 					<Add option="-lsfml-window-s" />
 					<Add option="-lsfml-system-s" />
 					<Add option="-lluabind" />
+					<Add option="-lboost_filesystem-mgw44-mt-s-1_43" />
 				</Linker>
 			</Target>
 		</Build>
@@ -69,6 +71,8 @@
 		<Unit filename="Engine.hpp" />
 		<Unit filename="GameGlobals.cpp" />
 		<Unit filename="GameGlobals.hpp" />
+		<Unit filename="Map.cpp" />
+		<Unit filename="Map.hpp" />
 		<Unit filename="constantes.hpp" />
 		<Unit filename="db\Building.hpp" />
 		<Unit filename="db\Database.cpp" />
@@ -104,6 +108,12 @@
 		<Unit filename="extern\sfgui\Widget.cpp" />
 		<Unit filename="extern\sfgui\WidgetFactory.cpp" />
 		<Unit filename="extern\sfgui\YAML.cpp" />
+		<Unit filename="game\AnimManager.cpp" />
+		<Unit filename="game\AnimManager.hpp" />
+		<Unit filename="game\Tile.cpp" />
+		<Unit filename="game\Tile.hpp" />
+		<Unit filename="game\XSprite.cpp" />
+		<Unit filename="game\XSprite.hpp" />
 		<Unit filename="lua\LuaDatabase.hpp" />
 		<Unit filename="lua\LuaVirtualMachine.hpp" />
 		<Unit filename="main.cpp" />

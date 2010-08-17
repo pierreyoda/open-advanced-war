@@ -15,7 +15,7 @@ namespace db
     /**
     * \brief Handles the module database. Contains all game informations (example : units).
      */
-    class Database : public DatabaseItem
+    class Database
     {
         public:
             /**
@@ -25,9 +25,16 @@ namespace db
             Database(const std::string &moduleName);
             ~Database();
 
+            void setModuleName(const std::string &moduleName)
+            {
+                if (!moduleName.empty())
+                    m_moduleName = moduleName;
+            }
+
             TranslationProvider &translationsRef() { return m_translations; }
 
         private:
+            std::string m_moduleName; /** < Module name. */
             std::list<Tile> m_tiles; /**<  List of tiles. */
             std::list<Building> m_buildings; /**<  List of buildings. */
             std::list<Weapon> m_weapons; /**<  List of weapon systems. */
@@ -40,7 +47,7 @@ namespace db
     template<class Archive>
     void serialize(Archive &ar, Database &db, const unsigned int &version)
     {
-        ar &boost::serialization::base_object<DatabaseItem>(db);
+        ar &db.m_moduleName;
         ar &db.m_tiles, &db.m_buildings, &db.m_weapons, &db.m_propulsions,
             &db.m_units, &db.m_factions, &db.m_translations;
     }

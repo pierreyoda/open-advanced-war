@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="OAW-DatabaseConverter" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\OAW-DatabaseConverter_d" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\" />
+				<Option object_output="..\obj\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add option="-lluabindd" />
+					<Add option="-lboost_filesystem-mgw44-mt-sd-1_43" />
+					<Add option="-lboost_system-mgw44-mt-sd-1_43" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="..\OAW-DatabaseConverter" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\" />
+				<Option object_output="..\obj\Release\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-lluabind" />
+					<Add option="-lboost_filesystem-mgw44-mt-s-1_43" />
+					<Add option="-lboost_system-mgw44-mt-s-1_43" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="$(#luabind.include)" />
+			<Add directory="$(#lua.include)" />
+			<Add directory="$(#boost.include)" />
+		</Compiler>
+		<Linker>
+			<Add option="-static-libgcc" />
+			<Add option="-llua51" />
+			<Add directory="$(#lua.lib)" />
+			<Add directory="$(#luabind.lib)" />
+			<Add directory="$(#boost.lib)" />
+		</Linker>
+		<Unit filename="GameGlobals.cpp" />
+		<Unit filename="GameGlobals.hpp" />
+		<Unit filename="db\Building.hpp" />
+		<Unit filename="db\Database.cpp" />
+		<Unit filename="db\Database.hpp" />
+		<Unit filename="db\DatabaseItem.hpp" />
+		<Unit filename="db\Faction.hpp" />
+		<Unit filename="db\Propulsion.hpp" />
+		<Unit filename="db\Tile.hpp" />
+		<Unit filename="db\TranslationProvider.cpp" />
+		<Unit filename="db\TranslationProvider.hpp" />
+		<Unit filename="db\Unit.hpp" />
+		<Unit filename="db\Weapon.hpp" />
+		<Unit filename="db\XSpriteItem.hpp" />
+		<Unit filename="db_converter.cpp" />
+		<Unit filename="lua\LuaDatabase.hpp" />
+		<Unit filename="lua\LuaVirtualMachine.hpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

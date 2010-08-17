@@ -4,7 +4,7 @@ using namespace std;
 
 namespace db
 {
-    Database::Database(const string &moduleName) : DatabaseItem(moduleName)
+    Database::Database(const string &moduleName) : m_moduleName(moduleName)
     {
 
     }
@@ -13,5 +13,4 @@ namespace db
     {
 
     }
-
 } /* End of namespace db */

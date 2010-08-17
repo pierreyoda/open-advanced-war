@@ -2,7 +2,7 @@
 #define TRANSLATIONPROVIDER_HPP
 
 #include <algorithm>
-#include <SFML/System/String.hpp> // Unicode support
+//#include <SFML/System/String.hpp> // Unicode support
 #include "DatabaseItem.hpp"
 
 namespace db
