@@ -15,6 +15,8 @@ Engine::~Engine()
 
 void Engine::run()
 {
+    Map *map = game.getMapPtr();
+    map = new Map();
     while (App.IsOpened())
     {
         Event Event;
@@ -30,7 +32,7 @@ void Engine::run()
         }
 
         App.Clear();
-
+            map->renderTo(App);
         App.Display();
     }
 }

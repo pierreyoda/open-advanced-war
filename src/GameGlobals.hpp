@@ -7,10 +7,11 @@
 */
 struct GameGlobals : public Singleton<GameGlobals>
 {
+    friend class Singleton<GameGlobals>;
+
     const unsigned int case_w, case_h;
 
     private:
-        friend class Singleton<GameGlobals>;
         GameGlobals();
         GameGlobals(const GameGlobals &other) : case_w(20), case_h(20) { };
         ~GameGlobals();

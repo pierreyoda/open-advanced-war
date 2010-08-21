@@ -15,7 +15,8 @@ namespace db
             *
             * \param name The tile name (example : "river").
             */
-            Tile(const std::string &name) : XSpriteItem(name), m_rotating(false)
+            Tile(const std::string &name) : XSpriteItem(name), m_rotating(false),
+                m_protection(0)
             { }
             /** \brief Constructor.
             *
@@ -23,7 +24,7 @@ namespace db
             * \param rotating Orientable.
             */
             Tile(const std::string &name, const bool &rotating) :
-                XSpriteItem(name), m_rotating(rotating)
+                XSpriteItem(name), m_rotating(rotating), m_protection(0)
             { }
 
             void setProtection(const unsigned int &protection)
@@ -32,8 +33,8 @@ namespace db
             }
 
         private:
-            const bool m_rotating; /**<  Is orientable. If true, game will try to apply a "snake effect". */
-            unsigned m_protection;
+            const bool m_rotating; /**<  Is orientable. */
+            unsigned m_protection; /** < Protection level. */
     };
 
     template<class Archive>

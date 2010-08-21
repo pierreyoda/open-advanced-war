@@ -1,6 +1,10 @@
 #ifndef LUADATABASE_HPP
 #define LUADATABASE_HPP
 
+/** \file LuaDatabase.hpp
+* \brief Binds database to Lua.
+*/
+
 extern "C"
 {
     #include <lua.h>
@@ -19,7 +23,16 @@ void exportDatabase(lua_State *lua)
         class_<DatabaseItem>("DatabaseItem")
             .def("name", &DatabaseItem::name)
         // Database
-        //class_<Database>("Database")
+        , class_<Database>("Database")
+            .def("getModuleName", &Database::getModuleName)
+        // TranslationProvider
+        , class_<TranslationProvider>("TranslationProvider")
+            .def("tr", (std::string(TranslationProvider::*)(const std::string&))
+                &TranslationProvider::tr)
+            .def("tr", (std::string(TranslationProvider::*)(const std::string&,
+                    const bool&))&TranslationProvider::tr)
+            .def("selectLang", &TranslationProvider::selectLang)
+                .def("translateItem", &TranslationProvider::translateItem)
         // Frame
         , class_<Frame>("Frame")
             .def(constructor<const unsigned int&, const unsigned int&,

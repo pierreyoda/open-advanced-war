@@ -14,7 +14,7 @@ class Singleton
     protected:
         Singleton() {}
         Singleton(const Singleton &s) { }
-        Singleton &operator=(const Singleton &) { }
+        Singleton &operator=(const Singleton &) { return *this; }
 };
 
 #endif /* SINGLETON_HPP */

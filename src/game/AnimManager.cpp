@@ -1,11 +1,19 @@
 #include "AnimManager.hpp"
 
+using namespace std;
+
 AnimManager::AnimManager()
 {
-    //ctor
+
 }
 
 AnimManager::~AnimManager()
 {
-    //dtor
+
+}
+
+const db::Animation *AnimManager::search(const string &sprite,
+    const string &anim)
+{
+    return 0;
 }

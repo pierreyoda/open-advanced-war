@@ -4,6 +4,7 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 #include "constantes.hpp"
+#include "Game.hpp"
 
 class Engine
 {
@@ -15,6 +16,7 @@ class Engine
 
     private:
         sf::RenderWindow App;
+        Game game;
 };
 
 #endif /* ENGINE_HPP */

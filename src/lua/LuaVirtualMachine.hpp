@@ -7,6 +7,7 @@
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
 #include "LuaDatabase.hpp"
+#include "LuaTools.hpp"
 
 /** \brief Handles lua interpreter.
 */
@@ -26,6 +27,7 @@ class LuaVM
                     .def("include", &LuaVM::include)
             ];
             exportDatabase(luaVm);
+            exportTools(luaVm);
         }
         ~LuaVM()
         {

@@ -40,6 +40,11 @@ namespace db
             DatabaseItem(name), m_image(img)
         { }
 
+        /** \brief Adds a frame.
+        *
+        * \param frame A frame.
+        * \return Reference to instance (self).
+        */
         Animation &addFrame(const Frame &frame)
         {
             m_frames.push_back(frame);
@@ -51,6 +56,23 @@ namespace db
         */
         const std::string &image() const { return m_image; }
 
+        /** \brief Returns the frame number.
+        *
+        * \return Frame's vector size.
+        */
+        unsigned int frameNumber() const { return m_frames.size(); }
+
+        /** \brief Operator []. Provides secured access to frames.
+        *
+        * \param id Frame number.
+        * \return Pointer to the required frame if existing, null pointer otherwise.
+        */
+        const Frame *operator[](const unsigned int &id) const
+        {
+            if (id < m_frames.size())
+                return &m_frames[id];
+            return 0;
+        }
         private:
             std::vector<Frame> m_frames; /**< Frames. */
             const std::string m_image; /** < Image filename. */

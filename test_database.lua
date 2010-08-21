@@ -6,3 +6,10 @@ tilePlain = db.Tile("plain")
 tilePlain:addAnim(anim1):addAnim(anim1)
 tilePlain:setProtection(1)
 io.write(anim1:name(), " ", anim1:image()) print()
+-- Pausable clock test
+a, b = PausableClock(true), PausableClock(false)
+c = 0
+while (c < 1e6) do -- sleep
+c=c+1
+end
+io.write(a:getElapsedTime(), " ", b:getElapsedTime()) print()

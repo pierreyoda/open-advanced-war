@@ -29,6 +29,7 @@ E-mail: pierreyoda33@gmail.com
 * E-mail: pierreyoda33@gmail.com
 *
 * License : GPL (v3) - See main.cpp or gpl3.txt<br />
+* \endcode
 */
 
 #include <iostream>
@@ -41,47 +42,12 @@ E-mail: pierreyoda33@gmail.com
 using namespace std;
 using namespace luabind;
 
-struct Hello
-{
-    Hello(const string &a) : b(a) { }
-
-    void speek(const string &toSay) { cout << toSay << "\n"; }
-    void speek(const int &toSay) { cout << toSay << "\n"; }
-    void blah() { cout << b << "\n"; }
-
-    private:
-        string b;
-};
-
 int main(int argc, char *argv[])
 {
     lua_State *luaVm = 0;
     LuaVM luaState(luaVm);
     globals(luaState())["vm"] = &luaState;
-
-    module(luaState())
-    [
-        class_<Hello>("Hello")
-            .def(constructor<string>())
-            .def("speek", (void(Hello::*)(const string&))&Hello::speek)
-            .def("speek", (void(Hello::*)(const int&))&Hello::speek)
-            .def("blah", &Hello::blah)
-        , namespace_("db")
-        [
-            class_<db::TranslationProvider>("TranslationProvider")
-                .def("tr", (string(db::TranslationProvider::*)(const string&))
-                    &db::TranslationProvider::tr)
-                .def("tr", (string(db::TranslationProvider::*)(const string&, const bool&))
-                    &db::TranslationProvider::tr)
-                .def("selectLang", &db::TranslationProvider::selectLang)
-                .def("translateItem", &db::TranslationProvider::translateItem)
-        ]
-    ];
-
-    db::Database db("Vanilla");
-    Hello test("Test class from C++");
-    globals(luaState())["test"] = &test;
-    globals(luaState())["trans"] = &db.translationsRef();
+    globals(luaState())["trans"] = &database->translationsRef();
 
     luaState.include("test.lua");
 

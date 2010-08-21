@@ -2,9 +2,12 @@
 
 using namespace std;
 
+db::Database *database = &db::Database::getInstance();
+
 namespace db
 {
-    Database::Database(const string &moduleName) : m_moduleName(moduleName)
+
+    Database::Database() : m_moduleName("unknown")
     {
 
     }

@@ -9,31 +9,38 @@
 #include "Unit.hpp"
 #include "Faction.hpp"
 #include "TranslationProvider.hpp"
+#include "../tools/Singleton.hpp"
 
+/** \namespace db
+* \brief Namespace containing game database.
+*/
 namespace db
 {
     /**
-    * \brief Handles the module database. Contains all game informations (example : units).
+    * \brief Handles the module database. Contains all game informations (example : units). Singleton.
      */
-    class Database
+    class Database : public Singleton<Database>
     {
-        public:
-            /**
-            * \brief Default constructor.
-            * \param moduleName The module name (example : "Vanilla", "WWII").
-            */
-            Database(const std::string &moduleName);
-            ~Database();
+        friend class Singleton<Database>;
 
+        public:
             void setModuleName(const std::string &moduleName)
             {
                 if (!moduleName.empty())
                     m_moduleName = moduleName;
             }
+            const std::string &getModuleName() const { return m_moduleName; }
 
             TranslationProvider &translationsRef() { return m_translations; }
 
         private:
+            /**
+            * \brief Default constructor.
+            * \param moduleName The module name (example : "Vanilla", "WWII").
+            */
+            Database();
+            ~Database();
+
             std::string m_moduleName; /** < Module name. */
             std::list<Tile> m_tiles; /**<  List of tiles. */
             std::list<Building> m_buildings; /**<  List of buildings. */
@@ -51,8 +58,9 @@ namespace db
         ar &db.m_tiles, &db.m_buildings, &db.m_weapons, &db.m_propulsions,
             &db.m_units, &db.m_factions, &db.m_translations;
     }
-
 } /* End of namespace db */
+
+extern db::Database *database;
 
 /*void importFromXml(const std::string &file, db::Database &db)
 {
