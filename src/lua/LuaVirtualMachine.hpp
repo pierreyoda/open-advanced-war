@@ -7,7 +7,12 @@
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
 #include "LuaDatabase.hpp"
+#ifndef DB_EXPORTER // to avoid SFML including in DatabaseExporter tool
 #include "LuaTools.hpp"
+#include "LuaGame.hpp"
+#endif /* DB_EXPORTER */
+
+namespace fs = boost::filesystem;
 
 /** \brief Handles lua interpreter.
 */
@@ -24,10 +29,16 @@ class LuaVM
             luabind::module(luaVm)
             [
                 luabind::class_<LuaVM>("VM")
-                    .def("include", &LuaVM::include)
+                    .def("include", (void(LuaVM::*)(const std::string&))
+                        &LuaVM::include)
+                    .def("include", (void(LuaVM::*)(const std::string&,
+                        const std::string&))&LuaVM::include)
             ];
             exportDatabase(luaVm);
+#ifndef DB_EXPORTER
             exportTools(luaVm);
+            exportGame(luaVm);
+#endif /* DB_EXPORTER */
         }
         ~LuaVM()
         {
@@ -37,17 +48,26 @@ class LuaVM
         lua_State *operator()() { return luaVm; }
         lua_State *getLua() { return luaVm; }
 
+
+        /** \brief Overloaded for conveniance and lua binding.
+        * \see include()
+        */
+        void include(const std::string &toInclude)
+        {
+            include(toInclude, "");
+        }
         /** \brief Makes load required file(s) by Lua embedded interpretor. Use this instead of 'require'.
          *
          * \param toInclude A file to load, or some files separated by ';' (relative or absolute path).
+         * \param prefix Prefix (ex : "modules/Native/").
          */
-        void include(const std::string &toInclude)
+        void include(const std::string &toInclude, const std::string &prefix)
         {
             std::vector<std::string> files;
             boost::algorithm::split(files, toInclude, boost::is_any_of(";"));
             for (unsigned int i = 0; i < files.size(); i++)
             {
-                const std::string &file = files[i];
+                const std::string &file = prefix + files[i];
                 l_string::const_iterator iter = std::find(
                     filesAlreadyLoaded.begin(), filesAlreadyLoaded.end(), file);
                 if (iter != filesAlreadyLoaded.end())

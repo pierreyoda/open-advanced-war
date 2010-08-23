@@ -22,6 +22,8 @@ namespace db
     class Database : public Singleton<Database>
     {
         friend class Singleton<Database>;
+        template<class Archive> friend
+        void serialize(Archive &ar, Database &db, const unsigned int &version);
 
         public:
             void setModuleName(const std::string &moduleName)
@@ -32,6 +34,13 @@ namespace db
             const std::string &getModuleName() const { return m_moduleName; }
 
             TranslationProvider &translationsRef() { return m_translations; }
+
+            /** \brief Add a tile to the database (if not present yet).
+            *
+            * \param tile Tile to add.
+            * \return Reference to self.
+            */
+            Database &addTile(const Tile &tile);
 
         private:
             /**
@@ -61,15 +70,6 @@ namespace db
 } /* End of namespace db */
 
 extern db::Database *database;
-
-/*void importFromXml(const std::string &file, db::Database &db)
-{
-
-}
-void exportToXml(const std::string &file, const db::Database &db)
-{
-
-}*/
 
 BOOST_CLASS_VERSION(db::Database, 1)
 

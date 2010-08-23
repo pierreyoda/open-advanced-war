@@ -12,9 +12,9 @@ void exportGame(lua_State *lua)
     using namespace luabind;
     module(lua)
     [
-        class_<Map>
-            .def("getTile", (void(Map::*)(const unsigned int&,
-                const unsigned int&))&Map::getTile)
+        class_<Map>("Map")
+            .def("getTile", (std::string(Map::*)(const unsigned int&,
+                const unsigned int&)const)&Map::getTile)
             .def("setTile", (void(Map::*)(const unsigned int&,
                 const unsigned int&, const std::string &))&Map::setTile)
     ];

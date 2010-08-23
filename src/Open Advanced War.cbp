@@ -16,10 +16,10 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add option="-lsfml-audio-s-d" />
-					<Add option="-lsfml-graphics-s-d" />
-					<Add option="-lsfml-window-s-d" />
-					<Add option="-lsfml-system-s-d" />
+					<Add option="-lsfml2-audio-s-d" />
+					<Add option="-lsfml2-graphics-s-d" />
+					<Add option="-lsfml2-window-s-d" />
+					<Add option="-lsfml2-system-s-d" />
 					<Add option="-lluabindd" />
 					<Add option="-lboost_filesystem-mgw44-mt-sd-1_43" />
 				</Linker>
@@ -39,10 +39,10 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add option="-lsfml-audio-s-d" />
-					<Add option="-lsfml-graphics-s" />
-					<Add option="-lsfml-window-s" />
-					<Add option="-lsfml-system-s" />
+					<Add option="-lsfml2-audio-s" />
+					<Add option="-lsfml2-graphics-s" />
+					<Add option="-lsfml2-window-s" />
+					<Add option="-lsfml2-system-s" />
 					<Add option="-lluabind" />
 					<Add option="-lboost_filesystem-mgw44-mt-s-1_43" />
 				</Linker>

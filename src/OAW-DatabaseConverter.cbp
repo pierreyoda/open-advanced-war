@@ -58,6 +58,7 @@
 		<Unit filename="db\Database.cpp" />
 		<Unit filename="db\Database.hpp" />
 		<Unit filename="db\DatabaseItem.hpp" />
+		<Unit filename="db\DatabaseSerialization.hpp" />
 		<Unit filename="db\Faction.hpp" />
 		<Unit filename="db\Propulsion.hpp" />
 		<Unit filename="db\Tile.hpp" />

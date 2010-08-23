@@ -38,11 +38,11 @@ void Map::renderTo(RenderTarget &target)
         }
 }
 
-const std::string Map::getTile(const Vector2ui &pos) const
+std::string Map::getTile(const Vector2ui &pos) const
 {
     return getTile(pos.x, pos.y);
 }
-const std::string Map::getTile(const unsigned int &x, const unsigned int &y)
+std::string Map::getTile(const unsigned int &x, const unsigned int &y)
     const
 {
     return "";

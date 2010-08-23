@@ -31,6 +31,7 @@ namespace db
             {
                 m_protection = protection;
             }
+            const bool &isOrientable() { return m_rotating; }
 
         private:
             const bool m_rotating; /**<  Is orientable. */
@@ -41,7 +42,7 @@ namespace db
     void serialize(Archive &ar, Tile &tile, const unsigned int &version)
     {
         ar &boost::serialization::base_object<XSpriteItem>(tile);
-        ar &tile.m_rotating;
+        ar &tile.m_rotating &tile.m_protection;
     }
 } /* End of namespace db */
 

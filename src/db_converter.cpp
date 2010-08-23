@@ -21,18 +21,26 @@ Website: https://sourceforge.net/projects/openadvancedwar/<br />
 E-mail: pierreyoda33@gmail.com
 */
 
+#define DB_EXPORTER
+
 #include <iostream>
 #include <boost/filesystem.hpp>
 #include "lua/LuaVirtualMachine.hpp"
+#include "db/DatabaseSerialization.hpp"
+#include <boost/filesystem/path.hpp>
+
+namespace fs = boost::filesystem;
 
 using namespace std;
 using namespace luabind;
-namespace fs = boost::filesystem;
 
-string getFilePath(const std::string &indication,
+string getFilePath(const std::string &indication, const bool &mustExist = true,
     const std::string &forbidden = "")
 {
-    cout << "Please specify the " << indication << " : (must be an existing file)\n";
+    cout << "Please specify the " << indication << " :";
+    if (mustExist)
+        cout << " (must be an existing file)";
+    cout << "\n";
     bool ok = false;
     string file;
     do
@@ -45,9 +53,14 @@ string getFilePath(const std::string &indication,
             cout << "Error : '" << file << "' is already specified.\n";
             continue;
         }
-        ok = fs::exists(file);
-        if (!ok)
-            cout << "Error : '" << file << "' does not exist.\n";
+        if (mustExist)
+        {
+            ok = fs::exists(file);
+            if (!ok)
+                cout << "Error : '" << file << "' does not exist.\n";
+        }
+        else
+            ok = true;
     } while (!ok);
     return file;
 }
@@ -67,11 +80,11 @@ int main(int argc, char *argv[])
     LuaVM luaState(luaVM);
     globals(luaState())["vm"] = &luaState;
 
-    db::Database db("Unknown");
-    //globals(luaState())["database"] = &db;
+    db::Database &db = db::Database::getInstance();
+    globals(luaState())["database"] = &db;
 
-    string input = getFilePath("Lua input file"),
-        output = getFilePath("XML output file", input);
+    string input = /*getFilePath("Lua input file")*/"modules/Native/database.lua",
+        output = getFilePath("XML output file", false, input);
     luaState.include(input);
 
     return 0;

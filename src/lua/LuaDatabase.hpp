@@ -25,6 +25,7 @@ void exportDatabase(lua_State *lua)
         // Database
         , class_<Database>("Database")
             .def("getModuleName", &Database::getModuleName)
+            .def("addTile", &Database::addTile)
         // TranslationProvider
         , class_<TranslationProvider>("TranslationProvider")
             .def("tr", (std::string(TranslationProvider::*)(const std::string&))
@@ -47,8 +48,15 @@ void exportDatabase(lua_State *lua)
         // Animation
         , class_<Animation, bases<DatabaseItem> >("Anim")
             .def(constructor<const std::string&, const std::string&>())
-            .def("addFrame", &Animation::addFrame)
+            .def("addFrame", (Animation&(Animation::*)(const Frame&))
+                &Animation::addFrame)
+            .def("addFrame", (Animation&(Animation::*)(const unsigned int &,
+                const unsigned int&))&Animation::addFrame)
+            .def("addFrame", (Animation&(Animation::*)(const unsigned int &,
+                const unsigned int&, const float&))&Animation::addFrame)
             .def("image", &Animation::image)
+            .def("setImage", &Animation::setImage)
+            .def("clear", &Animation::clear)
         // XSpriteItem
         , class_<XSpriteItem, bases<DatabaseItem> >("XSprite")
             .def("addAnim", &XSpriteItem::addAnim)
@@ -57,6 +65,7 @@ void exportDatabase(lua_State *lua)
             .def(constructor<const std::string&>())
             .def(constructor<const std::string&, const bool&>())
             .def("setProtection", &Tile::setProtection)
+            .def("isOrientable", &Tile::isOrientable)
     ];
 }
 
