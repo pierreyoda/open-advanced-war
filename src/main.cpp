@@ -38,6 +38,9 @@ E-mail: pierreyoda33@gmail.com
 #include "Engine.hpp"
 #include "db/Database.hpp"
 #include "lua/LuaVirtualMachine.hpp"
+#include "tools/FilesPathHandler.hpp"
+
+FilesPathHandler gFph = FilesPathHandler();
 
 using namespace std;
 using namespace luabind;
@@ -48,6 +51,7 @@ int main(int argc, char *argv[])
     LuaVM luaState(luaVm);
     globals(luaState())["vm"] = &luaState;
     globals(luaState())["trans"] = &database->translationsRef();
+    globals(luaState())["gFph"] = &gFph;
 
     luaState.include("test.lua");
 

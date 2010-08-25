@@ -17,7 +17,7 @@ struct AnimManager
         AnimManager();
         ~AnimManager();
 
-        const db::Animation *search(const std::string &sprite,
+        const db::Animation *search(const std::string &item,
             const std::string &anim);
 };
 

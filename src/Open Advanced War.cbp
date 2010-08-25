@@ -4,6 +4,7 @@
 	<Project>
 		<Option title="Open Advanced War" />
 		<Option pch_mode="2" />
+		<Option default_target="Release" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
@@ -51,6 +52,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-pipe" />
+			<Add option="-j4" />
 			<Add directory="$(#sfml2.include)" />
 			<Add directory="$(#boost.include)" />
 			<Add directory="$(#lua.include)" />
@@ -80,6 +83,7 @@
 		<Unit filename="db\Database.cpp" />
 		<Unit filename="db\Database.hpp" />
 		<Unit filename="db\DatabaseItem.hpp" />
+		<Unit filename="db\DatabaseSerialization.hpp" />
 		<Unit filename="db\Faction.hpp" />
 		<Unit filename="db\Propulsion.hpp" />
 		<Unit filename="db\Tile.hpp" />
@@ -121,6 +125,7 @@
 		<Unit filename="lua\LuaTools.hpp" />
 		<Unit filename="lua\LuaVirtualMachine.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="tools\FilesPathHandler.hpp" />
 		<Unit filename="tools\ImageManager.cpp" />
 		<Unit filename="tools\ImageManager.hpp" />
 		<Unit filename="tools\PausableClock.hpp" />

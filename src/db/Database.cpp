@@ -7,7 +7,6 @@ db::Database *database = &db::Database::getInstance();
 
 namespace db
 {
-
     Database::Database() : m_moduleName("unknown")
     {
 
@@ -18,17 +17,48 @@ namespace db
 
     }
 
-    Database &Database::addTile(const Tile &tile)
+    Database &Database::addTile(const Tile *tile)
     {
-        for (std::list<Tile>::const_iterator iter = m_tiles.begin();
-            iter != m_tiles.end(); iter++)
-            if (iter->name() == tile.name())
-            {
-                std::cerr << "Warning : tile '" << tile.name()
-                    << "' already exists.\n";
-                return *this;
-            }
-        m_tiles.push_back(tile);
+        if (tile == 0)
+            return *this;
+        if (itemExists(tile->name()))
+        {
+            std::cerr << "Warning : item name '" << tile->name()
+                << "' already exists in database.\n";
+            return *this;
+        }
+        m_tiles.push_back(*tile);
         return *this;
+    }
+
+    bool Database::itemExists(const std::string &item)
+    {
+        return (findTile(item) || findBuilding(item) || findWeapon(item)
+            || findPropulsion(item) || findUnit(item) || findFaction(item));
+    }
+
+    Tile *Database::findTile(const std::string &item)
+    {
+        return findItemIn<Tile>(item, m_tiles);
+    }
+    Building *Database::findBuilding(const std::string &item)
+    {
+        return findItemIn<Building>(item, m_buildings);
+    }
+    Weapon *Database::findWeapon(const std::string &item)
+    {
+        return findItemIn<Weapon>(item, m_weapons);
+    }
+    Propulsion *Database::findPropulsion(const std::string &item)
+    {
+        return findItemIn<Propulsion>(item, m_propulsions);
+    }
+    Unit *Database::findUnit(const std::string &item)
+    {
+        return findItemIn<Unit>(item, m_units);
+    }
+    Faction *Database::findFaction(const std::string &item)
+    {
+        return findItemIn<Faction>(item, m_factions);
     }
 } /* End of namespace db */

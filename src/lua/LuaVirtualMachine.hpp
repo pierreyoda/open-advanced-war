@@ -12,8 +12,6 @@
 #include "LuaGame.hpp"
 #endif /* DB_EXPORTER */
 
-namespace fs = boost::filesystem;
-
 /** \brief Handles lua interpreter.
 */
 class LuaVM

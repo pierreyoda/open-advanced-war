@@ -26,6 +26,7 @@ void exportDatabase(lua_State *lua)
         , class_<Database>("Database")
             .def("getModuleName", &Database::getModuleName)
             .def("addTile", &Database::addTile)
+            .def("findTile", &Database::findTile)
         // TranslationProvider
         , class_<TranslationProvider>("TranslationProvider")
             .def("tr", (std::string(TranslationProvider::*)(const std::string&))

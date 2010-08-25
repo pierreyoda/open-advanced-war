@@ -22,3 +22,9 @@ road:addAnim(anim):addAnim(anim2):addAnim(anim3)
 
 -- Finally adding all to database
 database:addTile(plain):addTile(forest):addTile(road)
+
+-- Pointer test
+tilePtr = database:findTile("Pjlain") -- null pointer
+database:addTile(tilePtr) -- will not crash
+tilePtr = database:findTile("Forest")
+database:addTile(tilePtr) -- ignored : already present

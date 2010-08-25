@@ -39,7 +39,7 @@ class XSprite : public sf::Sprite
         * \param anim Pointer to an animation.
         * \param loop Play in buckle?
         */
-        void playAnim(const db::Animation *anim, const bool &loop = true);
+        void playAnim(const db::Animation *anim, const bool &loop);
 
         /** \brief Change the current frame to the required frame (if existing).
         *

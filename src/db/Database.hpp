@@ -37,10 +37,24 @@ namespace db
 
             /** \brief Add a tile to the database (if not present yet).
             *
-            * \param tile Tile to add.
+            * \param tile Tile to add (pointer to avoid crashes).
             * \return Reference to self.
             */
-            Database &addTile(const Tile &tile);
+            Database &addTile(const Tile *tile);
+
+            Tile *findTile(const std::string &item);
+            Building *findBuilding(const std::string &item);
+            Weapon *findWeapon(const std::string &item);
+            Propulsion *findPropulsion(const std::string &item);
+            Unit *findUnit(const std::string &item);
+            Faction *findFaction(const std::string &item);
+
+            /** \brief Checks if item exists. Searchs in all lists (but translations).
+            *
+            * \param item Item's name.
+            * \return True if existing, false otherwise.
+            */
+            bool itemExists(const std::string &item);
 
         private:
             /**
@@ -49,6 +63,16 @@ namespace db
             */
             Database();
             ~Database();
+
+            template <typename Derived>
+            Derived *findItemIn(const std::string &item, std::list<Derived> &in)
+            {
+                for (typename std::list<Derived>::iterator iter = in.begin();
+                    iter != in.end(); iter++)
+                if (iter->name() == item)
+                    return &*iter;
+                return 0;
+            }
 
             std::string m_moduleName; /** < Module name. */
             std::list<Tile> m_tiles; /**<  List of tiles. */

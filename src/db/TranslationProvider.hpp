@@ -20,7 +20,7 @@ namespace db
         TranslationHandler(const std::string &name) : DatabaseItem(name)
         { }
 
-        bool operator==(const std::string &name) const
+        bool operator==(const std::string &name) const // For convenience
         {
             return (name == this->name());
         }

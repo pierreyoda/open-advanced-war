@@ -16,4 +16,8 @@ print(trans:tr("soldier"))
 vm:include("test_database.lua") -- Can be included only once ; separe by ";"
 print "* Ending database test *"
 
+gFph:addFile("test.txt", "data/test.txt") -- Will replace if existing
+gFph:addFile("test.txt", "data/test2.txt", false) -- Will not replace
+print(gFph:getFilepath("test.txt")) -- Will return empty string if not existing
+
 print "--- Ending test script ---"

@@ -13,7 +13,7 @@ namespace sf
 class Map
 {
     public:
-        Map(const sf::Vector2ui &size = sf::Vector2ui(15, 15));
+        Map(const sf::Vector2ui &size = sf::Vector2ui(25, 25));
         ~Map();
 
         void renderTo(sf::RenderTarget &target);

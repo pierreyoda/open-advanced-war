@@ -1,4 +1,5 @@
 #include "AnimManager.hpp"
+#include "../db/Database.hpp"
 
 using namespace std;
 
@@ -12,7 +13,7 @@ AnimManager::~AnimManager()
 
 }
 
-const db::Animation *AnimManager::search(const string &sprite,
+const db::Animation *AnimManager::search(const string &item,
     const string &anim)
 {
     return 0;

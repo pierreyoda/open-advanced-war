@@ -2,6 +2,7 @@
 #include "XSprite.hpp"
 #include "../db/XSpriteItem.hpp"
 #include "../tools/ImageManager.hpp"
+#include "../tools/FilesPathHandler.hpp"
 
 XSprite::XSprite() : m_loop(false), m_currentFrame(0), m_anim(0)
 {
@@ -30,6 +31,11 @@ void XSprite::update()
     }
 }
 
+void XSprite::playAnim(const db::Animation *anim)
+{
+    playAnim(anim, true);
+}
+
 void XSprite::playAnim(const db::Animation *anim, const bool &loop)
 {
     if (anim == 0)
@@ -48,7 +54,7 @@ void XSprite::setFrame(const unsigned int &id)
     const db::Frame *framePtr = (*m_anim)[id];
     if (framePtr == 0)
         return;
-    SetImage(*gImageManager.getResource(m_anim->image()));
+    SetImage(*gImageManager.getResource(gFph(m_anim->image())));
     SetSubRect(sf::IntRect(framePtr->x, framePtr->y, framePtr->w, framePtr->h));
 }
 
