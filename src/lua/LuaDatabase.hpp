@@ -34,7 +34,7 @@ void exportDatabase(lua_State *lua)
             .def("tr", (std::string(TranslationProvider::*)(const std::string&,
                     const bool&))&TranslationProvider::tr)
             .def("selectLang", &TranslationProvider::selectLang)
-                .def("translateItem", &TranslationProvider::translateItem)
+            .def("translateItem", &TranslationProvider::translateItem)
         // Frame
         , class_<Frame>("Frame")
             .def(constructor<const unsigned int&, const unsigned int&,

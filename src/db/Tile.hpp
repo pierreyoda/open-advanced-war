@@ -10,6 +10,8 @@ namespace db
     */
     class Tile : public XSpriteItem
     {
+        friend class boost::serialization::access;
+
         public:
             /** \brief Default constructor.
             *
@@ -34,16 +36,18 @@ namespace db
             const bool &isOrientable() { return m_rotating; }
 
         private:
+            template<class Archive>
+            void serialize(Archive &ar, const unsigned int &version)
+            {
+                ar &boost::serialization::make_nvp("XSpriteItem",
+                    boost::serialization::base_object<XSpriteItem>(*this));
+                ar &BOOST_SERIALIZATION_NVP(m_rotating);
+                ar &BOOST_SERIALIZATION_NVP(m_protection);
+            }
+
             const bool m_rotating; /**<  Is orientable. */
             unsigned m_protection; /** < Protection level. */
     };
-
-    template<class Archive>
-    void serialize(Archive &ar, Tile &tile, const unsigned int &version)
-    {
-        ar &boost::serialization::base_object<XSpriteItem>(tile);
-        ar &tile.m_rotating &tile.m_protection;
-    }
 } /* End of namespace db */
 
 #endif /* TILE_HPP */

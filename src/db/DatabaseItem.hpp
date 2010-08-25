@@ -15,6 +15,8 @@ namespace db
      */
     struct DatabaseItem
     {
+        friend class boost::serialization::access;
+
         /** \brief Default constructor.
         *
         * \param name The item name (example : "mySoldier").
@@ -29,15 +31,24 @@ namespace db
         const std::string &name() const { return m_name; }
 
         private:
+            template <class Archive>
+            void serialize(Archive &ar, const unsigned int &version)
+            {
+                ar &BOOST_SERIALIZATION_NVP(m_name);
+            }
+
             const std::string m_name; /**<  Item name. */
     };
-    template<class Archive>
-    void serialize(Archive &ar, DatabaseItem &dbItem, const unsigned int &version)
+
+    template <typename Derived>
+    Derived *findItemIn(const std::string &item, std::list<Derived> &in)
     {
-        ar &dbItem.m_name;
+        for (typename std::list<Derived>::iterator iter = in.begin();
+            iter != in.end(); iter++)
+        if (iter->name() == item)
+            return &*iter;
+        return 0;
     }
 } /* End of namespace db */
-
-BOOST_CLASS_VERSION(db::DatabaseItem, 1)
 
 #endif /* DATABASEITEM_HPP */

@@ -52,8 +52,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add option="-pipe" />
-			<Add option="-j4" />
 			<Add directory="$(#sfml2.include)" />
 			<Add directory="$(#boost.include)" />
 			<Add directory="$(#lua.include)" />

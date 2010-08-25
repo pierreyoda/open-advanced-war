@@ -9,7 +9,7 @@ io.write(anim1:name(), " ", anim1:image()) print()
 -- Pausable clock test
 a, b = PausableClock(true), PausableClock(false)
 c = 0
-while (c < 1e6) do -- sleep
+while (c < 10e5) do -- sleep
 c=c+1
 end
 io.write(a:getElapsedTime(), " ", b:getElapsedTime()) print()

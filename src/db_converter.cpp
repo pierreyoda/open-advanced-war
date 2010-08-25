@@ -82,10 +82,14 @@ int main(int argc, char *argv[])
 
     db::Database &db = db::Database::getInstance();
     globals(luaState())["database"] = &db;
+    globals(luaState())["trans"] = &db.translationsRef();
 
     string input = /*getFilePath("Lua input file")*/"modules/Native/database.lua",
         output = getFilePath("XML output file", false, input);
     luaState.include(input);
+
+    database->setModuleName("blabla");
+    DatabaseSerialization::exportToXml(output);
 
     return 0;
 }

@@ -10,6 +10,7 @@
 #include "Faction.hpp"
 #include "TranslationProvider.hpp"
 #include "../tools/Singleton.hpp"
+#include <boost/serialization/utility.hpp>
 
 /** \namespace db
 * \brief Namespace containing game database.
@@ -22,8 +23,7 @@ namespace db
     class Database : public Singleton<Database>
     {
         friend class Singleton<Database>;
-        template<class Archive> friend
-        void serialize(Archive &ar, Database &db, const unsigned int &version);
+        friend class boost::serialization::access;
 
         public:
             void setModuleName(const std::string &moduleName)
@@ -64,16 +64,18 @@ namespace db
             Database();
             ~Database();
 
-            template <typename Derived>
-            Derived *findItemIn(const std::string &item, std::list<Derived> &in)
+            template<class Archive>
+            void serialize(Archive &ar, const unsigned int &version)
             {
-                for (typename std::list<Derived>::iterator iter = in.begin();
-                    iter != in.end(); iter++)
-                if (iter->name() == item)
-                    return &*iter;
-                return 0;
+                ar &BOOST_SERIALIZATION_NVP(m_moduleName);
+                ar &BOOST_SERIALIZATION_NVP(m_tiles);
+                ar &BOOST_SERIALIZATION_NVP(m_buildings);
+                ar &BOOST_SERIALIZATION_NVP(m_weapons);
+                ar &BOOST_SERIALIZATION_NVP(m_propulsions);
+                ar &BOOST_SERIALIZATION_NVP(m_units);
+                ar &BOOST_SERIALIZATION_NVP(m_factions);
+                ar &BOOST_SERIALIZATION_NVP(m_translations);
             }
-
             std::string m_moduleName; /** < Module name. */
             std::list<Tile> m_tiles; /**<  List of tiles. */
             std::list<Building> m_buildings; /**<  List of buildings. */
@@ -83,18 +85,15 @@ namespace db
             std::list<Faction> m_factions; /**<  List of factions. */
             TranslationProvider m_translations; /** < Provides translations. **/
     };
-
-    template<class Archive>
-    void serialize(Archive &ar, Database &db, const unsigned int &version)
-    {
-        ar &db.m_moduleName;
-        ar &db.m_tiles, &db.m_buildings, &db.m_weapons, &db.m_propulsions,
-            &db.m_units, &db.m_factions, &db.m_translations;
-    }
 } /* End of namespace db */
 
 extern db::Database *database;
 
+/* Centralization of serialization versionning. */
 BOOST_CLASS_VERSION(db::Database, 1)
+BOOST_CLASS_VERSION(db::DatabaseItem, 1)
+BOOST_CLASS_VERSION(db::Frame, 1);
+BOOST_CLASS_VERSION(db::Animation, 1);
+BOOST_CLASS_VERSION(db::XSpriteItem, 1);
 
 #endif /* DATABASE_HPP */

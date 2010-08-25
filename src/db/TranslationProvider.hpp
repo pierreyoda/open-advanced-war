@@ -13,6 +13,8 @@ namespace db
     */
     struct TranslationHandler : public DatabaseItem
     {
+        friend class boost::serialization::access;
+
             /**
             * \brief Default constructor.
             * \param name Language name (like "french", "spanish" or "italian").
@@ -27,14 +29,16 @@ namespace db
         l_itemTranslation &translationsRef() { return m_translations; }
 
         private:
+            template <class Archive>
+            void serialize(Archive &ar, const unsigned int &version)
+            {
+                ar &boost::serialization::make_nvp("DatabaseItem",
+                    boost::serialization::base_object<DatabaseItem>(*this));
+                ar &BOOST_SERIALIZATION_NVP(m_translations);
+            }
+
             l_itemTranslation m_translations;
     };
-
-    template<class Archive>
-    void serialize(Archive &ar, TranslationHandler &tr, const unsigned int &version)
-    {
-        ar &boost::serialization::base_object<DatabaseItem>(tr);
-    }
 
     typedef std::list<TranslationHandler> l_translation; /** < Typedef for translation list. **/
 
@@ -42,6 +46,8 @@ namespace db
     */
     class TranslationProvider
     {
+        friend class boost::serialization::access;
+
         public:
             /** \brief Default constructor.
             */
@@ -78,6 +84,13 @@ namespace db
             void translateItem(const std::string &item, const std::string &tr);
 
         private:
+            template<class Archive>
+            void serialize(Archive &ar, const unsigned int &version)
+            {
+                ar &BOOST_SERIALIZATION_NVP(m_items);
+                ar &BOOST_SERIALIZATION_NVP(m_translations);
+            }
+
             l_string::iterator checkItem(const std::string &item,
                 const bool &add);
 
@@ -85,11 +98,6 @@ namespace db
             l_translation m_translations; /** < Translations. **/
             TranslationHandler *m_selectedLang;
     };
-    template<class Archive>
-    void serialize(Archive &ar, TranslationProvider &tr, const unsigned int &version)
-    {
-        ar &tr.m_items, &tr.m_translations;
-    }
 } /* End of namespace db */
 
 #endif /* TRANSLATIONPROVIDER_HPP */

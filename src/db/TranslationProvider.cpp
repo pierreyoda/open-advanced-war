@@ -22,16 +22,14 @@ namespace db
             return;
         if (m_selectedLang != 0 && *m_selectedLang == lang) // Already selected
             return;
-        for (l_translation::iterator iter = m_translations.begin();
-            iter != m_translations.end(); iter++)
+        TranslationHandler *ptr = findItemIn<TranslationHandler>(lang,
+            m_translations);
+        if (ptr)
         {
-            if (iter->name() == lang)
-            {
-                m_selectedLang = &*iter;
-                return;
-            }
+            m_selectedLang = ptr;
+            return;
         }
-        m_translations.insert(m_translations.begin(), lang);
+        m_translations.push_front(lang);
         m_selectedLang = &*m_translations.begin();
     }
 
@@ -42,13 +40,11 @@ namespace db
         l_itemTranslation &translations = m_selectedLang->translationsRef();
         for (l_itemTranslation::iterator iter = translations.begin();
             iter != translations.end(); iter++)
-        {
             if (iter->first == item)
             {
                 iter->second = tr;
                 return;
             }
-        }
         translations.push_back(p_string(item, tr));
     }
 
@@ -80,7 +76,7 @@ namespace db
             m_items.end(), item);
         if (iter == m_items.end() && add)
         {
-            m_items.insert(m_items.begin(), item);
+            m_items.push_front(item);
             return m_items.begin();
         }
         return iter;

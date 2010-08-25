@@ -10,6 +10,8 @@ namespace db
     */
     class Building : public XSpriteItem
     {
+        friend class boost::serialization::access;
+
         public:
             /**
             * \brief Default constructor.
@@ -20,15 +22,16 @@ namespace db
             { }
 
         private:
+            template<class Archive>
+            void serialize(Archive &ar, const unsigned int &version)
+            {
+                ar &boost::serialization::make_nvp("XSpriteItem",
+                    boost::serialization::base_object<XSpriteItem>(*this));
+                ar &BOOST_SERIALIZATION_NVP(m_gainPerTurn);
+            }
+
             const int m_gainPerTurn; /**<  Gain per turn (example : 1000). Can be negative. */
     };
-
-    template<class Archive>
-    void serialize(Archive &ar, Building &building, const unsigned int &version)
-    {
-        ar &boost::serialization::base_object<XSpriteItem>(building);
-        ar &building.m_gainPerTurn;
-    }
 } /* End of namespace db */
 
 #endif /* BUILDING_HPP */

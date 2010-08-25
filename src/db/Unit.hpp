@@ -10,6 +10,8 @@ namespace db
     */
     class Unit : public XSpriteItem
     {
+        friend class boost::serialization::access;
+
         public:
             /**
             * \brief Default constructor.
@@ -19,13 +21,15 @@ namespace db
             {
 
             }
-    };
 
-    template<class Archive>
-    void serialize(Archive &ar, Unit &unit, const unsigned int &version)
-    {
-        ar &boost::serialization::base_object<XSpriteItem>(unit);
-    }
+        private:
+            template <class Archive>
+            void serialize(Archive &ar, const unsigned int &version)
+            {
+                ar &boost::serialization::make_nvp("XSpriteItem",
+                    boost::serialization::base_object<XSpriteItem>(*this));
+            }
+    };
 } /* End of namespace db */
 
 #endif /* UNIT_HPP */

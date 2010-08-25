@@ -5,13 +5,14 @@
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
 
+
 #include "Database.hpp"
 
 /** \brief Provides functions to (de)serialize the database.
 */
 struct DatabaseSerialization
 {
-    void exportToXml(const std::string &filename)
+    static void exportToXml(const std::string &filename)
     {
         std::ofstream file(filename.c_str());
         if (!file)
@@ -19,12 +20,22 @@ struct DatabaseSerialization
                 + "'.";
         {
             boost::archive::xml_oarchive archive(file);
-            //archive << BOOST_SERIALIZATION_NVP(database);
+            //boost::archive::text_oarchive archive(file);
+            //const db::Database &ref = *database;
+            archive << boost::serialization::make_nvp("database", database);
         }
     }
-    void importFromXml(const std::string &filename)
+    static void importFromXml(const std::string &filename)
     {
-
+        std::ifstream file(filename.c_str());
+        if (!file)
+            throw "Error : cannot open XML database at '" + filename
+                + "'.";
+        {
+            boost::archive::xml_iarchive archive(file);
+            //boost::archive::text_iarchive archive(file);
+            //archive >> BOOST_SERIALIZATION_NVP(database);
+        }
     }
 };
 

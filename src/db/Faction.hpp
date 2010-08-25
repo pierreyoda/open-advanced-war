@@ -10,6 +10,8 @@ namespace db
     */
     class Faction : public DatabaseItem
     {
+        friend class boost::serialization::access;
+
         public:
             /**
             * \brief Default constructor.
@@ -17,13 +19,15 @@ namespace db
             */
             Faction(const std::string &name) : DatabaseItem(name)
             { }
-    };
 
-    template<class Archive>
-    void serialize(Archive &ar, Faction &faction, const unsigned int &version)
-    {
-        ar &boost::serialization::base_object<DatabaseItem>(faction);
-    }
+        private:
+            template <class Archive>
+            void serialize(Archive &ar, const unsigned int &version)
+            {
+                ar &boost::serialization::make_nvp("DatabaseItem",
+                    boost::serialization::base_object<DatabaseItem>(*this));
+            }
+    };
 } /* End of namespace db */
 
 #endif /* FACTION_HPP */

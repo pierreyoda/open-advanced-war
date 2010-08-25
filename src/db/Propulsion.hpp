@@ -10,6 +10,8 @@ namespace db
     */
     class Propulsion : public DatabaseItem
     {
+        friend class boost::serialization::access;
+
         public:
             /**
             * \brief Default constructor.
@@ -17,13 +19,15 @@ namespace db
             */
             Propulsion (const std::string &name) : DatabaseItem(name)
             { }
-    };
 
-    template<class Archive>
-    void serialize(Archive &ar, Propulsion &prop, const unsigned int &version)
-    {
-        ar &boost::serialization::base_object<DatabaseItem>(prop);
-    }
+        private:
+            template <class Archive>
+            void serialize(Archive &ar, const unsigned int &version)
+            {
+                ar &boost::serialization::make_nvp("DatabaseItem",
+                    boost::serialization::base_object<DatabaseItem>(*this));
+            }
+    };
 } /* End of namespace db */
 
 #endif /* PROPULSION_HPP */
