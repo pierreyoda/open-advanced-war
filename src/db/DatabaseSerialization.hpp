@@ -5,7 +5,6 @@
 #include <boost/archive/xml_iarchive.hpp>
 #include <boost/archive/xml_oarchive.hpp>
 #include <boost/filesystem/path.hpp>
-
 #include "Database.hpp"
 
 /** \brief Provides functions to (de)serialize the database.
@@ -20,7 +19,6 @@ struct DatabaseSerialization
                 + "'.";
         {
             boost::archive::xml_oarchive archive(file);
-            //const db::Database &ref = *database;
             archive << boost::serialization::make_nvp("database", database);
         }
     }
@@ -32,7 +30,6 @@ struct DatabaseSerialization
                 + "'.";
         {
             boost::archive::xml_iarchive archive(file);
-            //boost::archive::text_iarchive archive(file);
             archive >> BOOST_SERIALIZATION_NVP(database);
         }
     }

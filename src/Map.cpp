@@ -10,8 +10,9 @@ Map::Map(const sf::Vector2ui &size)
         m_tiles.push_back(std::vector<GameEntity*>());
         for (unsigned int j = 0; j < size.x; j++)
         {
-            GameEntity *tile = new GameEntity("plain");
+            GameEntity *tile = new GameEntity("Plain");
             tile->setPosition(j, i);
+            tile->playAnim("base");
             m_tiles[i].push_back(tile);
         }
     }
@@ -55,5 +56,10 @@ void Map::setTile(const Vector2ui &pos, const std::string &type)
 void Map::setTile(const unsigned int &x, const unsigned int &y,
     const std::string &type)
 {
-
+    if (x < 0 || y < 0 || y >= m_tiles.size() || x >= m_tiles[y].size())
+        return;
+    GameEntity *tile = new GameEntity(type);
+    tile->setPosition(x, y);
+    tile->playAnim("base", true);
+    m_tiles[y][x] = tile;
 }

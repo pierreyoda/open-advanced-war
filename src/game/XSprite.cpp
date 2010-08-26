@@ -24,10 +24,17 @@ void XSprite::update()
         return;
     if (time >= framePtr->duration)
     {
-        if (m_currentFrame+1 >= m_anim->frameNumber())
-            restartAnim();
+        m_timer.reset();
+        if (m_currentFrame+1 < m_anim->frameNumber())
+            ++m_currentFrame;
         else
-            setFrame(++m_currentFrame);
+        {
+            if (m_loop)
+                m_currentFrame = 0;
+            else
+                stopAnim();
+        }
+        setFrame(m_currentFrame);
     }
 }
 
@@ -54,7 +61,11 @@ void XSprite::setFrame(const unsigned int &id)
     const db::Frame *framePtr = (*m_anim)[id];
     if (framePtr == 0)
         return;
-    SetImage(*gImageManager.getResource(gFph(m_anim->image())));
+    m_currentFrame = id;
+    sf::Image *ptr = gImageManager.getResource(gFph(m_anim->image()));
+    if (ptr == 0)
+        return;
+    SetImage(*ptr);
     SetSubRect(sf::IntRect(framePtr->x, framePtr->y, framePtr->w, framePtr->h));
 }
 
@@ -66,7 +77,6 @@ void XSprite::pauseAnim()
 void XSprite::stopAnim()
 {
     m_timer.reset(true);
-    m_currentFrame = 0;
 }
 
 void XSprite::startAnim()
@@ -78,6 +88,7 @@ void XSprite::restartAnim()
 {
     stopAnim();
     startAnim();
+    setFrame(0);
 }
 
 bool XSprite::isAnimPaused() const

@@ -10,7 +10,7 @@ plain:addAnim(anim)
 -- Forest
 forest = db.Tile("Forest")
 forest:setProtection(3)
-anim:clear():setImage("forest.png"):addFrame(0, 0) -- We can use same animation instance for simple tiles
+anim:clear():setImage("forest.png"):addFrame(0, 0):addFrame(20, 0) -- We can use same animation instance for simple tiles
 forest:addAnim(anim)
 -- Road
 road = db.Tile("Road", true)

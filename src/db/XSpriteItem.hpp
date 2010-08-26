@@ -169,7 +169,10 @@ namespace db
                 m_anims.push_back(anim);
             return *this;
         }
-        const l_anim &animsConstRef() const { return m_anims; }
+        const Animation *findAnim(const std::string &anim)
+        {
+            return findItemInConst<Animation>(anim, m_anims);
+        }
 
         private:
             template<class Archive>

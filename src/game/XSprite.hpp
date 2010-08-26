@@ -3,7 +3,6 @@
 
 #include <string>
 #include <SFML/Graphics/Sprite.hpp>
-#include "AnimManager.hpp"
 #include "../tools/PausableClock.hpp"
 
 namespace db

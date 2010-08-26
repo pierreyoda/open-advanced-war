@@ -17,6 +17,8 @@ void Engine::run()
 {
     Map *map = game.getMapPtr();
     map = new Map();
+    map->setTile(0, 1, "Forest");
+    map->setTile(1, 3, "Road");
     while (App.IsOpened())
     {
         Event Event;

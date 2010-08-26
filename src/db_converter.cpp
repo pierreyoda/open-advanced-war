@@ -91,9 +91,6 @@ int main(int argc, char *argv[])
     database->setModuleName("blabla");
     try
     {
-        DatabaseSerialization::importFromXml(output);
-        fs::remove(output);
-        system("pause"); // not portable - for test
         DatabaseSerialization::exportToXml(output);
     }
     catch (const std::string &error)

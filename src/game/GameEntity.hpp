@@ -31,6 +31,8 @@ class GameEntity : public XSprite
         void setPosition(const sf::Vector2i &pos);
         void setPosition(const int &x, const int &y);
 
+        void playAnim(const std::string &anim, const bool &loop = true);
+
     private:
         std::string m_name; /**< Entity name (ex : "tank  factory", "soldier"). */
         std::string m_alias; /**< Entity alias (optionnal; ex : "leaderA", "VIP"). */

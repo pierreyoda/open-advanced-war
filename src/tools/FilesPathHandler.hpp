@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <boost/filesystem.hpp>
 
 typedef std::map<const std::string, std::string> map_filesPath;
 
@@ -58,6 +59,30 @@ class FilesPathHandler
         std::string operator()(const std::string &alias) const
         {
             return getFilepath(alias);
+        }
+
+        static bool scanDirectory(const std::string &dir, FilesPathHandler &fph)
+        {
+            namespace fs = boost::filesystem;
+            if (!fs::exists(dir))
+            {
+                //gLog << logH << "Error : folder '" << imgdir << "' does not exist.\n";
+                return false;
+            }
+            const fs::path path(dir);
+
+            fs::directory_iterator itEnd;
+            for (fs::directory_iterator it(dir); it != itEnd; ++it)
+            {
+                if (fs::is_directory(it->status()))
+                {
+                    if (!scanDirectory(it->path().string(), fph))
+                        return false;
+                }
+                else if (fs::is_regular(it->status()))
+                    fph.addFile(it->filename(), it->string(), true);
+            }
+            return true;
         }
 
     private:
