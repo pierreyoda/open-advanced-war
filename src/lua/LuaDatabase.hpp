@@ -13,6 +13,12 @@ extern "C"
 #include <luabind/luabind.hpp>
 #include "../db/Database.hpp"
 
+#ifdef DB_EXPORTER
+    #define db_member def_readwrite // Full access
+#else
+    #define db_member def_readonly // Read-only access
+#endif /* DB_EXPORTER */
+
 void exportDatabase(lua_State *lua)
 {
     using namespace db;
@@ -26,7 +32,8 @@ void exportDatabase(lua_State *lua)
         , class_<Database>("Database")
             .def("getModuleName", &Database::getModuleName)
             .def("addTile", &Database::addTile)
-            .def("findTile", &Database::findTile)
+            .def("findTile", (Tile*(Database::*)(const std::string&))
+                &Database::findTile)
         // TranslationProvider
         , class_<TranslationProvider>("TranslationProvider")
             .def("tr", (std::string(TranslationProvider::*)(const std::string&))
@@ -41,11 +48,11 @@ void exportDatabase(lua_State *lua)
                 const float&>())
             .def(constructor<const unsigned int&, const unsigned int&,
                 const unsigned int&, const unsigned int&, const float&>())
-            .def_readwrite("x", &Frame::x)
-            .def_readwrite("y", &Frame::y)
-            .def_readwrite("w", &Frame::w)
-            .def_readwrite("h", &Frame::h)
-            .def_readwrite("duration", &Frame::duration)
+            .db_member("x", &Frame::x)
+            .db_member("y", &Frame::y)
+            .db_member("w", &Frame::w)
+            .db_member("h", &Frame::h)
+            .db_member("duration", &Frame::duration)
         // Animation
         , class_<Animation, bases<DatabaseItem> >("Anim")
             .def(constructor<const std::string&, const std::string&>())
@@ -55,9 +62,9 @@ void exportDatabase(lua_State *lua)
                 const unsigned int&))&Animation::addFrame)
             .def("addFrame", (Animation&(Animation::*)(const unsigned int &,
                 const unsigned int&, const float&))&Animation::addFrame)
-            .def("image", &Animation::image)
             .def("setImage", &Animation::setImage)
             .def("clear", &Animation::clear)
+            .def("image", &Animation::image)
         // XSpriteItem
         , class_<XSpriteItem, bases<DatabaseItem> >("XSprite")
             .def("addAnim", &XSpriteItem::addAnim)
@@ -67,6 +74,7 @@ void exportDatabase(lua_State *lua)
             .def(constructor<const std::string&, const bool&>())
             .def("setProtection", &Tile::setProtection)
             .def("isOrientable", &Tile::isOrientable)
+            .def("protection", &Tile::protection)
     ];
 }
 

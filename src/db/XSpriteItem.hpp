@@ -31,6 +31,9 @@ namespace db
         float duration; /** < Frame's duration. */
 
         private:
+            Frame() : x(0), y(0), w(0), h(0), duration(0)
+            { }
+
             template<class Archive>
             void serialize(Archive &ar, const unsigned int &version)
             {
@@ -133,6 +136,9 @@ namespace db
             return 0;
         }
         private:
+            Animation() : DatabaseItem("")
+            { }
+
             template<class Archive>
             void serialize(Archive &ar, const unsigned int &version)
             {

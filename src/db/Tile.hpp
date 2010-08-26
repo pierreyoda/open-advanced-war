@@ -34,8 +34,12 @@ namespace db
                 m_protection = protection;
             }
             const bool &isOrientable() { return m_rotating; }
+            const unsigned int &protection() { return m_protection; }
 
         private:
+            Tile() : XSpriteItem(""), m_rotating(false), m_protection(0)
+            { }
+
             template<class Archive>
             void serialize(Archive &ar, const unsigned int &version)
             {
@@ -45,7 +49,7 @@ namespace db
                 ar &BOOST_SERIALIZATION_NVP(m_protection);
             }
 
-            const bool m_rotating; /**<  Is orientable. */
+            bool m_rotating; /**<  Is orientable. */
             unsigned m_protection; /** < Protection level. */
     };
 } /* End of namespace db */

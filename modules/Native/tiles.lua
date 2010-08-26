@@ -28,4 +28,5 @@ database:addTile(plain):addTile(forest):addTile(road)
 tilePtr = database:findTile("Pjlain") -- null pointer
 database:addTile(tilePtr) -- will not crash
 tilePtr = database:findTile("Forest")
+tilePtr:setProtection(5) -- modify original
 database:addTile(tilePtr) -- ignored : already present

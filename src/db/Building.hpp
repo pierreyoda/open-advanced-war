@@ -22,6 +22,9 @@ namespace db
             { }
 
         private:
+            Building() : XSpriteItem(""), m_gainPerTurn(0)
+            { }
+
             template<class Archive>
             void serialize(Archive &ar, const unsigned int &version)
             {
@@ -30,7 +33,7 @@ namespace db
                 ar &BOOST_SERIALIZATION_NVP(m_gainPerTurn);
             }
 
-            const int m_gainPerTurn; /**<  Gain per turn (example : 1000). Can be negative. */
+            int m_gainPerTurn; /**<  Gain per turn (example : 1000). Can be negative. */
     };
 } /* End of namespace db */
 

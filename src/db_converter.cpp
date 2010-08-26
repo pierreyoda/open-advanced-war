@@ -89,7 +89,23 @@ int main(int argc, char *argv[])
     luaState.include(input);
 
     database->setModuleName("blabla");
-    DatabaseSerialization::exportToXml(output);
+    try
+    {
+        DatabaseSerialization::importFromXml(output);
+        fs::remove(output);
+        system("pause"); // not portable - for test
+        DatabaseSerialization::exportToXml(output);
+    }
+    catch (const std::string &error)
+    {
+        cerr << error << "\n";
+        return 1;
+    }
+    catch (const std::exception &error)
+    {
+        cerr << error.what() << "\n";
+        return 1;
+    }
 
     return 0;
 }

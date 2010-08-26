@@ -49,6 +49,14 @@ namespace db
             Unit *findUnit(const std::string &item);
             Faction *findFaction(const std::string &item);
 
+            // Lua side (const pointer) -- Crashes when trying to modify!
+            /*const Tile *findTile(const std::string &item) const;
+            const Building *findBuilding(const std::string &item) const;
+            const Weapon *findWeapon(const std::string &item) const;
+            const Propulsion *findPropulsion(const std::string &item) const;
+            const Unit *findUnit(const std::string &item) const;
+            const Faction *findFaction(const std::string &item) const;*/
+
             /** \brief Checks if item exists. Searchs in all lists (but translations).
             *
             * \param item Item's name.

@@ -21,6 +21,9 @@ namespace db
             { }
 
         private:
+            Faction() : DatabaseItem("")
+            { }
+
             template <class Archive>
             void serialize(Archive &ar, const unsigned int &version)
             {

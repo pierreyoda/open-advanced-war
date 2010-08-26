@@ -29,6 +29,9 @@ namespace db
         l_itemTranslation &translationsRef() { return m_translations; }
 
         private:
+            TranslationHandler() : DatabaseItem("")
+            { }
+
             template <class Archive>
             void serialize(Archive &ar, const unsigned int &version)
             {
@@ -94,9 +97,9 @@ namespace db
             l_string::iterator checkItem(const std::string &item,
                 const bool &add);
 
-            std::list<std::string> m_items; /** < Items to be translated (in english). **/
-            l_translation m_translations; /** < Translations. **/
-            TranslationHandler *m_selectedLang;
+            std::list<std::string> m_items; /**< Items to be translated (in english). **/
+            l_translation m_translations; /**< Translations. **/
+            TranslationHandler *m_selectedLang; /**< Pointer to selected translation (language). */
     };
 } /* End of namespace db */
 

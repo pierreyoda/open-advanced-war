@@ -31,19 +31,32 @@ namespace db
         const std::string &name() const { return m_name; }
 
         private:
+            DatabaseItem() : m_name() // for deserialization (construction)
+            { }
+
             template <class Archive>
             void serialize(Archive &ar, const unsigned int &version)
             {
                 ar &BOOST_SERIALIZATION_NVP(m_name);
             }
 
-            const std::string m_name; /**<  Item name. */
+            std::string m_name; /**<  Item name. */
     };
 
     template <typename Derived>
     Derived *findItemIn(const std::string &item, std::list<Derived> &in)
     {
         for (typename std::list<Derived>::iterator iter = in.begin();
+            iter != in.end(); iter++)
+        if (iter->name() == item)
+            return &*iter;
+        return 0;
+    }
+    template <typename Derived>
+    const Derived *findItemInConst(const std::string &item,
+        const std::list<Derived> &in)
+    {
+        for (typename std::list<Derived>::const_iterator iter = in.begin();
             iter != in.end(); iter++)
         if (iter->name() == item)
             return &*iter;

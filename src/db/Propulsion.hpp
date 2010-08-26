@@ -21,6 +21,9 @@ namespace db
             { }
 
         private:
+            Propulsion() : DatabaseItem("")
+            { }
+
             template <class Archive>
             void serialize(Archive &ar, const unsigned int &version)
             {

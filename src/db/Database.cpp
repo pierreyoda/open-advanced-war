@@ -61,4 +61,29 @@ namespace db
     {
         return findItemIn<Faction>(item, m_factions);
     }
+
+    /*const Tile *Database::findTile(const std::string &item) const
+    {
+        return findItemInConst<Tile>(item, m_tiles);
+    }
+    const Building *Database::findBuilding(const std::string &item) const
+    {
+        return findItemInConst<Building>(item, m_buildings);
+    }
+    const Weapon *Database::findWeapon(const std::string &item) const
+    {
+        return findItemInConst<Weapon>(item, m_weapons);
+    }
+    const Propulsion *Database::findPropulsion(const std::string &item) const
+    {
+        return findItemInConst<Propulsion>(item, m_propulsions);
+    }
+    const Unit *Database::findUnit(const std::string &item) const
+    {
+        return findItemInConst<Unit>(item, m_units);
+    }
+    const Faction *Database::findFaction(const std::string &item) const
+    {
+        return findItemInConst<Faction>(item, m_factions);
+    }*/
 } /* End of namespace db */
