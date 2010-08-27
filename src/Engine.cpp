@@ -1,5 +1,6 @@
 #include "Engine.hpp"
 #include "db/Database.hpp"
+#include "gui/HudManager.hpp"
 
 using namespace sf;
 
@@ -38,6 +39,7 @@ void Engine::run()
 
         App.Clear();
             map->renderTo(App);
+            HudManager::drawFps(App, App.GetFrameTime());
         App.Display();
     }
 }

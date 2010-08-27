@@ -47,13 +47,14 @@ using namespace luabind;
 
 int main(int argc, char *argv[])
 {
-    lua_State *luaVm = 0;
-    LuaVM luaState(luaVm);
-    globals(luaState())["vm"] = &luaState;
-    globals(luaState())["trans"] = &database->translationsRef();
-    globals(luaState())["gFph"] = &gFph;
+    lua_State *luaState = 0;
+    LuaVM &luaVm = LuaVM::getInstance();
+    luaVm.init(luaState);
+    globals(luaVm())["vm"] = &luaVm;
+    globals(luaVm())["trans"] = &database->translationsRef();
+    globals(luaVm())["gFph"] = &gFph;
 
-    luaState.include("test.lua");
+    luaVm.include("test.lua");
 
     Engine engine;
     engine.run();

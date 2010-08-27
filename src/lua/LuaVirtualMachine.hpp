@@ -6,6 +6,7 @@
 #include <vector>
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
+#include "../tools/Singleton.hpp"
 #include "LuaDatabase.hpp"
 #ifndef DB_EXPORTER // to avoid SFML including in DatabaseExporter tool
 #include "LuaTools.hpp"
@@ -14,11 +15,18 @@
 
 /** \brief Handles lua interpreter.
 */
-class LuaVM
+class LuaVM : public Singleton<LuaVM>
 {
+    friend class Singleton<LuaVM>;
+
     public:
-        LuaVM(lua_State *lua)
+        lua_State *operator()() { return luaVm; }
+        lua_State *getLua() { return luaVm; }
+
+        void init(lua_State *lua)
         {
+            if (luaVm != 0) // Already initialized
+                return;
             if (lua == 0)
                 lua = lua_open();
             luaVm = lua;
@@ -38,14 +46,6 @@ class LuaVM
             exportGame(luaVm);
 #endif /* DB_EXPORTER */
         }
-        ~LuaVM()
-        {
-            lua_close(luaVm);
-        }
-
-        lua_State *operator()() { return luaVm; }
-        lua_State *getLua() { return luaVm; }
-
 
         /** \brief Overloaded for conveniance and lua binding.
         * \see include()
@@ -91,6 +91,15 @@ class LuaVM
         }
 
     private:
+        LuaVM()
+        {
+
+        }
+        ~LuaVM()
+        {
+            lua_close(luaVm);
+        }
+
         lua_State *luaVm;
         l_string filesAlreadyLoaded;
 };
