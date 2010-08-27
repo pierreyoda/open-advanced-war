@@ -46,7 +46,10 @@ std::string Map::getTile(const Vector2ui &pos) const
 std::string Map::getTile(const unsigned int &x, const unsigned int &y)
     const
 {
-    return "";
+    if (x < 0 || y < 0 || y >= m_tiles.size() || x >= m_tiles[y].size()
+        || m_tiles[y][x] == 0)
+        return "";
+    return m_tiles[y][x]->type();
 }
 
 void Map::setTile(const Vector2ui &pos, const std::string &type)

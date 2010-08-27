@@ -20,6 +20,8 @@ class Map
 
         std::string getTile(const sf::Vector2ui &pos) const;
         std::string getTile(const unsigned int &x, const unsigned int &y) const;
+        std::string getTilePtr(const sf::Vector2ui &pos) const;
+        std::string getTilePtr(const unsigned int &x, const unsigned int &y) const;
         void setTile(const sf::Vector2ui &pos, const std::string &type);
         void setTile(const unsigned int &x, const unsigned int &y,
             const std::string &type);

@@ -25,16 +25,23 @@ struct Caracteristic
 class GameEntity : public XSprite
 {
     public:
-        GameEntity(const std::string &name);
+        GameEntity(const std::string &type);
         ~GameEntity();
 
+        void updatePosition();
         void setPosition(const sf::Vector2i &pos);
         void setPosition(const int &x, const int &y);
 
         void playAnim(const std::string &anim, const bool &loop = true);
 
+        std::string type() const { return m_type; }
+        std::string alias() const { return m_alias; }
+
+        sf::Vector2i position() const { return m_pos; }
+
     private:
-        std::string m_name; /**< Entity name (ex : "tank  factory", "soldier"). */
+        sf::Vector2i m_pos;
+        std::string m_type; /**< Entity type (ex : "tank  factory", "soldier"). */
         std::string m_alias; /**< Entity alias (optionnal; ex : "leaderA", "VIP"). */
         std::list<Caracteristic> m_caracteristics; /**< List of (variables) caracteristics. */
         Orientation m_orientation;

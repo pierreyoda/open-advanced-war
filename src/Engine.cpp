@@ -1,4 +1,5 @@
 #include "Engine.hpp"
+#include "db/Database.hpp"
 
 using namespace sf;
 
@@ -17,8 +18,10 @@ void Engine::run()
 {
     Map *map = game.getMapPtr();
     map = new Map();
-    map->setTile(0, 1, "Forest");
-    map->setTile(1, 3, "Road");
+    for (unsigned int i = 0; i < 25; i++)
+        map->setTile(i, 2, "Forest");
+    map->setTile(3, 1, "Road");
+    //std::cout <<
     while (App.IsOpened())
     {
         Event Event;
