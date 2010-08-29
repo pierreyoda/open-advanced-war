@@ -25,12 +25,12 @@ void GameEntity::setPosition(const int &x, const int &y)
 
 void GameEntity::updatePosition()
 {
-    SetPosition(m_pos.x * gg.case_w, m_pos.y * gg.case_h);
+    m_xsprite.SetPosition(m_pos.x * gg.case_w, m_pos.y * gg.case_h);
 }
 
 void GameEntity::playAnim(const std::string &anim, const bool &loop)
 {
     db::XSpriteItem *ptr = database.findTile(m_type);
     if (ptr != 0)
-        XSprite::playAnim(ptr->findAnim(anim), loop);
+        m_xsprite.playAnim(ptr->findAnim(anim), loop);
 }

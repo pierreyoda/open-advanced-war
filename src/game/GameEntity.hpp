@@ -22,7 +22,7 @@ struct Caracteristic
     int value;
 };
 
-class GameEntity : public XSprite
+class GameEntity
 {
     public:
         GameEntity(const std::string &type);
@@ -38,13 +38,16 @@ class GameEntity : public XSprite
         std::string alias() const { return m_alias; }
 
         sf::Vector2i position() const { return m_pos; }
+        XSprite &xsprite() { return m_xsprite; }
+        const XSprite &xspriteConst() const { return m_xsprite; }
 
     private:
         sf::Vector2i m_pos;
         std::string m_type; /**< Entity type (ex : "tank  factory", "soldier"). */
         std::string m_alias; /**< Entity alias (optionnal; ex : "leaderA", "VIP"). */
         std::list<Caracteristic> m_caracteristics; /**< List of (variables) caracteristics. */
-        Orientation m_orientation;
+        Orientation m_orientation; /**< Entity's orientation (by default right). */
+        XSprite m_xsprite; /**< Entity's eXtended sprite. */
 };
 
 #endif /* GAMEENTITY_HPP */

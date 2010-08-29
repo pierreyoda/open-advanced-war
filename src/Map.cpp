@@ -34,8 +34,8 @@ void Map::renderTo(RenderTarget &target)
             GameEntity *ptr = m_tiles[i][j];
             if (ptr == 0)
                 continue;
-            ptr->update();
-            target.Draw(*ptr);
+            ptr->xsprite().update();
+            target.Draw(ptr->xspriteConst());
         }
 }
 
