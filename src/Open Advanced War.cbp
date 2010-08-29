@@ -122,9 +122,8 @@
 		<Unit filename="game\XSprite.hpp" />
 		<Unit filename="gui\HudManager.cpp" />
 		<Unit filename="gui\HudManager.hpp" />
-		<Unit filename="lua\LuaDatabase.hpp" />
-		<Unit filename="lua\LuaGame.hpp" />
-		<Unit filename="lua\LuaTools.hpp" />
+		<Unit filename="lua\LuaBinds.cpp" />
+		<Unit filename="lua\LuaBinds.hpp" />
 		<Unit filename="lua\LuaVirtualMachine.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="tools\FilesPathHandler.hpp" />

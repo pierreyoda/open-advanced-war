@@ -7,11 +7,7 @@
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
 #include "../tools/Singleton.hpp"
-#include "LuaDatabase.hpp"
-#ifndef DB_EXPORTER // to avoid SFML including in DatabaseExporter tool
-#include "LuaTools.hpp"
-#include "LuaGame.hpp"
-#endif /* DB_EXPORTER */
+#include "LuaBinds.hpp"
 
 /** \brief Handles lua interpreter.
 */
@@ -40,10 +36,10 @@ class LuaVM : public Singleton<LuaVM>
                     .def("include", (void(LuaVM::*)(const std::string&,
                         const std::string&))&LuaVM::include)
             ];
-            exportDatabase(luaVm);
+            LuaBinds::exportDatabase(luaVm);
 #ifndef DB_EXPORTER
-            exportTools(luaVm);
-            exportGame(luaVm);
+            LuaBinds::exportTools(luaVm);
+            LuaBinds::exportGame(luaVm);
 #endif /* DB_EXPORTER */
         }
 

@@ -3,7 +3,7 @@
 
 using namespace std;
 
-db::Database *database = &db::Database::getInstance();
+db::Database &database = db::Database::getInstance();
 
 namespace db
 {

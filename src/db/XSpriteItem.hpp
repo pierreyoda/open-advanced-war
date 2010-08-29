@@ -17,7 +17,7 @@ namespace db
 
         Frame(const unsigned int &x, const unsigned int &y, const float &duration)
         {
-            this->x = x, this->y = y, this->w = gg->case_w, this->h = gg->case_h;
+            this->x = x, this->y = y, this->w = gg.case_w, this->h = gg.case_h;
             this->duration = duration;
         }
         Frame(const unsigned int &x, const unsigned int &y,

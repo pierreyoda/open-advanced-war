@@ -9,6 +9,7 @@ struct GameGlobals : public Singleton<GameGlobals>
 {
     friend class Singleton<GameGlobals>;
 
+    unsigned int screen_w, screen_h;
     const unsigned int case_w, case_h;
 
     private:
@@ -17,6 +18,6 @@ struct GameGlobals : public Singleton<GameGlobals>
         ~GameGlobals();
 };
 
-extern GameGlobals *gg;
+extern GameGlobals &gg;
 
 #endif /* GAMEGLOBALS_HPP */

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "game/GameEntity.hpp"
+#include "GameGlobals.hpp"
 
 namespace sf
 {
@@ -13,7 +14,8 @@ namespace sf
 class Map
 {
     public:
-        Map(const sf::Vector2ui &size = sf::Vector2ui(25, 25));
+        Map(const sf::Vector2ui &size = sf::Vector2ui(gg.screen_w/gg.case_w,
+            gg.screen_h/gg.case_h));
         ~Map();
 
         void renderTo(sf::RenderTarget &target);

@@ -95,7 +95,7 @@ namespace db
     };
 } /* End of namespace db */
 
-extern db::Database *database;
+extern db::Database &database;
 
 /* Centralization of serialization versionning. */
 BOOST_CLASS_VERSION(db::Database, 1)

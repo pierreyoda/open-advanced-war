@@ -1,28 +1,20 @@
-#ifndef LUADATABASE_HPP
-#define LUADATABASE_HPP
-
-/** \file LuaDatabase.hpp
-* \brief Binds database to Lua.
-*/
-
-extern "C"
-{
-    #include <lua.h>
-    #include <lualib.h>
-}
-#include <luabind/luabind.hpp>
+#include "LuaBinds.hpp"
 #include "../db/Database.hpp"
 
 #ifdef DB_EXPORTER
     #define db_member def_readwrite // Full access
 #else
     #define db_member def_readonly // Read-only access
+    #include "../Map.hpp"
+    #include "../tools/PausableClock.hpp"
+    #include "../tools/FilesPathHandler.hpp"
 #endif /* DB_EXPORTER */
 
-void exportDatabase(lua_State *lua)
+using namespace db;
+using namespace luabind;
+
+void LuaBinds::exportDatabase(lua_State *lua)
 {
-    using namespace db;
-    using namespace luabind;
     module(lua, "db")
     [
         // DatabaseItem
@@ -78,4 +70,53 @@ void exportDatabase(lua_State *lua)
     ];
 }
 
-#endif /* LUADATABASE_HPP */
+#ifndef DB_EXPORTER
+
+void LuaBinds::exportTools(lua_State *lua)
+{
+    module(lua)
+    [
+        // "Namespace" sf (SFML)
+        namespace_("sf")
+        [
+            // sf::Vector2i (sf::Vector2<int>)
+            class_<sf::Vector2i>("Vector2i")
+                .def(constructor< >())
+                .def(constructor<int, int>())
+                .def_readwrite("x", &sf::Vector2i::x)
+                .def_readwrite("y", &sf::Vector2i::y)
+        ]
+        // PausableClock
+        , class_<PausableClock>("PausableClock")
+            .def(constructor< >())
+            .def(constructor<bool>())
+            .def("pause", &PausableClock::pause)
+            .def("start", &PausableClock::start)
+            .def("getElapsedTime", &PausableClock::getElapsedTime)
+            .def("reset", (void(PausableClock::*)())&PausableClock::reset)
+            .def("reset", (void(PausableClock::*)(const bool&))&PausableClock::reset)
+        // FilesPathHandler
+        , class_<FilesPathHandler>("FilesPathHandler")
+            .def("addFile", (void(FilesPathHandler::*)(const std::string&,
+                const std::string&))&FilesPathHandler::addFile)
+            .def("addFile", (void(FilesPathHandler::*)(const std::string&,
+                const std::string&, const bool&))&FilesPathHandler::addFile)
+            .def("getFilepath", &FilesPathHandler::getFilepath)
+    ];
+}
+
+void LuaBinds::exportGame(lua_State *lua)
+{
+    using namespace luabind;
+    module(lua)
+    [
+        // Map
+        class_<Map>("Map")
+            .def("getTile", (std::string(Map::*)(const unsigned int&,
+                const unsigned int&)const)&Map::getTile)
+            .def("setTile", (void(Map::*)(const unsigned int&,
+                const unsigned int&, const std::string &))&Map::setTile)
+    ];
+}
+
+#endif /* DB_EXPORTER */

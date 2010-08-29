@@ -1,6 +1,7 @@
 #include "Engine.hpp"
 #include "db/Database.hpp"
 #include "gui/HudManager.hpp"
+#include "Map.hpp"
 
 using namespace sf;
 
@@ -21,8 +22,9 @@ void Engine::run()
     map = new Map();
     for (unsigned int i = 0; i < 25; i++)
         map->setTile(i, 2, "Forest");
+    map->setTile(3, 0, "Road");
     map->setTile(3, 1, "Road");
-    //std::cout <<
+
     while (App.IsOpened())
     {
         Event Event;

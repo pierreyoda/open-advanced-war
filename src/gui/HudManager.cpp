@@ -18,7 +18,9 @@ void HudManager::drawFps(RenderTarget &target, const float &fpsCount,
             text.SetCharacterSize(20);
             init = true;
         }
-        float fps = 1.f / fpsCount;
+        float fps = 0;
+        if (fpsCount != 0)
+            fps = 1.f / fpsCount;
         if (fps < 0)
         {
             fps = 0;
