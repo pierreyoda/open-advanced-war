@@ -8,6 +8,7 @@
 #include <algorithm>
 #include "../tools/Singleton.hpp"
 #include "LuaBinds.hpp"
+#include "../db/DatabaseItem.hpp"
 
 /** \brief Handles lua interpreter.
 */

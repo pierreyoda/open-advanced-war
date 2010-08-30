@@ -8,6 +8,7 @@
 */
 enum Orientation
 {
+    UNDEFINED, /**< Not defined (for errors). */
     RIGHT, /**< Looks towards the left. */
     LEFT, /**< Looks towards the right. */
     UPWARD, /**< Looks upward. */
@@ -31,13 +32,16 @@ class GameEntity
         void updatePosition();
         void setPosition(const sf::Vector2i &pos);
         void setPosition(const int &x, const int &y);
+        void setOrientation(const Orientation &orientation);
 
-        void playAnim(const std::string &anim, const bool &loop = true);
+        void playAnim(const std::string &anim) { playAnim(anim, true); }
+        void playAnim(const std::string &anim, const bool &loop);
 
         std::string type() const { return m_type; }
         std::string alias() const { return m_alias; }
 
         sf::Vector2i position() const { return m_pos; }
+        Orientation orientation() const { return m_orientation; }
         XSprite &xsprite() { return m_xsprite; }
         const XSprite &xspriteConst() const { return m_xsprite; }
 

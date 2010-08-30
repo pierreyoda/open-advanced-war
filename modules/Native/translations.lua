@@ -8,5 +8,6 @@ trans:selectLang("fr")
 trans:translateItem("Plain", "Plaine")
 trans:translateItem("Forest", "Forêt")
 trans:translateItem("Road", "Route")
+trans:translateItem("Mountain", "Montagne")
 -- Units
 trans:translateItem("Soldier", "Soldat")

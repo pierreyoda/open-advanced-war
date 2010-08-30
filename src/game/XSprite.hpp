@@ -60,7 +60,7 @@ class XSprite : public sf::Sprite
         void restartAnim();
 
         bool isAnimPaused() const;
-        bool isAnimStoped() const;
+        bool isAnimStopped() const;
         /** \brief m_currentFrame accessor.
         *
         * \see m_currentFrame

@@ -23,7 +23,9 @@ void Engine::run()
     for (unsigned int i = 0; i < 25; i++)
         map->setTile(i, 2, "Forest");
     map->setTile(3, 0, "Road");
+    map->setTileOrientation(3, 0, UPWARD);
     map->setTile(3, 1, "Road");
+    map->setTileOrientation(3, 1, UPWARD);
 
     while (App.IsOpened())
     {

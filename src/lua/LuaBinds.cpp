@@ -83,6 +83,7 @@ void LuaBinds::exportTools(lua_State *lua)
             class_<sf::Vector2i>("Vector2i")
                 .def(constructor< >())
                 .def(constructor<int, int>())
+                .def(constructor<sf::Vector2i>())
                 .def_readwrite("x", &sf::Vector2i::x)
                 .def_readwrite("y", &sf::Vector2i::y)
         ]
@@ -112,10 +113,69 @@ void LuaBinds::exportGame(lua_State *lua)
     [
         // Map
         class_<Map>("Map")
-            .def("getTile", (std::string(Map::*)(const unsigned int&,
-                const unsigned int&)const)&Map::getTile)
+            .def("getTileType", (std::string(Map::*)(const unsigned int&,
+                const unsigned int&)const)&Map::getTileType)
+            .def("getTileType", (std::string(Map::*)(const sf::Vector2i&)const)
+                &Map::getTileType)
             .def("setTile", (void(Map::*)(const unsigned int&,
                 const unsigned int&, const std::string &))&Map::setTile)
+            .def("setTile", (void(Map::*)(const sf::Vector2i&,
+                const std::string&))&Map::setTile)
+            .def("setTileAnim", (void(Map::*)(const unsigned int&,
+                const unsigned int&, const std::string &))&Map::setTileAnim)
+            .def("setTileAnim", (void(Map::*)(const sf::Vector2i&,
+                const std::string&))&Map::setTileAnim)
+            .def("getTileConstPtr", (const GameEntity*(Map::*)
+                (const unsigned int&,const unsigned int&)const)
+                 &Map::getTileConstPtr)
+            .def("getTileConstPtr", (const GameEntity*(Map::*)
+                 (const sf::Vector2i&)const)&Map::getTileConstPtr)
+            .def("getTileOrientation", (Orientation(Map::*)(const unsigned int&,
+                const unsigned int&)const)&Map::getTileOrientation)
+            .def("getTileOrientation", (Orientation(Map::*)(const sf::Vector2i&)
+                const)&Map::getTileOrientation)
+            .def("isInsideMap", (bool(Map::*)(const unsigned int&,
+                const unsigned int&)const)&Map::isInsideMap)
+            .def("isInsideMap", (bool(Map::*)(const sf::Vector2i&)const)
+                &Map::isInsideMap)
+            // XSprite
+            , class_<XSprite>("XSprite")
+                .def("playAnim", (void(XSprite::*)(const db::Animation *anim))
+                    &XSprite::playAnim)
+                .def("setFrame", &XSprite::setFrame)
+                .def("pauseAnim", &XSprite::pauseAnim)
+                .def("stopAnim", &XSprite::stopAnim)
+                .def("startAnim", &XSprite::startAnim)
+                .def("restartAnim", &XSprite::startAnim)
+                .def("isAnimPaused", &XSprite::isAnimPaused)
+                .def("isAnimStopped", &XSprite::isAnimStopped)
+                .def("currentFrame", &XSprite::currentFrame)
+            // GameEntity
+            , class_<GameEntity>("GameEntity")
+                .def("setPosition", (void(GameEntity::*)(const sf::Vector2i&))
+                    &GameEntity::setPosition)
+                .def("setPosition", (void(GameEntity::*)(const int&, const int&))
+                    &GameEntity::setPosition)
+                .def("updatePosition", &GameEntity::updatePosition)
+                .def("playAnim", (void(GameEntity::*)(const std::string&))
+                    &GameEntity::playAnim)
+                .def("playAnim", (void(GameEntity::*)(const std::string&,
+                    const bool&))&GameEntity::playAnim)
+                .def("type", &GameEntity::type)
+                .def("alias", &GameEntity::alias)
+                .def("position", &GameEntity::position)
+                .def("orientation", &GameEntity::orientation)
+                .def("setOrientation", &GameEntity::setOrientation)
+                .def("xsprite", &GameEntity::xsprite)
+                .def("xspriteConst", &GameEntity::xspriteConst)
+                .enum_("Orientation") // ENUM - Orientation
+                [
+                    value("UNDEFINED", 0),
+                    value("RIGHT", 1),
+                    value("LEFT", 2),
+                    value("UPWARD", 3),
+                    value("DOWNWARD", 4)
+                ]
     ];
 }
 

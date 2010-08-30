@@ -28,6 +28,12 @@ void GameEntity::updatePosition()
     m_xsprite.SetPosition(m_pos.x * gg.case_w, m_pos.y * gg.case_h);
 }
 
+void GameEntity::setOrientation(const Orientation &orientation)
+{
+    if (orientation != UNDEFINED) // For error only
+        m_orientation = orientation;
+}
+
 void GameEntity::playAnim(const std::string &anim, const bool &loop)
 {
     db::XSpriteItem *ptr = database.findTile(m_type);

@@ -95,3 +95,8 @@ bool XSprite::isAnimPaused() const
 {
     return (m_timer.isPaused());
 }
+
+bool XSprite::isAnimStopped() const
+{
+    return (m_timer.isPaused() && m_timer.getElapsedTime() <= 0.01);
+}
