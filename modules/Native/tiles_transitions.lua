@@ -9,14 +9,18 @@ UNDEFINED, RIGHT, LEFT, UP, DOWN =
 	GameEntity.LEFT,
 	GameEntity.UPWARD,
 	GameEntity.DOWNWARD
-	
--- Returns animation name belong game entity's orientation
-function orientationToAnimName(orientation)
-	if (orientation == RIGHT) then
+
+function orientationToAnimName(orientation) -- Surcharge
+	return orientationToAnimName(orientation, false)
+end
+--[[ Returns animation name belong game entity's orientation.
+Param equivalence : does (left and right) and (up and down) correspond to the same images? ]]
+function orientationToAnimName(orientation, equivalence)
+	if (orientation == RIGHT or (equivalence and orientation == LEFT)) then
 		return "base_right"
 	elseif (orientation == LEFT) then
 		return "base_left"
-	elseif (orientation == UP) then
+	elseif (orientation == UP or (equivalence and orientation == DOWN)) then
 		return "base_upward"
 	elseif (orientation == DOWN) then
 		return "base_downward"
@@ -25,17 +29,33 @@ function orientationToAnimName(orientation)
 	end
 end
 
+-- From a given orientation returns a relative pos (if unknown returns "pos")
+function relativePosition(pos, orientation)
+	toReturn = sf.Vector2i(pos) -- copy (and not reference!)
+	if (orientation == LEFT) then
+		toReturn.x = toReturn.x-1
+	elseif (orientation == RIGHT) then
+		toReturn.x = toReturn.x+1
+	elseif (orientation == UP) then
+		toReturn.y = toReturn.y-1
+	elseif (orientation == DOWN) then
+		toReturn.y = toReturn.y+1
+	end
+	return toReturn
+end
+
 -- Checks if tile is surrounded by 4 (by4) or 8 (not by4) tiles of "tileType"
 function tileSurroundedBy(pos, tileType, map, by4)
-	if (by4 == true) then
-		return (map:getTileType(pos.x-1, pos.y) == tileType
-			and map:getTileType(pos.x+1, pos.y) == tileType
-			and map:getTileType(pos.x, pos.y-1) == tileType
-			and map:getTileType(pos.x, pos.y+1) == tileType)
+	if (tileType == "Road") then
+		return (map:getTileType(relativePosition(pos, LEFT)) == tileType
+			and map:getTileType(relativePosition(pos, RIGHT)) == tileType
+			and map:getTileType(relativePosition(pos, UP)) == tileType
+			and map:getTileType(relativePosition(pos, DOWN)) == tileType)
 	end
 	for i = -1, 1, 1 do
 		for j = -1, 1, 1 do
-			if (map:getTileType(pos.x+i, pos.x+j) ~= tileType) then
+			local npos = sf.Vector2i(pos.x+i, pos.y+j)
+			if (not npos == pos and map:getTileType(npos) ~= tileType) then
 				return false
 			end
 		end
@@ -43,35 +63,10 @@ function tileSurroundedBy(pos, tileType, map, by4)
 	return true
 end
 
--- From a given orientation returns a relative pos (if unknown returns "pos")
-function relativePosition(pos, orientation)
-	toReturn = pos
-	if (orientation == LEFT) then
-		pos.x = pos.x-1
-	elseif (orientation == RIGHT) then
-		pos.x = pos.x+1
-	elseif (orientation == UP) then
-		pos.y = pos.y-1
-	elseif (orientation == DOWN) then
-		pos.y = pos.y+1
-	end
-	return toReturn
-end
-
 -- Called when a tile is oriented (and from lua function onTilePlaced)
 function onTileOriented(tile, map, pos)
-	--[[if (tile == nil or map == nil) then
-		return
-	end
-	local left, right, up, down = 
-		map:getTileOrientation(pos.x-1, pos.y), 
-		map:getTileOrientation(pos.x+1, pos.y),
-		map:getTileOrientation(pos.x, pos.y-1), 
-		map:getTileOrientation(pos.x, pos.y+1)
-	tile:playAnim(orientationToAnimName(orientation))
-	tile:setOrientation(orientation)]]
-	
-	-- Here we can manage eventual orientation-dependent tiles (there are not in this module for now)
+	--[[ Here we can do some stuff about eventual orientation-dependent tiles 
+(there are not in this module for now). ]]
 end
 
 called = false -- global, for test
@@ -85,6 +80,7 @@ function onTilePlaced(tile, map)
 		map:setTile(6, 4, "Road")
 		map:setTile(6, 6, "Road")
 		map:setTile(6, 5, "Road")
+		print("O")
 	end
 	if (tile == nil or map == nil) then
 		return
@@ -98,7 +94,11 @@ function onTilePlaced(tile, map)
 	-- Transitions (specific)
 	if (type == "Mountain") then
 		if (tileSurroundedBy(pos, "Mountain", map, true)) then
-			toPlay = "muntain_surrunded_by_4"
+			toPlay = "base_highdensity"
+		end
+	elseif (type == "Forest") then
+		if (tileSurroundedBy(pos, "Mountain", map, true)) then
+			toPlay = "base_highdensity"
 		end
 	elseif  (type == "Road") then
 		if (tileSurroundedBy(pos, "Road", map, true)) then
@@ -106,7 +106,7 @@ function onTilePlaced(tile, map)
 			map:setTileAnim(relativePosition(pos, LEFT), "base_right")
 			map:setTileAnim(relativePosition(pos, RIGHT), "base_right")
 			map:setTileAnim(relativePosition(pos, UP), "base_upward")
-			map:setTileAnim(relativePosition(pos, DOWN), "base_downward")
+			map:setTileAnim(relativePosition(pos, DOWN), "base_upward")
 		elseif (tileSurroundedBy(pos, "Road", map, false)) then
 			toPlay = "base_center8" -- Surrounded by 8
 		elseif (up == "Road" or down == "Road") then

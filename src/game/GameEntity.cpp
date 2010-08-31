@@ -37,6 +37,10 @@ void GameEntity::setOrientation(const Orientation &orientation)
 void GameEntity::playAnim(const std::string &anim, const bool &loop)
 {
     db::XSpriteItem *ptr = database.findTile(m_type);
+    if (ptr == 0)
+        ptr = database.findBuilding(m_type);
+    if (ptr == 0)
+        ptr = database.findUnit(m_type); // Search successively in all XSpriteItem (or derived) list
     if (ptr != 0)
         m_xsprite.playAnim(ptr->findAnim(anim), loop);
 }

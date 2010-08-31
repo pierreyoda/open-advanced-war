@@ -13,6 +13,8 @@ namespace sf
 }
 
 /// TODO (Pierre-Yves#1#): Add documentation to all functions getTile... and setTile... .
+/** \brief Represents a map.
+*/
 class Map
 {
     public:

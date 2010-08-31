@@ -118,7 +118,7 @@ void Map::setTile(const unsigned int &x, const unsigned int &y,
 
 void Map::setTileAnim(const Vector2i &pos, const std::string &anim)
 {
-    return setTile(pos.x, pos.y, anim);
+    return setTileAnim(pos.x, pos.y, anim);
 }
 void Map::setTileAnim(const unsigned int &x, const unsigned int &y,
     const std::string &anim)
