@@ -21,13 +21,11 @@ Website: https://sourceforge.net/projects/openadvancedwar/<br />
 E-mail: pierreyoda33@gmail.com
 */
 
-#define DB_EXPORTER
-
 #include <iostream>
 #include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 #include "lua/LuaVirtualMachine.hpp"
 #include "db/DatabaseSerialization.hpp"
-#include <boost/filesystem/path.hpp>
 
 namespace fs = boost::filesystem;
 
@@ -76,19 +74,20 @@ int main(int argc, char *argv[])
         << "For details open provided text file 'gpl3.txt'\n" << endl;
     cout << "NB : at each step command 'exit' will close the program." << endl;
 
-    lua_State *luaVM = 0;
-    LuaVM luaState(luaVM);
-    globals(luaState())["vm"] = &luaState;
+    lua_State *luaState = 0;
+    LuaVM &luaVM = LuaVM::getInstance();
+    luaVM.init(luaState);
+    globals(luaVM())["vm"] = &luaVM;
 
     db::Database &db = db::Database::getInstance();
-    globals(luaState())["database"] = &db;
-    globals(luaState())["trans"] = &db.translationsRef();
+    globals(luaVM())["database"] = &db;
+    globals(luaVM())["trans"] = &db.translationsRef();
 
     string input = /*getFilePath("Lua input file")*/"modules/Native/database.lua",
         output = getFilePath("XML output file", false, input);
-    luaState.include(input);
+    luaVM.include(input);
 
-    database->setModuleName("blabla");
+    database.setModuleName("test");
     try
     {
         DatabaseSerialization::exportToXml(output);

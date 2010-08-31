@@ -8,6 +8,7 @@
 #include "Propulsion.hpp"
 #include "Unit.hpp"
 #include "Faction.hpp"
+#include "Category.hpp"
 #include "TranslationProvider.hpp"
 #include "../tools/Singleton.hpp"
 #include <boost/serialization/utility.hpp>
@@ -83,6 +84,7 @@ namespace db
                 ar &BOOST_SERIALIZATION_NVP(m_units);
                 ar &BOOST_SERIALIZATION_NVP(m_factions);
                 ar &BOOST_SERIALIZATION_NVP(m_translations);
+                ar &BOOST_SERIALIZATION_NVP(m_categories);
             }
             std::string m_moduleName; /** < Module name. */
             std::list<Tile> m_tiles; /**<  List of tiles. */
@@ -91,6 +93,7 @@ namespace db
             std::list<Propulsion> m_propulsions; /**<  List of propulsions. */
             std::list<Unit> m_units; /**<  List of "shared" units. */
             std::list<Faction> m_factions; /**<  List of factions. */
+            std::list<Category> m_categories; /**<  List of categories. */
             TranslationProvider m_translations; /** < Provides translations. **/
     };
 } /* End of namespace db */

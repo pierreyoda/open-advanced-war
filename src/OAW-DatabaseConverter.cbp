@@ -43,6 +43,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="-DDB_EXPORTER" />
 			<Add directory="$(#luabind.include)" />
 			<Add directory="$(#lua.include)" />
 			<Add directory="$(#boost.include)" />
@@ -70,7 +71,8 @@
 		<Unit filename="db\Weapon.hpp" />
 		<Unit filename="db\XSpriteItem.hpp" />
 		<Unit filename="db_converter.cpp" />
-		<Unit filename="lua\LuaDatabase.hpp" />
+		<Unit filename="lua\LuaBinds.cpp" />
+		<Unit filename="lua\LuaBinds.hpp" />
 		<Unit filename="lua\LuaVirtualMachine.hpp" />
 		<Extensions>
 			<code_completion />
