@@ -26,6 +26,7 @@ E-mail: pierreyoda33@gmail.com
 #include <boost/filesystem/path.hpp>
 #include "lua/LuaVirtualMachine.hpp"
 #include "db/DatabaseSerialization.hpp"
+#include "tools/others.hpp"
 
 namespace fs = boost::filesystem;
 
@@ -95,13 +96,17 @@ int main(int argc, char *argv[])
     catch (const std::string &error)
     {
         cerr << error << "\n";
+        printSystemPause();
         return 1;
     }
     catch (const std::exception &error)
     {
         cerr << error.what() << "\n";
+        printSystemPause();
         return 1;
     }
 
+    printSystemPause(false); // needed but don't know why...
+    printSystemPause();
     return 0;
 }

@@ -39,6 +39,7 @@ E-mail: pierreyoda33@gmail.com
 #include "db/Database.hpp"
 #include "lua/LuaVirtualMachine.hpp"
 #include "tools/FilesPathHandler.hpp"
+#include "tools/others.hpp"
 
 FilesPathHandler gFph = FilesPathHandler();
 
@@ -58,6 +59,8 @@ int main(int argc, char *argv[])
 
     Engine engine;
     engine.run();
+
+    printSystemPause();
 
     return 0;
 }
