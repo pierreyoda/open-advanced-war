@@ -42,6 +42,12 @@ namespace db
             * \return Reference to self.
             */
             Database &addTile(const Tile *tile);
+            /** \brief Add a building to the database (if not present yet).
+            *
+            * \param tile Building to add (pointer to avoid crashes).
+            * \return Reference to self.
+            */
+            Database &addBuilding(const Building *building);
             /** \brief Add a category to the database (if not present yet).
             *
             * \param tile Category to add (pointer to avoid crashes).

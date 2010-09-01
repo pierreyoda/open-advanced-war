@@ -23,6 +23,12 @@ namespace db
             addItem<Tile>(*tile, m_tiles);
         return *this;
     }
+    Database &Database::addBuilding(const Building *building)
+    {
+        if (building != 0)
+            addItem<Building>(*building, m_buildings);
+        return *this;
+    }
     Database &Database::addCategory(const Category *category)
     {
         if (category != 0)
