@@ -11,3 +11,5 @@ trans:translateItem("Road", "Route")
 trans:translateItem("Mountain", "Montagne")
 -- Units
 trans:translateItem("Soldier", "Soldat")
+-- Categories
+trans:translateItem("Infantry", "Infanterie")

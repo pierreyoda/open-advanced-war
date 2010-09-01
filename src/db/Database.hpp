@@ -2,6 +2,7 @@
 #define DATABASE_HPP
 
 #include <list>
+#include <boost/serialization/utility.hpp>
 #include "Tile.hpp"
 #include "Building.hpp"
 #include "Weapon.hpp"
@@ -11,7 +12,6 @@
 #include "Category.hpp"
 #include "TranslationProvider.hpp"
 #include "../tools/Singleton.hpp"
-#include <boost/serialization/utility.hpp>
 
 /** \namespace db
 * \brief Namespace containing game database.
@@ -42,6 +42,12 @@ namespace db
             * \return Reference to self.
             */
             Database &addTile(const Tile *tile);
+            /** \brief Add a category to the database (if not present yet).
+            *
+            * \param tile Category to add (pointer to avoid crashes).
+            * \return Reference to self.
+            */
+            Database &addCategory(const Category *category);
 
             Tile *findTile(const std::string &item);
             Building *findBuilding(const std::string &item);
@@ -49,6 +55,7 @@ namespace db
             Propulsion *findPropulsion(const std::string &item);
             Unit *findUnit(const std::string &item);
             Faction *findFaction(const std::string &item);
+            Category *findCategory(const std::string &item);
 
             // Lua side (const pointer) -- Crashes when trying to modify!
             /*const Tile *findTile(const std::string &item) const;
@@ -83,9 +90,22 @@ namespace db
                 ar &BOOST_SERIALIZATION_NVP(m_propulsions);
                 ar &BOOST_SERIALIZATION_NVP(m_units);
                 ar &BOOST_SERIALIZATION_NVP(m_factions);
-                ar &BOOST_SERIALIZATION_NVP(m_translations);
                 ar &BOOST_SERIALIZATION_NVP(m_categories);
+                ar &BOOST_SERIALIZATION_NVP(m_translations);
             }
+
+            template <class Derived>
+            void addItem(const Derived &toAdd, std::list<Derived> &in)
+            {
+                if (itemExists(toAdd.name()))
+                {
+                    std::cerr << "Warning : item name '" << toAdd.name()
+                        << "' already exists in database.\n";
+                    return;
+                }
+                in.push_back(toAdd);
+            }
+
             std::string m_moduleName; /** < Module name. */
             std::list<Tile> m_tiles; /**<  List of tiles. */
             std::list<Building> m_buildings; /**<  List of buildings. */
@@ -106,5 +126,6 @@ BOOST_CLASS_VERSION(db::DatabaseItem, 1)
 BOOST_CLASS_VERSION(db::Frame, 1);
 BOOST_CLASS_VERSION(db::Animation, 1);
 BOOST_CLASS_VERSION(db::XSpriteItem, 1);
+BOOST_CLASS_VERSION(db::Category, 1);
 
 #endif /* DATABASE_HPP */

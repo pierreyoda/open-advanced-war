@@ -24,6 +24,7 @@ void LuaBinds::exportDatabase(lua_State *lua)
         , class_<Database>("Database")
             .def("getModuleName", &Database::getModuleName)
             .def("addTile", &Database::addTile)
+            .def("addCategory", &Database::addCategory)
             .def("findTile", (Tile*(Database::*)(const std::string&))
                 &Database::findTile)
         // TranslationProvider
@@ -58,7 +59,7 @@ void LuaBinds::exportDatabase(lua_State *lua)
             .def("clear", &Animation::clear)
             .def("image", &Animation::image)
         // XSpriteItem
-        , class_<XSpriteItem, bases<DatabaseItem> >("XSprite")
+        , class_<XSpriteItem, bases<DatabaseItem> >("XSpriteItem")
             .def("addAnim", &XSpriteItem::addAnim)
         // Tile
         , class_<Tile, bases<XSpriteItem> >("Tile")
@@ -67,6 +68,11 @@ void LuaBinds::exportDatabase(lua_State *lua)
             .def("setProtection", &Tile::setProtection)
             .def("isOrientable", &Tile::isOrientable)
             .def("protection", &Tile::protection)
+        // Category
+        , class_<Category, bases<DatabaseItem> >("Category")
+            .def(constructor<const std::string&>())
+            .def("addItem", &Category::addItem)
+            .def("isItemIn", &Category::isItemIn)
     ];
 }
 

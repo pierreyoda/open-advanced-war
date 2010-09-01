@@ -8,4 +8,5 @@ DO NOT INCLUDE IN-GAME! ; use it with DatabaseConverter tool
 MODULE_DIR = "modules/Native/"
 -- /"Constantes" (DO NOT MODIFY)
 
-vm:include("tiles.lua;buildings.lua;translations.lua", MODULE_DIR)
+vm:include("tiles.lua;buildings.lua;translations.lua;categories.lua", 
+	MODULE_DIR)

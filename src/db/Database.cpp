@@ -19,22 +19,22 @@ namespace db
 
     Database &Database::addTile(const Tile *tile)
     {
-        if (tile == 0)
-            return *this;
-        if (itemExists(tile->name()))
-        {
-            std::cerr << "Warning : item name '" << tile->name()
-                << "' already exists in database.\n";
-            return *this;
-        }
-        m_tiles.push_back(*tile);
+        if (tile != 0)
+            addItem<Tile>(*tile, m_tiles);
+        return *this;
+    }
+    Database &Database::addCategory(const Category *category)
+    {
+        if (category != 0)
+            addItem<Category>(*category, m_categories);
         return *this;
     }
 
     bool Database::itemExists(const std::string &item)
     {
         return (findTile(item) || findBuilding(item) || findWeapon(item)
-            || findPropulsion(item) || findUnit(item) || findFaction(item));
+            || findPropulsion(item) || findUnit(item) || findFaction(item)
+            || findCategory(item));
     }
 
     Tile *Database::findTile(const std::string &item)
@@ -60,6 +60,10 @@ namespace db
     Faction *Database::findFaction(const std::string &item)
     {
         return findItemIn<Faction>(item, m_factions);
+    }
+    Category *Database::findCategory(const std::string &item)
+    {
+        return findItemIn<Category>(item, m_categories);
     }
 
     /*const Tile *Database::findTile(const std::string &item) const

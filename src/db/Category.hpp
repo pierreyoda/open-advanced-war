@@ -25,11 +25,17 @@ namespace db
             /** Adds an item to the category if not already present.
             *
             * \param item Item's name.
+            * \return Self.
             */
-            void addItem(const std::string &item)
+            Category &addItem(const std::string &item)
             {
                 if (!isItemIn(item))
                     m_items.push_back(item);
+                else
+                    std::cerr << "Warning : item '" << item
+                        << "' is already present in category '"
+                        << name() << "'.\n";
+                return *this;
             }
 
             /** Searchs for an item in the categorty

@@ -80,7 +80,6 @@ function onTilePlaced(tile, map)
 		map:setTile(6, 4, "Road")
 		map:setTile(6, 6, "Road")
 		map:setTile(6, 5, "Road")
-		print("O")
 	end
 	if (tile == nil or map == nil) then
 		return

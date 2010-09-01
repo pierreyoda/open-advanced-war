@@ -60,6 +60,7 @@
 		<Unit filename="GameGlobals.cpp" />
 		<Unit filename="GameGlobals.hpp" />
 		<Unit filename="db\Building.hpp" />
+		<Unit filename="db\Category.hpp" />
 		<Unit filename="db\Database.cpp" />
 		<Unit filename="db\Database.hpp" />
 		<Unit filename="db\DatabaseItem.hpp" />
