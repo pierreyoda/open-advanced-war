@@ -9,7 +9,7 @@
 			<Target title="Debug">
 				<Option output="..\OAW-DatabaseConverter_d" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\" />
-				<Option object_output="..\obj\Debug\" />
+				<Option object_output="..\obj-dbconverter\Debug\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
@@ -26,7 +26,7 @@
 			<Target title="Release">
 				<Option output="..\OAW-DatabaseConverter" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="..\" />
-				<Option object_output="..\obj\Release\" />
+				<Option object_output="..\obj-dbconverter\Release\" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
