@@ -28,7 +28,7 @@ namespace db
         *
         * \return The item name (m_name).
         */
-        const std::string &name() const { return m_name; }
+        std::string name() const { return m_name; }
 
         private:
             DatabaseItem() : m_name() // for deserialization (construction)

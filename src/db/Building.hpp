@@ -35,6 +35,8 @@ namespace db
             Building &addProduction(const std::string &item,
                 const bool &isCategory)
             {
+                if (item.empty())
+                    return *this;
                 p_producible pair(item, isCategory);
                 if (std::find(m_canProduce.begin(), m_canProduce.end(), pair)
                     == m_canProduce.end()) // Does not already exist
