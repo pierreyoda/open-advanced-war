@@ -2,7 +2,8 @@
 #include "../GameGlobals.hpp"
 #include "../db/Database.hpp"
 
-GameEntity::GameEntity(const std::string &name) : m_pos(0, 0), m_type(name),
+GameEntity::GameEntity(const std::string &type) :
+    m_classe(findClasseFromType(type)), m_pos(0, 0), m_type(type),
     m_alias(/*TODO*/), m_orientation(RIGHT)
 {
 
@@ -43,4 +44,15 @@ void GameEntity::playAnim(const std::string &anim, const bool &loop)
         ptr = database.findUnit(m_type); // Search successively in all XSpriteItem (or derived) list
     if (ptr != 0)
         m_xsprite.playAnim(ptr->findAnim(anim), loop);
+}
+
+Classes GameEntity::findClasseFromType(const std::string &type)
+{
+    if (database.findTile(type) != 0)
+        return TILE;
+    if (database.findBuilding(type) != 0)
+        return BUILDING;
+    if (database.findUnit(type) != 0)
+        return UNIT;
+    return NONE;
 }

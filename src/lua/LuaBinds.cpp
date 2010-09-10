@@ -193,6 +193,7 @@ void LuaBinds::exportGame(lua_State *lua)
                     &GameEntity::playAnim)
                 .def("playAnim", (void(GameEntity::*)(const std::string&,
                     const bool&))&GameEntity::playAnim)
+                .def("classe", &GameEntity::classe)
                 .def("type", &GameEntity::type)
                 .def("alias", &GameEntity::alias)
                 .def("position", &GameEntity::position)
@@ -207,6 +208,13 @@ void LuaBinds::exportGame(lua_State *lua)
                     value("LEFT", 2),
                     value("UPWARD", 3),
                     value("DOWNWARD", 4)
+                ]
+                .enum_("Classes") // ENUM - Classes
+                [
+                    value("NONE", 1),
+                    value("TILE", 2),
+                    value("BUILDING", 3),
+                    value("UNIT", 4)
                 ]
     ];
 }

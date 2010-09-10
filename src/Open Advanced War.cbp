@@ -120,6 +120,8 @@
 		<Unit filename="extern\sfgui\YAML.cpp" />
 		<Unit filename="game\GameEntity.cpp" />
 		<Unit filename="game\GameEntity.hpp" />
+		<Unit filename="game\Unit.cpp" />
+		<Unit filename="game\Unit.hpp" />
 		<Unit filename="game\XSprite.cpp" />
 		<Unit filename="game\XSprite.hpp" />
 		<Unit filename="gui\HudManager.cpp" />

@@ -16,6 +16,16 @@ enum Orientation
     DOWNWARD /**< Looks downward. */
 };
 
+/** \brief Enumeration of entity classes.
+*/
+enum Classes
+{
+    NONE, /**< Not found (for errors). */
+    TILE, /**< Tile. */
+    BUILDING, /**< Building. */
+    UNIT /**< Unit. */
+};
+
 /** \brief Represents a caracteristic and its value.
 */
 struct Caracteristic
@@ -30,7 +40,7 @@ class GameEntity
 
     public:
         GameEntity(const std::string &type);
-        ~GameEntity();
+        virtual~GameEntity();
 
         void updatePosition();
         void setPosition(const sf::Vector2i &pos);
@@ -40,6 +50,7 @@ class GameEntity
         void playAnim(const std::string &anim) { playAnim(anim, true); }
         void playAnim(const std::string &anim, const bool &loop);
 
+        Classes classe() const { return m_classe; }
         std::string type() const { return m_type; }
         std::string alias() const { return m_alias; }
 
@@ -48,10 +59,15 @@ class GameEntity
         XSprite &xsprite() { return m_xsprite; }
         const XSprite &xspriteConst() const { return m_xsprite; }
 
+        static Classes findClasseFromType(const std::string &type);
+
     private:
+        GameEntity() : m_classe(NONE) { }
+
         template <typename Archive>
         void serialize(Archive &ar, const unsigned int &version)
         {
+            ar &BOOST_SERIALIZATION_NVP(m_classe);
             ar &BOOST_SERIALIZATION_NVP(m_pos);
                 updatePosition(); // useless on saving ; should split serialize into save/load
             ar &BOOST_SERIALIZATION_NVP(m_type);
@@ -60,6 +76,7 @@ class GameEntity
             ar &BOOST_SERIALIZATION_NVP(m_orientation);
         }
 
+        Classes m_classe; /**< Entity's class (ex : "UNIT", "BUILDING"). */
         sf::Vector2i m_pos; /**< Entity's position (not in pixel but in "tiles"). */
         std::string m_type; /**< Entity type (ex : "tank  factory", "soldier"). */
         std::string m_alias; /**< Entity alias (optionnal; ex : "leaderA", "VIP"). */
