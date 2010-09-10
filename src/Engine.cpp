@@ -24,6 +24,7 @@ void Engine::run()
         map->setTile(i, 2, "Forest");
     map->setTile(3, 0, "Road");
     map->setTile(3, 1, "Road");
+    map->placeBuilding(10, 10, "Barrack", false);
 
     while (App.IsOpened())
     {

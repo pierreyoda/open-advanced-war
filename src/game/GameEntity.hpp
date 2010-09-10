@@ -3,6 +3,7 @@
 
 #include <list>
 #include "XSprite.hpp"
+#include <boost/serialization/serialization.hpp>
 
 /** \brief Enumeration of orientations.
 */
@@ -25,6 +26,8 @@ struct Caracteristic
 
 class GameEntity
 {
+    friend class boost::serialization::access;
+
     public:
         GameEntity(const std::string &type);
         ~GameEntity();
@@ -46,7 +49,18 @@ class GameEntity
         const XSprite &xspriteConst() const { return m_xsprite; }
 
     private:
-        sf::Vector2i m_pos;
+        template <typename Archive>
+        void serialize(Archive &ar, const unsigned int &version)
+        {
+            ar &BOOST_SERIALIZATION_NVP(m_pos);
+                updatePosition(); // useless on saving ; should split serialize into save/load
+            ar &BOOST_SERIALIZATION_NVP(m_type);
+            ar &BOOST_SERIALIZATION_NVP(m_alias);
+            ar &BOOST_SERIALIZATION_NVP(m_caracteristics);
+            ar &BOOST_SERIALIZATION_NVP(m_orientation);
+        }
+
+        sf::Vector2i m_pos; /**< Entity's position (not in pixel but in "tiles"). */
         std::string m_type; /**< Entity type (ex : "tank  factory", "soldier"). */
         std::string m_alias; /**< Entity alias (optionnal; ex : "leaderA", "VIP"). */
         std::list<Caracteristic> m_caracteristics; /**< List of (variables) caracteristics. */

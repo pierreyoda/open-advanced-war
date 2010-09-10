@@ -131,10 +131,13 @@ void LuaBinds::exportGame(lua_State *lua)
     [
         // Map
         class_<Map>("Map")
-            .def("getTileType", (std::string(Map::*)(const unsigned int&,
-                const unsigned int&)const)&Map::getTileType)
-            .def("getTileType", (std::string(Map::*)(const sf::Vector2i&)const)
-                &Map::getTileType)
+            // Building
+            .def("placeBuilding", (void(Map::*)(const unsigned int&,
+                const unsigned int&, const std::string&, const bool&))
+                 &Map::placeBuilding)
+            .def("placeBuilding", (void(Map::*)(const sf::Vector2i&,
+                const std::string&, const bool&))&Map::placeBuilding)
+            // Tiles - modifiers
             .def("setTile", (void(Map::*)(const unsigned int&,
                 const unsigned int&, const std::string &))&Map::setTile)
             .def("setTile", (void(Map::*)(const sf::Vector2i&,
@@ -143,6 +146,11 @@ void LuaBinds::exportGame(lua_State *lua)
                 const unsigned int&, const std::string &))&Map::setTileAnim)
             .def("setTileAnim", (void(Map::*)(const sf::Vector2i&,
                 const std::string&))&Map::setTileAnim)
+            // Tiles - accessors
+            .def("getTileType", (std::string(Map::*)(const unsigned int&,
+                const unsigned int&)const)&Map::getTileType)
+            .def("getTileType", (std::string(Map::*)(const sf::Vector2i&)const)
+                &Map::getTileType)
             .def("getTilePtr", (GameEntity*(Map::*)
                 (const unsigned int&,const unsigned int&))
                  &Map::getTilePtr)
@@ -157,6 +165,7 @@ void LuaBinds::exportGame(lua_State *lua)
                 const unsigned int&)const)&Map::getTileOrientation)
             .def("getTileOrientation", (Orientation(Map::*)(const sf::Vector2i&)
                 const)&Map::getTileOrientation)
+            // General functions
             .def("isInsideMap", (bool(Map::*)(const unsigned int&,
                 const unsigned int&)const)&Map::isInsideMap)
             .def("isInsideMap", (bool(Map::*)(const sf::Vector2i&)const)

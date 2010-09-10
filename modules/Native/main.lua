@@ -5,4 +5,4 @@ Module's entry in-game. ]]
 moduleName, moduleDir = "Native", "modules/Native/"
 database = "database.xml"
 
-vm:include("ai.lua;tiles_transitions.lua", moduleDir)
+vm:include("ai.lua;ingame_map.lua", moduleDir)

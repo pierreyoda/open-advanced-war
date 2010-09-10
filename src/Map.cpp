@@ -1,15 +1,16 @@
-#include <SFML/Graphics.hpp>
 #include <iostream>
+#include <SFML/Graphics.hpp>
+#include <luabind/adopt_policy.hpp>
 #include "Map.hpp"
 #include "lua/LuaVirtualMachine.hpp"
 
-using namespace sf;
+using namespace std;
 
 Map::Map(const sf::Vector2ui &size)
 {
     for (unsigned int i = 0; i < size.y; i++)
     {
-        m_tiles.push_back(std::vector<GameEntity*>());
+        m_tiles.push_back(vector<GameEntity*>());
         for (unsigned int j = 0; j < size.x; j++)
         {
             GameEntity *tile = new GameEntity("Plain");
@@ -28,7 +29,7 @@ Map::~Map()
     m_tiles.clear();
 }
 
-void Map::renderTo(RenderTarget &target)
+void Map::renderTo(sf::RenderTarget &target)
 {
     for (unsigned int i = 0; i < m_tiles.size(); i++)
         for (unsigned int j = 0; j < m_tiles[i].size(); j++)
@@ -39,13 +40,52 @@ void Map::renderTo(RenderTarget &target)
             ptr->xsprite().update();
             target.Draw(ptr->xspriteConst());
         }
+    for (std::list<GameEntity*>::iterator iter = m_buildings.begin();
+        iter != m_buildings.end(); iter++)
+    {
+            if (*iter == 0)
+                continue;
+            (*iter)->xsprite().update();
+            target.Draw((*iter)->xspriteConst());
+    }
 }
 
-std::string Map::getTileType(const Vector2i &pos) const
+void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
+    const bool &force)
+{
+    bool ok = false;
+    try // Calling lua function "canPlaceBuilding"
+    {
+        ok = luabind::call_function<bool>(LuaVM::getInstance().getLua(),
+            "canPlaceBuilding",
+            type,
+            pos,
+            this,
+            force);
+    }
+    catch (const exception &exception)
+    {
+        cerr << lua_tostring(LuaVM::getInstance().getLua(), -1)<< "\n";
+        ok = false;
+    }
+    if (!ok)
+        return;
+    GameEntity *building = new GameEntity(type);
+        building->setPosition(pos);
+        building->playAnim("base", true);
+    m_buildings.push_back(building);
+}
+void Map::placeBuilding(const unsigned int &x, const unsigned int &y,
+    const string &type, const bool &force)
+{
+    placeBuilding(sf::Vector2i(x, y), type, force);
+}
+
+string Map::getTileType(const sf::Vector2i &pos) const
 {
     return getTileType(pos.x, pos.y);
 }
-std::string Map::getTileType(const unsigned int &x, const unsigned int &y)
+string Map::getTileType(const unsigned int &x, const unsigned int &y)
     const
 {
     const GameEntity *ptr = getTileConstPtr(x, y);
@@ -90,12 +130,12 @@ const GameEntity *Map::getTileConstPtr(const unsigned int &x,
     return m_tiles[y][x];
 }
 
-void Map::setTile(const Vector2i &pos, const std::string &type)
+void Map::setTile(const sf::Vector2i &pos, const string &type)
 {
     return setTile(pos.x, pos.y, type);
 }
 void Map::setTile(const unsigned int &x, const unsigned int &y,
-    const std::string &type)
+    const string &type)
 {
     if (!isInsideMap(x,y))
         return;
@@ -109,19 +149,19 @@ void Map::setTile(const unsigned int &x, const unsigned int &y,
             tile,
             this);
     }
-    catch (const std::exception &exception)
+    catch (const exception &exception)
     {
-        std::cerr << lua_tostring(LuaVM::getInstance().getLua(), -1)<< "\n";
+        cerr << lua_tostring(LuaVM::getInstance().getLua(), -1)<< "\n";
     }
     m_tiles[y][x] = tile;
 }
 
-void Map::setTileAnim(const Vector2i &pos, const std::string &anim)
+void Map::setTileAnim(const sf::Vector2i &pos, const string &anim)
 {
     return setTileAnim(pos.x, pos.y, anim);
 }
 void Map::setTileAnim(const unsigned int &x, const unsigned int &y,
-    const std::string &anim)
+    const string &anim)
 {
     if (!isInsideMap(x,y))
         return;
@@ -130,7 +170,7 @@ void Map::setTileAnim(const unsigned int &x, const unsigned int &y,
         ptr->playAnim(anim, true);
 }
 
-void Map::setTileOrientation(const sf::Vector2i &pos, const std::string &type,
+void Map::setTileOrientation(const sf::Vector2i &pos, const string &type,
     const Orientation &orientation)
 {
     setTileOrientation(pos.x, pos.y, orientation);
@@ -149,9 +189,9 @@ void Map::setTileOrientation(const unsigned int &x, const unsigned int &y,
             ptr,
             this);
     }
-    catch (const std::exception &exception)
+    catch (const exception &exception)
     {
-        std::cerr << lua_tostring(LuaVM::getInstance().getLua(), -1)<< "\n";
+        cerr << lua_tostring(LuaVM::getInstance().getLua(), -1)<< "\n";
     }
 }
 

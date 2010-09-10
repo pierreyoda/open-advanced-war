@@ -17,12 +17,19 @@ namespace sf
 */
 class Map
 {
+    friend class boost::serialization::access;
+
     public:
         Map(const sf::Vector2ui &size = sf::Vector2ui(gg.screen_w/gg.case_w,
             gg.screen_h/gg.case_h));
         ~Map();
 
         void renderTo(sf::RenderTarget &target);
+
+        void placeBuilding(const sf::Vector2i &pos, const std::string &type,
+            const bool &force);
+        void placeBuilding(const unsigned int &x, const unsigned int &y,
+            const std::string &type, const bool &force);
 
         std::string getTileType(const sf::Vector2i &pos) const;
         std::string getTileType(const unsigned int &x, const unsigned int &y)
@@ -50,7 +57,15 @@ class Map
         bool isInsideMap(const unsigned int &x, const unsigned int &y) const;
 
     private:
-        std::vector< std::vector<GameEntity*> > m_tiles;
+        template <typename Archive>
+        void serialize(Archive &ar, const unsigned int &version)
+        {
+            ar &BOOST_SERIALIZATION_NVP(m_tiles);
+            ar &BOOST_SERIALIZATION_NVP(m_buildings);
+        }
+
+        std::vector< std::vector<GameEntity*> > m_tiles; /**<  Vector of tiles.*/
+        std::list<GameEntity*> m_buildings; /**< List of buildings. */
 };
 
 #endif /* MAP_HPP */
