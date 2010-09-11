@@ -87,6 +87,30 @@ class LuaVM : public Singleton<LuaVM>
             }
         }
 
+        /** \brief Extracts a lua variable (as copy so to use for simple objects like strings or numbers).
+        *
+        * \param name Variable's name.
+        * \return A copy of the variable or the default of Type in case of error.
+        */
+        template <typename Type>
+        Type extractVariable(const std::string &name)
+        {
+            using namespace luabind;
+
+            Type toReturn;
+            try
+            {
+                toReturn = object_cast<Type>(globals(luaVm)[name]);
+            }
+            catch (const std::exception &exception)
+            {
+                std::cout << "[LUA] : variable '" << name << "' extracting error : "
+                    << exception.what() << "\n";
+                toReturn = Type();
+            }
+            return toReturn;
+        }
+
     private:
         LuaVM()
         {

@@ -17,19 +17,17 @@ Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H, 32), "Open Advanced War"),
     App.UseVerticalSync(true);
 
     // Window icon
-    try
+    std::string icon = LuaVM::getInstance().extractVariable<std::string>(
+        ICON_VARIABLE);
+    if (!icon.empty()) // Extraction was OK
     {
-        std::string icon = luabind::object_cast<std::string>(
-            luabind::globals(LuaVM::getInstance().getLua())[ICON_VARIABLE]);
-        Image *imagePtr = gImageManager.getResource(gFph(icon));
+        std::string toLoad = gFph(icon);
+        if (toLoad.empty())
+            toLoad = icon;
+        Image *imagePtr = gImageManager.getResource(toLoad);
         if (imagePtr != 0)
             App.SetIcon(imagePtr->GetWidth(), imagePtr->GetHeight(),
                 imagePtr->GetPixelsPtr());
-    }
-    catch (const std::exception &exception)
-    {
-        std::cout << "[LUA] : variable '" << ICON_VARIABLE << "' extracting error : "
-            << exception.what() << "\n";
     }
 }
 
