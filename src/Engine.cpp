@@ -2,6 +2,11 @@
 #include "db/Database.hpp"
 #include "gui/HudManager.hpp"
 #include "Map.hpp"
+#include "lua/LuaVirtualMachine.hpp"
+#include "tools/ImageManager.hpp"
+#include "tools/FilesPathHandler.hpp"
+
+const std::string ICON_VARIABLE = "ICON_PATH";
 
 using namespace sf;
 
@@ -10,6 +15,22 @@ Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H, 32), "Open Advanced War"),
 {
     App.SetFramerateLimit(60);
     App.UseVerticalSync(true);
+
+    // Window icon
+    try
+    {
+        std::string icon = luabind::object_cast<std::string>(
+            luabind::globals(LuaVM::getInstance().getLua())[ICON_VARIABLE]);
+        Image *imagePtr = gImageManager.getResource(gFph(icon));
+        if (imagePtr != 0)
+            App.SetIcon(imagePtr->GetWidth(), imagePtr->GetHeight(),
+                imagePtr->GetPixelsPtr());
+    }
+    catch (const std::exception &exception)
+    {
+        std::cout << "[LUA] : variable '" << ICON_VARIABLE << "' extracting error : "
+            << exception.what() << "\n";
+    }
 }
 
 Engine::~Engine()

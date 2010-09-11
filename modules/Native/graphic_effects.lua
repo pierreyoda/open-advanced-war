@@ -15,9 +15,12 @@ function onMouseOverGameEntity(entity)
 	if (entity == nil) then
 		return
 	end
-	if (entity:getClass() == TILE) then
+	local class = entity:getClass()
+	if (class == TILE) then
 		tileOvered(entity)
 		return
+	elseif (class == BUILDING) then
+		print "Over a building!"
 	end
 end
 

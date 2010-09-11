@@ -40,7 +40,7 @@ void Map::renderTo(sf::RenderTarget &target)
             ptr->xsprite().update();
             target.Draw(ptr->xspriteConst());
         }
-    for (std::list<GameEntity*>::iterator iter = m_buildings.begin();
+    for (list<GameEntity*>::iterator iter = m_buildings.begin();
         iter != m_buildings.end(); iter++)
     {
             if (*iter == 0)
@@ -57,21 +57,35 @@ void Map::onMouseOver(const sf::Vector2i &tilePos)
         return; // Already selected
     GameEntity *ptr = 0;
     bool stop = false;
-    for (unsigned int i = 0; i < m_tiles.size(); i++)
+    for (list<GameEntity*>::iterator iter = m_buildings.begin();
+        iter != m_buildings.end(); iter++)
     {
-        for (unsigned int j = 0; j < m_tiles[i].size(); j++)
+        if (*iter == 0)
+            continue;
+        if ((*iter)->position() == tilePos)
         {
-            if (m_tiles[i][j] != 0 && m_tiles[i][j]->position() == tilePos)
-            {
-                ptr = m_tiles[i][j];
-                stop = true;
-                break;
-            }
-        }
-        if (stop)
+            ptr = (*iter);
             break;
+        }
     }
-    if (ptr == 0)
+    if (ptr == 0) // Still not found...
+        {
+        for (unsigned int i = 0; i < m_tiles.size(); i++)
+        {
+            for (unsigned int j = 0; j < m_tiles[i].size(); j++)
+            {
+                if (m_tiles[i][j] != 0 && m_tiles[i][j]->position() == tilePos)
+                {
+                    ptr = m_tiles[i][j];
+                    stop = true;
+                    break;
+                }
+            }
+            if (stop)
+                break;
+        }
+    }
+    if (ptr == 0) // Not found : exiting
         return;
     try // Calling lua function "onMouseNoMoreOverGameEntity"
     {

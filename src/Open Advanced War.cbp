@@ -130,6 +130,9 @@
 		<Unit filename="lua\LuaBinds.hpp" />
 		<Unit filename="lua\LuaVirtualMachine.hpp" />
 		<Unit filename="main.cpp" />
+		<Unit filename="resources.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
 		<Unit filename="tools\FilesPathHandler.hpp" />
 		<Unit filename="tools\ImageManager.cpp" />
 		<Unit filename="tools\ImageManager.hpp" />
