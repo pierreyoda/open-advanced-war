@@ -6,7 +6,7 @@
 
 using namespace std;
 
-Map::Map(const sf::Vector2ui &size)
+Map::Map(const sf::Vector2ui &size) : m_prevMouseOver(0)
 {
     for (unsigned int i = 0; i < size.y; i++)
     {
@@ -47,6 +47,53 @@ void Map::renderTo(sf::RenderTarget &target)
                 continue;
             (*iter)->xsprite().update();
             target.Draw((*iter)->xspriteConst());
+    }
+}
+
+/// TODO (Pierre-Yves#3#): [SCRIPTING] Simplifiate lua function calling
+void Map::onMouseOver(const sf::Vector2i &tilePos)
+{
+    if (m_prevMouseOver != 0 && m_prevMouseOver->position() == tilePos)
+        return; // Already selected
+    GameEntity *ptr = 0;
+    bool stop = false;
+    for (unsigned int i = 0; i < m_tiles.size(); i++)
+    {
+        for (unsigned int j = 0; j < m_tiles[i].size(); j++)
+        {
+            if (m_tiles[i][j] != 0 && m_tiles[i][j]->position() == tilePos)
+            {
+                ptr = m_tiles[i][j];
+                stop = true;
+                break;
+            }
+        }
+        if (stop)
+            break;
+    }
+    if (ptr == 0)
+        return;
+    try // Calling lua function "onMouseNoMoreOverGameEntity"
+    {
+        luabind::call_function<void>(LuaVM::getInstance().getLua(),
+            "onMouseNoMoreOverGameEntity",
+            m_prevMouseOver);
+    }
+    catch (const exception &exception)
+    {
+        cerr << lua_tostring(LuaVM::getInstance().getLua(), -1) << "\n";
+    }
+    m_prevMouseOver = ptr;
+    try // Calling lua function "onMouseOverGameEntity"
+    {
+
+        luabind::call_function<void>(LuaVM::getInstance().getLua(),
+            "onMouseOverGameEntity",
+            ptr);
+    }
+    catch (const exception &exception)
+    {
+        cerr << lua_tostring(LuaVM::getInstance().getLua(), -1) << "\n";
     }
 }
 

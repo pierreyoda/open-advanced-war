@@ -9,9 +9,17 @@ Game::Game() : m_mapPtr(0)
     DatabaseSerialization::importFromXml("a");
     FilesPathHandler::scanDirectory("modules/Native/", gFph);
     LuaVM::getInstance().include(gFph("main.lua"));
+    m_mapPtr = new Map();
 }
 
 Game::~Game()
 {
     delete m_mapPtr;
+}
+
+void Game::onMouseOver(const sf::Vector2i &mousePos)
+{
+    sf::Vector2i mousePosTiles(GameEntity::pixelsToTiles(mousePos));
+    if (m_mapPtr != 0)
+        m_mapPtr->onMouseOver(mousePosTiles);
 }

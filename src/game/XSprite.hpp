@@ -59,8 +59,31 @@ class XSprite : public sf::Sprite
         */
         void restartAnim();
 
+        /** \brief Sets the filter.
+        *
+        * \param filter New filter.
+        * \param use Use the filter (true by default).
+        */
+        void setFilter(const sf::Color &filter, const bool &use);
+        void setFilter(const sf::Color &filter) { setFilter(filter, true);} // for Lua
+        /** \brief Toggles filter usage.
+        */
+        void useFilter(const bool &use);
+
         bool isAnimPaused() const;
         bool isAnimStopped() const;
+        /** \brief m_useFilter accessor.
+        *
+        * \see m_useFilter
+        * \return m_useFilter.
+        */
+        bool isFilterUsed() const { return m_useFilter; }
+        /** \brief m_filter accessor.
+        *
+        * \see m_filter
+        * \return m_filter.
+        */
+        sf::Color currentFilter() const { return m_filter; }
         /** \brief m_currentFrame accessor.
         *
         * \see m_currentFrame
@@ -69,10 +92,14 @@ class XSprite : public sf::Sprite
         unsigned int currentFrame() const { return m_currentFrame; }
 
     private:
+        void updateFilter(const bool &remove = false);
+
         bool m_loop; /**< Play in buckle? */
         unsigned int m_currentFrame; /**< Current frame ID. */
         const db::Animation *m_anim; /**< Pointer to animation to play. */
         PausableClock m_timer; /**< Pausable clock. */
+        bool m_useFilter; /**< Apply filter? */
+        sf::Color m_filter; /**< Eventual color to apply as filter. */
 };
 
 #endif /* XSPRITE_HPP */

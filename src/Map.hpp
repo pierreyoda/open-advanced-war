@@ -26,6 +26,8 @@ class Map
 
         void renderTo(sf::RenderTarget &target);
 
+        void onMouseOver(const sf::Vector2i &tilePos);
+
         void placeBuilding(const sf::Vector2i &pos, const std::string &type,
             const bool &force);
         void placeBuilding(const unsigned int &x, const unsigned int &y,
@@ -66,6 +68,7 @@ class Map
 
         std::vector< std::vector<GameEntity*> > m_tiles; /**<  Vector of tiles.*/
         std::list<GameEntity*> m_buildings; /**< List of buildings. */
+        GameEntity *m_prevMouseOver;
 };
 
 #endif /* MAP_HPP */

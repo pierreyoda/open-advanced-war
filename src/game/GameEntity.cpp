@@ -3,7 +3,7 @@
 #include "../db/Database.hpp"
 
 GameEntity::GameEntity(const std::string &type) :
-    m_classe(findClasseFromType(type)), m_pos(0, 0), m_type(type),
+    m_class(findClassFromType(type)), m_pos(0, 0), m_type(type),
     m_alias(/*TODO*/), m_orientation(RIGHT)
 {
 
@@ -26,7 +26,7 @@ void GameEntity::setPosition(const int &x, const int &y)
 
 void GameEntity::updatePosition()
 {
-    m_xsprite.SetPosition(m_pos.x * gg.case_w, m_pos.y * gg.case_h);
+    m_xsprite.SetPosition(tilesToPixels(m_pos));
 }
 
 void GameEntity::setOrientation(const Orientation &orientation)
@@ -46,7 +46,7 @@ void GameEntity::playAnim(const std::string &anim, const bool &loop)
         m_xsprite.playAnim(ptr->findAnim(anim), loop);
 }
 
-Classes GameEntity::findClasseFromType(const std::string &type)
+Classes GameEntity::findClassFromType(const std::string &type)
 {
     if (database.findTile(type) != 0)
         return TILE;
@@ -56,3 +56,19 @@ Classes GameEntity::findClasseFromType(const std::string &type)
         return UNIT;
     return NONE;
 }
+
+sf::Vector2i GameEntity::pixelsToTiles(const sf::Vector2i &pos)
+{
+    return pixelsToTiles(sf::Vector2f(pos.x, pos.y));
+}
+
+sf::Vector2i GameEntity::pixelsToTiles(const sf::Vector2f &pos)
+{
+    return sf::Vector2i((int)pos.x / gg.case_w, (int)pos.y / gg.case_h);
+}
+
+sf::Vector2f GameEntity::tilesToPixels(const sf::Vector2i &pos)
+{
+    return sf::Vector2f(pos.x * gg.case_w, pos.y * gg.case_h);
+}
+

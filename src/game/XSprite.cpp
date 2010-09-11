@@ -4,7 +4,8 @@
 #include "../tools/ImageManager.hpp"
 #include "../tools/FilesPathHandler.hpp"
 
-XSprite::XSprite() : m_loop(false), m_currentFrame(0), m_anim(0)
+XSprite::XSprite() : m_loop(false), m_currentFrame(0), m_anim(0),
+    m_useFilter(false), m_filter(0, 0, 0, 0)
 {
 
 }
@@ -34,7 +35,9 @@ void XSprite::update()
             else
                 stopAnim();
         }
+        updateFilter(true);
         setFrame(m_currentFrame);
+        updateFilter();
     }
 }
 
@@ -89,6 +92,26 @@ void XSprite::restartAnim()
     stopAnim();
     startAnim();
     setFrame(0);
+}
+
+void XSprite::setFilter(const sf::Color &filter, const bool &use)
+{
+    m_filter = filter;
+    useFilter(use);
+}
+
+void XSprite::useFilter(const bool &use)
+{
+    m_useFilter = use;
+    updateFilter();
+}
+
+void XSprite::updateFilter(const bool &remove)
+{
+    if (remove || !m_useFilter)
+        SetColor(sf::Color(255, 255, 255, 255)); // Removes eventual filter
+    else
+        SetColor(m_filter);
 }
 
 bool XSprite::isAnimPaused() const

@@ -104,6 +104,15 @@ void LuaBinds::exportTools(lua_State *lua)
                 .def(constructor<sf::Vector2i>())
                 .def_readwrite("x", &sf::Vector2i::x)
                 .def_readwrite("y", &sf::Vector2i::y)
+            // sf::Color
+            , class_<sf::Color>("Color")
+                .def(constructor< >())
+                .def(constructor<sf::Uint8, sf::Uint8, sf::Uint8>())
+                .def(constructor<sf::Uint8, sf::Uint8, sf::Uint8, sf::Uint8>())
+                .def_readwrite("r", &sf::Color::r)
+                .def_readwrite("g", &sf::Color::g)
+                .def_readwrite("b", &sf::Color::b)
+                .def_readwrite("a", &sf::Color::a)
         ]
         // PausableClock
         , class_<PausableClock>("PausableClock")
@@ -179,8 +188,15 @@ void LuaBinds::exportGame(lua_State *lua)
                 .def("stopAnim", &XSprite::stopAnim)
                 .def("startAnim", &XSprite::startAnim)
                 .def("restartAnim", &XSprite::startAnim)
+                .def("setFilter", (void(XSprite::*)(const sf::Color&))
+                    &XSprite::setFilter)
+                .def("setFilter", (void(XSprite::*)(const sf::Color&,
+                    const bool&))&XSprite::setFilter)
+                .def("useFilter", &XSprite::useFilter)
                 .def("isAnimPaused", &XSprite::isAnimPaused)
                 .def("isAnimStopped", &XSprite::isAnimStopped)
+                .def("isFilterUsed", &XSprite::isFilterUsed)
+                .def("currentFilter", &XSprite::currentFilter)
                 .def("currentFrame", &XSprite::currentFrame)
             // GameEntity
             , class_<GameEntity>("GameEntity")
@@ -193,7 +209,7 @@ void LuaBinds::exportGame(lua_State *lua)
                     &GameEntity::playAnim)
                 .def("playAnim", (void(GameEntity::*)(const std::string&,
                     const bool&))&GameEntity::playAnim)
-                .def("classe", &GameEntity::classe)
+                .def("getClass", &GameEntity::getClass)
                 .def("type", &GameEntity::type)
                 .def("alias", &GameEntity::alias)
                 .def("position", &GameEntity::position)
@@ -211,10 +227,10 @@ void LuaBinds::exportGame(lua_State *lua)
                 ]
                 .enum_("Classes") // ENUM - Classes
                 [
-                    value("NONE", 1),
-                    value("TILE", 2),
-                    value("BUILDING", 3),
-                    value("UNIT", 4)
+                    value("NONE", 0),
+                    value("TILE", 1),
+                    value("BUILDING", 2),
+                    value("UNIT", 3)
                 ]
     ];
 }
