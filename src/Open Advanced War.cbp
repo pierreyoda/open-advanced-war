@@ -118,6 +118,8 @@
 		<Unit filename="extern\sfgui\Widget.cpp" />
 		<Unit filename="extern\sfgui\WidgetFactory.cpp" />
 		<Unit filename="extern\sfgui\YAML.cpp" />
+		<Unit filename="game\ArmyGeneral.cpp" />
+		<Unit filename="game\ArmyGeneral.hpp" />
 		<Unit filename="game\GameEntity.cpp" />
 		<Unit filename="game\GameEntity.hpp" />
 		<Unit filename="game\Unit.cpp" />

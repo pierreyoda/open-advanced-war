@@ -15,6 +15,7 @@ class Singleton
         Singleton() {}
         Singleton(const Singleton &s) { }
         Singleton &operator=(const Singleton &) { return *this; }
+        virtual ~Singleton() { }
 };
 
 #endif /* SINGLETON_HPP */
