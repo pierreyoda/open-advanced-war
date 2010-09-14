@@ -6,6 +6,7 @@
 #else
     #define db_member def_readonly // Read-only access
     #include "../Map.hpp"
+    #include "../Game.hpp"
     #include "../tools/PausableClock.hpp"
     #include "../tools/FilesPathHandler.hpp"
 #endif /* DB_EXPORTER */
@@ -138,8 +139,11 @@ void LuaBinds::exportGame(lua_State *lua)
     using namespace luabind;
     module(lua)
     [
+        // Game
+        class_<Game>("Game")
+            .def("drawXSprite", &Game::drawXSprite)
         // Map
-        class_<Map>("Map")
+        , class_<Map>("Map")
             // Building
             .def("placeBuilding", (void(Map::*)(const unsigned int&,
                 const unsigned int&, const std::string&, const bool&))
@@ -181,8 +185,11 @@ void LuaBinds::exportGame(lua_State *lua)
                 &Map::isInsideMap)
             // XSprite
             , class_<XSprite>("XSprite")
+                .def(constructor< >())
                 .def("playAnim", (void(XSprite::*)(const db::Animation *anim))
                     &XSprite::playAnim)
+                .def("playAnim", (void(XSprite::*)(const db::Animation *anim,
+                   const bool&))&XSprite::playAnim)
                 .def("setFrame", &XSprite::setFrame)
                 .def("pauseAnim", &XSprite::pauseAnim)
                 .def("stopAnim", &XSprite::stopAnim)

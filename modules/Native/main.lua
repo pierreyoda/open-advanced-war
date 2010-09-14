@@ -3,7 +3,7 @@ Part of Native module for Open Advanced War
 Module's entry in-game. ]]
 
 -- "Constantes" DO NOT MODIFY!
-MODULE_NAME, MODULE_DIR = "Native", "modules/Native/"
+MODULE_NAME, MODULE_DIR = "Native", "modules/Native"
 DATABASE_PATH = "database.xml"
 ICON_PATH = "tank.png" -- Window's icon (will be extracted)
 -- /"Constantes"
@@ -15,4 +15,4 @@ NONE, TILE, BUILDING, UNIT =
 	GameEntity.BUILDING,
 	GameEntity.UNIT
 
-vm:include("ai.lua;ingame_map.lua;graphic_effects.lua", MODULE_DIR)
+vm:include("ingame_map.lua;graphic_effects.lua;ai.lua", MODULE_DIR)

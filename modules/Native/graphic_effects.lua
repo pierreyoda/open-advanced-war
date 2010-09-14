@@ -3,6 +3,9 @@ Part of Native module for Open Advanced War
 Manages custom graphic effects. ]]
 
 tileOveredFilter = sf.Color(175, 200, 250, 240)
+cursorFrame = db.Frame(0, 0, 32, 32, 1)
+cursorAnim = db.Anim("base", "cursor.png") cursorAnim:addFrame(cursorFrame)
+cursor = XSprite() cursor:playAnim(cursorAnim)
 
 function tileOvered(tile)
 	tile:xsprite():setFilter(tileOveredFilter)
@@ -18,9 +21,11 @@ function onMouseOverGameEntity(entity)
 	local class = entity:getClass()
 	if (class == TILE) then
 		tileOvered(entity)
+		--game:drawXSprite(cursor)
 		return
 	elseif (class == BUILDING) then
 		print "Over a building!"
+		entity:xsprite():setFilter(sf.Color(55, 55, 55))
 	end
 end
 

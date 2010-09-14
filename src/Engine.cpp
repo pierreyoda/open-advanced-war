@@ -11,7 +11,7 @@ const std::string ICON_VARIABLE = "ICON_PATH";
 using namespace sf;
 
 Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H, 32), "Open Advanced War"),
-    m_takeScreen(false)
+    game(App), m_takeScreen(false)
 {
     App.SetFramerateLimit(60);
     App.UseVerticalSync(true);
@@ -29,6 +29,8 @@ Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H, 32), "Open Advanced War"),
             App.SetIcon(imagePtr->GetWidth(), imagePtr->GetHeight(),
                 imagePtr->GetPixelsPtr());
     }
+    // Exposing game
+    //luabind::globals(LuaVM::getInstance().getLua())["game"] = game;
 }
 
 Engine::~Engine()

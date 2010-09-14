@@ -1,10 +1,11 @@
+#include <SFML/Graphics.hpp>
 #include "Game.hpp"
 #include "db/DatabaseSerialization.hpp"
 #include "tools/FilesPathHandler.hpp"
 #include "Map.hpp"
 #include "lua/LuaVirtualMachine.hpp"
 
-Game::Game() : m_mapPtr(0)
+Game::Game(sf::RenderTarget &target) : target(target), m_mapPtr(0)
 {
     DatabaseSerialization::importFromXml("a");
     FilesPathHandler::scanDirectory("modules/Native/", gFph);
@@ -22,4 +23,10 @@ void Game::onMouseOver(const sf::Vector2i &mousePos)
     sf::Vector2i mousePosTiles(GameEntity::pixelsToTiles(mousePos));
     if (m_mapPtr != 0)
         m_mapPtr->onMouseOver(mousePosTiles);
+}
+
+void Game::drawXSprite(XSprite &xsprite)
+{
+    xsprite.update();
+    target.Draw(xsprite);
 }
