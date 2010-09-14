@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <algorithm>
 #include "../tools/Singleton.hpp"
 #include "LuaBinds.hpp"
@@ -60,9 +62,11 @@ class LuaVM : public Singleton<LuaVM>
         {
             std::vector<std::string> files;
             boost::algorithm::split(files, toInclude, boost::is_any_of(";"));
+            boost::filesystem::path dir = boost::filesystem::initial_path() / prefix;
             for (unsigned int i = 0; i < files.size(); i++)
             {
-                const std::string &file = prefix + files[i];
+                const boost::filesystem::path file = dir / files[i];
+                const std::string fileString = file.string();
                 l_string::const_iterator iter = std::find(
                     filesAlreadyLoaded.begin(), filesAlreadyLoaded.end(), file);
                 if (iter != filesAlreadyLoaded.end())
@@ -70,10 +74,10 @@ class LuaVM : public Singleton<LuaVM>
                     std::cerr << "Warning : '" << file << "' is already loaded. Skipping...\n";
                     continue;
                 }
-                filesAlreadyLoaded.push_back(file);
+                filesAlreadyLoaded.push_back(fileString);
                 try
                 {
-                    if (luaL_dofile(luaVm, file.c_str()) != 0)
+                    if (luaL_dofile(luaVm, fileString.c_str()) != 0)
                         throw std::string(lua_tostring(luaVm, -1));
                 }
                 catch (const std::string &error)
