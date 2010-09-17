@@ -139,5 +139,7 @@ BOOST_CLASS_VERSION(db::Frame, 1);
 BOOST_CLASS_VERSION(db::Animation, 1);
 BOOST_CLASS_VERSION(db::XSpriteItem, 1);
 BOOST_CLASS_VERSION(db::Category, 1);
+BOOST_CLASS_VERSION(db::IntCaracteristic, 1);
+BOOST_CLASS_VERSION(db::BoolCaracteristic, 1);
 
 #endif /* DATABASE_HPP */

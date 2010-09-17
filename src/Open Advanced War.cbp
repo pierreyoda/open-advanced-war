@@ -96,6 +96,8 @@
 		<Unit filename="db\Unit.hpp" />
 		<Unit filename="db\Weapon.hpp" />
 		<Unit filename="db\XSpriteItem.hpp" />
+		<Unit filename="extern\Stroke.cpp" />
+		<Unit filename="extern\Stroke.h" />
 		<Unit filename="extern\sfgui\Align.cpp" />
 		<Unit filename="extern\sfgui\AudioWidget.cpp" />
 		<Unit filename="extern\sfgui\BaseWidgetFactory.cpp" />

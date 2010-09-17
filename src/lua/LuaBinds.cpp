@@ -74,6 +74,8 @@ void LuaBinds::exportDatabase(lua_State *lua)
         // Unit
         , class_<Unit, bases<XSpriteItem> >("Unit")
             .def(constructor<const std::string&>())
+            .def("addIntCaracteristic", &Unit::addIntCaracteristic)
+            .def("addBoolCaracteristic", &Unit::addBoolCaracteristic)
         // Building
         , class_<Building, bases<XSpriteItem> >("Building")
             .def(constructor<const std::string&, const int&, const bool&>())
