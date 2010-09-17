@@ -3,7 +3,10 @@
 #include "../db/Database.hpp"
 #include "Unit.hpp"
 
-ArmyGeneral::ArmyGeneral()
+using namespace std;
+
+ArmyGeneral::ArmyGeneral(const unsigned int &id, const string &faction) :
+    m_id(id), m_faction(faction)
 {
 
 }
@@ -11,6 +14,19 @@ ArmyGeneral::ArmyGeneral()
 ArmyGeneral::~ArmyGeneral()
 {
 
+}
+
+void ArmyGeneral::addUnit(const string &position, const string &type)
+{
+
+}
+
+unsigned int ArmyGeneral::getUnitId(sf::Vector2i &pos)
+{
+    for (l_units::iterator iter = m_units.begin(); iter != m_units.end(); iter++)
+        if ((*iter) != 0 && (*iter)->position() == pos)
+            return (*iter)->id();
+    return 0; // not found
 }
 
 void drawArmy(sf::RenderTarget &target, ArmyGeneral &army)

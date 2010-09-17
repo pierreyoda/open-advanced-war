@@ -12,10 +12,38 @@
 #include "LuaBinds.hpp"
 #include "../db/DatabaseItem.hpp"
 
+/* A macro that facilitates lua function calling.
+* LUA : Pointer to lua_State used.
+* RTYPE : Return type
+* NAME : function name
+* ERROR : variable to change in case of error
+* ARGS : arguments (variadic)
+*/
+#define CALL_LUA_FUNCTION(LUA, RTYPE, NAME, ERROR, ARGS...) \
+    try { \
+    luabind::call_function<RTYPE>(LUA, \
+    NAME, \
+    ARGS); } \
+    catch (const exception &exception) { std::cerr << lua_tostring(LUA, -1) << "\n"; ERROR=true; }
+
+/* A macro that facilitates lua function calling (with taking in account what is returned).
+* LUA : Pointer to lua_State used.
+* RTYPE : Return type
+* RVAR : Return variable
+* NAME : function name
+* ERROR : variable to change in case of error
+* ARGS : arguments (variadic)
+*/
+#define CALL_LUA_RFUNCTION(LUA, RTYPE, RVAR, NAME, ERROR, ARGS...) \
+    try { \
+    RVAR = luabind::call_function<RTYPE>(LUA, \
+    NAME, \
+    ARGS); } \
+    catch (const exception &exception) { std::cerr << lua_tostring(LUA, -1) << "\n"; ERROR=true; }
+
 /// TODO (Pierre-Yves#1#): [ERRORS] Add a system (list<string> ?) of function that does not work not to call them anymore (to avoid thousand of errors in console)
 /** \brief Handles lua interpreter.
-*/
-
+*/
 class LuaVM : public Singleton<LuaVM>
 {
     friend class Singleton<LuaVM>;

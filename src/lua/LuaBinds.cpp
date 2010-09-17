@@ -76,6 +76,12 @@ void LuaBinds::exportDatabase(lua_State *lua)
             .def(constructor<const std::string&>())
             .def("addIntCaracteristic", &Unit::addIntCaracteristic)
             .def("addBoolCaracteristic", &Unit::addBoolCaracteristic)
+            .enum_("Tribool")
+            [
+                value("INDETERMINATE", 2),
+                value("TRUE", 1),
+                value("FALSE", 0)
+            ]
         // Building
         , class_<Building, bases<XSpriteItem> >("Building")
             .def(constructor<const std::string&, const int&, const bool&>())

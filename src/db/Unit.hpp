@@ -3,6 +3,25 @@
 
 #include "XSpriteItem.hpp"
 
+namespace
+{
+    /** \brief A tri-bool enumeration.
+    */
+    enum Tribool
+    {
+        INDETERMINATE,
+        TRUE_ = 1,
+        FALSE_ = 0
+    };
+
+    Tribool boolToTribool(const bool &boolean)
+    {
+        if (boolean)
+            return TRUE_;
+        return FALSE_;
+    }
+}
+
 namespace db
 {
     /** \brief A (template) class that represents a caracteristic (name and [maximum in most case] value).
@@ -51,7 +70,7 @@ namespace db
             Unit(const std::string &name) : XSpriteItem(name)
             { }
 
-            /** \brief Add a caracteristic, integrer. If already existing, will be replaced.
+            /** \brief Add a caracteristic, integer. If already existing, will be replaced.
             *
             * \param name Caracteristic's name.
             * \param value Caracteristic's value.
@@ -70,6 +89,32 @@ namespace db
                 addCaracteristic<bool>(name, value, m_boolCaracteristics);
             }
 
+            /** \brief Find a caracteristic., integer Returns default value (0) if not found.
+            *
+            * \param name Caracteristic's name.
+            */
+            int findIntCaracteristic(const std::string &name)
+            {
+                IntCaracteristic *ptr = findCaracteristic<int>(name,
+                    m_intCaracteristics);
+                if (ptr == 0) // not found
+                    return 0;
+                return ptr->value;
+            }
+
+            /** \brief Find a caracteristic., boolean. Returns "indeterminate" value if not found.
+            *
+            * \param name Caracteristic's name.
+            */
+            Tribool findBoolCaracteristic(const std::string &name)
+            {
+                BoolCaracteristic *ptr = findCaracteristic<bool>(name,
+                    m_boolCaracteristics);
+                if (ptr == 0) // not found
+                    return INDETERMINATE;
+                return boolToTribool(ptr->value);
+            }
+
         private:
             Unit() : XSpriteItem("")
             { }
@@ -78,16 +123,23 @@ namespace db
             void addCaracteristic(const std::string &name, const Type &value,
                 std::list< Caracteristic<Type> > &in)
             {
+                Caracteristic<Type> *ptr = findCaracteristic(name, in);
+                if (ptr != 0) // found
+                    ptr->value = value;
+                else
+                    in.push_back(Caracteristic<Type>(name, value));
+            }
+            template <typename Type>
+            Caracteristic<Type> *findCaracteristic(const std::string &name,
+                std::list< Caracteristic<Type> > &in)
+            {
                 for (typename std::list< Caracteristic<Type> >::iterator iter = in.begin();
                     iter != in.end(); iter++)
                 {
                     if (iter->name == name)
-                    {
-                        iter->value = value;
-                        return;
-                    }
+                        return &*iter;
                 }
-                in.push_back(Caracteristic<Type>(name, value));
+                return 0;
             }
 
             std::list<IntCaracteristic> m_intCaracteristics;

@@ -99,38 +99,24 @@ void Map::onMouseOver(const sf::Vector2i &tilePos)
         cerr << lua_tostring(LuaVM::getInstance().getLua(), -1) << "\n";
         m_prevMouseOver = 0;
     }
+    static bool luaError = false, luaError2 = false;
+    if (!luaError)
+        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+            "onMouseNoMoreOverGameEntity", luaError, m_prevMouseOver);
     m_prevMouseOver = ptr;
-    try // Calling lua function "onMouseOverGameEntity"
-    {
-
-        luabind::call_function<void>(LuaVM::getInstance().getLua(),
-            "onMouseOverGameEntity",
-            ptr);
-    }
-    catch (const exception &exception)
-    {
-        cerr << lua_tostring(LuaVM::getInstance().getLua(), -1) << "\n";
-    }
+    if (!luaError2)
+        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+            "onMouseOverGameEntity", luaError2, ptr)
 }
 
 void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
     const bool &force)
 {
     bool ok = false;
-    try // Calling lua function "canPlaceBuilding"
-    {
-        ok = luabind::call_function<bool>(LuaVM::getInstance().getLua(),
-            "canPlaceBuilding",
-            type,
-            pos,
-            this,
-            force);
-    }
-    catch (const exception &exception)
-    {
-        cerr << lua_tostring(LuaVM::getInstance().getLua(), -1)<< "\n";
-        ok = false;
-    }
+    static bool luaError = false;
+    if (!luaError)
+        CALL_LUA_RFUNCTION(LuaVM::getInstance().getLua(), bool, ok,
+           "canPlaceBuilding", luaError, type, pos, this, force)
     if (!ok)
         return;
     GameEntity *building = new GameEntity(type);
@@ -205,17 +191,10 @@ void Map::setTile(const unsigned int &x, const unsigned int &y,
     GameEntity *tile = new GameEntity(type);
     tile->setPosition(x, y);
     tile->playAnim("base", true);
-    try
-    {
-        luabind::call_function<void>(LuaVM::getInstance().getLua(), // Calling lua function "onTilePlaced"
-            "onTilePlaced",
-            tile,
-            this);
-    }
-    catch (const exception &exception)
-    {
-        cerr << lua_tostring(LuaVM::getInstance().getLua(), -1)<< "\n";
-    }
+    static bool luaError = false;
+    if (!luaError)
+        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, "onTilePlaced",
+            luaError, tile, this)
     m_tiles[y][x] = tile;
 }
 
@@ -245,17 +224,10 @@ void Map::setTileOrientation(const unsigned int &x, const unsigned int &y,
     if (ptr == 0)
         return;
     ptr->setOrientation(orientation);
-    try
-    {
-        luabind::call_function<void>(LuaVM::getInstance().getLua(), // Calling lua function "onTilePlaced"
-            "onTileOriented",
-            ptr,
-            this);
-    }
-    catch (const exception &exception)
-    {
-        cerr << lua_tostring(LuaVM::getInstance().getLua(), -1)<< "\n";
-    }
+    static bool luaError = false;
+    if (!luaError)
+        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, "onTileOriented",
+            luaError, ptr, this)
 }
 
 bool Map::isInsideMap(const sf::Vector2i &pos) const

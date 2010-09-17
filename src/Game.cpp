@@ -23,6 +23,7 @@ Game::~Game()
 void Game::initTestMap()
 {
     m_mapPtr = new Map(); // for test - loading default map
+    m_armies.push_back(new ArmyGeneral(m_armies.size(), "US"));
 }
 
 void Game::onMouseOver(const sf::Vector2i &mousePos)

@@ -3,6 +3,7 @@
 
 #include <list>
 #include <boost/serialization/serialization.hpp>
+#include <SFML/System/Vector2.hpp>
 
 namespace sf
 {
@@ -23,17 +24,25 @@ class ArmyGeneral
     friend void drawArmy(sf::RenderTarget &target, ArmyGeneral &army); // for drawing (external)
 
     public:
-        ArmyGeneral();
+        ArmyGeneral(const unsigned int &id, const std::string &faction);
         ~ArmyGeneral();
+
+        void addUnit(const std::string &position, const std::string &type);
+
+        unsigned int getUnitId(sf::Vector2i &pos);
+
+        unsigned int id() const { return m_id; }
 
     private:
         template <typename Archive>
         void serialize(Archive &ar, const unsigned int &version)
         {
+            ar &BOOST_SERIALIZATION_NVP(m_id);
             ar &BOOST_SERIALIZATION_NVP(m_faction);
             ar &BOOST_SERIALIZATION_NVP(m_units);
         }
 
+        unsigned int m_id; /**< Unique identifier. */
         std::string m_faction; /**< Faction. */
         l_units m_units; /**< Units. */
 };
