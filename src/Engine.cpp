@@ -13,6 +13,9 @@ using namespace sf;
 Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H, 32), "Open Advanced War"),
     game(App), m_takeScreen(false)
 {
+    // Exposing game
+    luabind::globals(LuaVM::getInstance().getLua())["game"] = &game;
+
     App.SetFramerateLimit(60);
     App.UseVerticalSync(true);
 
@@ -29,8 +32,6 @@ Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H, 32), "Open Advanced War"),
             App.SetIcon(imagePtr->GetWidth(), imagePtr->GetHeight(),
                 imagePtr->GetPixelsPtr());
     }
-    // Exposing game
-    //luabind::globals(LuaVM::getInstance().getLua())["game"] = game;
 }
 
 Engine::~Engine()
@@ -40,11 +41,9 @@ Engine::~Engine()
 
 void Engine::run()
 {
+    game.initTestMap();
     Map *map = game.getMapPtr();
-    for (unsigned int i = 0; i < 25; i++)
-        map->setTile(i, 2, "Forest");
     map->setTile(3, 0, "Road");
-    map->setTile(3, 1, "Road");
     map->placeBuilding(10, 10, "Barrack", false);
 
     const Input &Input = App.GetInput();
@@ -70,7 +69,7 @@ void Engine::run()
         }
 
         App.Clear();
-            map->renderTo(App);
+            game.renderGame();
             HudManager::drawFps(App, App.GetFrameTime());
         App.Display();
 

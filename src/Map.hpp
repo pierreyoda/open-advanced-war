@@ -2,6 +2,7 @@
 #define MAP_HPP
 
 #include <vector>
+#include <boost/shared_ptr.hpp>
 #include "GameGlobals.hpp"
 #include "game/GameEntity.hpp"
 

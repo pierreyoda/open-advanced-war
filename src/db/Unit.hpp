@@ -5,6 +5,18 @@
 
 namespace db
 {
+    /** \brief A (template) class that represents a caracteristic (name and [maximum in most case] value).
+    */
+    template <typename Type>
+    struct Caracteristic
+    {
+        std::string name;
+        Type value;
+    };
+
+    typedef Caracteristic<int> IntCaracteristic;
+    typedef Caracteristic<bool> BoolCaracteristic;
+
     /**
     * \brief Contains informations to create a tile.
     */

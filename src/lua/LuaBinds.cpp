@@ -105,6 +105,13 @@ void LuaBinds::exportTools(lua_State *lua)
                 .def(constructor<sf::Vector2i>())
                 .def_readwrite("x", &sf::Vector2i::x)
                 .def_readwrite("y", &sf::Vector2i::y)
+            // sf::Vector2f (sf::Vector2<float>)
+            , class_<sf::Vector2f>("Vector2f")
+                .def(constructor< >())
+                .def(constructor<float, float>())
+                .def(constructor<sf::Vector2f>())
+                .def_readwrite("x", &sf::Vector2f::x)
+                .def_readwrite("y", &sf::Vector2f::y)
             // sf::Color
             , class_<sf::Color>("Color")
                 .def(constructor< >())
@@ -141,7 +148,9 @@ void LuaBinds::exportGame(lua_State *lua)
     [
         // Game
         class_<Game>("Game")
-            .def("drawXSprite", &Game::drawXSprite)
+            .def("startDrawingXSprite", &Game::startDrawingXSprite)
+            .def("stopDrawingXSprite",
+                &Game::stopDrawingXSprite)
         // Map
         , class_<Map>("Map")
             // Building
@@ -205,6 +214,10 @@ void LuaBinds::exportGame(lua_State *lua)
                 .def("isFilterUsed", &XSprite::isFilterUsed)
                 .def("currentFilter", &XSprite::currentFilter)
                 .def("currentFrame", &XSprite::currentFrame)
+                .def("SetPosition", (void(XSprite::*)(float, float))
+                    &XSprite::SetPosition)
+                .def("SetPosition", (void(XSprite::*)(const sf::Vector2f&))
+                    &XSprite::SetPosition)
             // GameEntity
             , class_<GameEntity>("GameEntity")
                 .def("setPosition", (void(GameEntity::*)(const sf::Vector2i&))
@@ -238,6 +251,16 @@ void LuaBinds::exportGame(lua_State *lua)
                     value("TILE", 1),
                     value("BUILDING", 2),
                     value("UNIT", 3)
+                ]
+                .scope // Static functions
+                [
+                    def("findClassFromType", &GameEntity::findClassFromType),
+                    def("pixelsToTiles", (sf::Vector2i(*)(const sf::Vector2i&))
+                        &GameEntity::pixelsToTiles),
+                    def("pixelsToTiles", (sf::Vector2i(*)(const sf::Vector2f&))
+                        &GameEntity::pixelsToTiles),
+                    def("tilesToPixels", (sf::Vector2f(*)(const sf::Vector2i&))
+                        &GameEntity::tilesToPixels)
                 ]
     ];
 }

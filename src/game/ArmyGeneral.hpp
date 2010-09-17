@@ -3,13 +3,13 @@
 
 #include <list>
 #include <boost/serialization/serialization.hpp>
-#include "Unit.hpp"
 
 namespace sf
 {
     class RenderTarget;
 }
 class ArmyGeneral;
+class Unit;
 
 void drawArmy(sf::RenderTarget &target, ArmyGeneral &army);
 

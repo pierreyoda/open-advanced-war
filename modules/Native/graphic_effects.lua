@@ -20,11 +20,12 @@ function onMouseOverGameEntity(entity)
 	end
 	local class = entity:getClass()
 	if (class == TILE) then
-		tileOvered(entity)
-		--game:drawXSprite(cursor)
+		--tileOvered(entity)
+		cursor:playAnim(cursorAnim)
+		cursor:SetPosition(GameEntity.tilesToPixels(entity:position()))
+		game:startDrawingXSprite(cursor, "cursor")
 		return
 	elseif (class == BUILDING) then
-		print "Over a building!"
 		entity:xsprite():setFilter(sf.Color(55, 55, 55))
 	end
 end
@@ -36,5 +37,11 @@ function onMouseNoMoreOverGameEntity(entity)
 	if (entity == nil) then
 		return
 	end
-	entity:xsprite():useFilter(false)
+	local class = entity:getClass()
+	if (class == TILE) then
+		game:stopDrawingXSprite("cursor") -- stop rendering
+	end
+	if (entity:xspriteConst():isFilterUsed()) then -- if a filter is applied...
+		entity:xsprite():useFilter(false) -- ...stop applying it
+	end
 end

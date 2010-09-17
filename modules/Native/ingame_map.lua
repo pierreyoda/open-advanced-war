@@ -94,6 +94,10 @@ called = false -- global, for test
 function onTilePlaced(tile, map)
 	if (not called) then -- test road intersection
 		called = true
+		for i = 0, 25, 1 do
+			map:setTile(i, 2, "Forest")
+		end
+		map:setTile(3, 1, "Road");
 		map:setTile(5, 5, "Road")
 		map:setTile(7, 5, "Road")
 		map:setTile(6, 4, "Road")

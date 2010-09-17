@@ -23,10 +23,11 @@ Map::Map(const sf::Vector2ui &size) : m_prevMouseOver(0)
 
 Map::~Map()
 {
+    m_prevMouseOver = 0;
     for (unsigned int i = 0; i < m_tiles.size(); i++)
         for (unsigned int j = 0; j < m_tiles[i].size(); j++)
             delete m_tiles[i][j];
-    m_tiles.clear();
+    delete m_prevMouseOver;
 }
 
 void Map::renderTo(sf::RenderTarget &target)
@@ -69,7 +70,7 @@ void Map::onMouseOver(const sf::Vector2i &tilePos)
         }
     }
     if (ptr == 0) // Still not found...
-        {
+    {
         for (unsigned int i = 0; i < m_tiles.size(); i++)
         {
             for (unsigned int j = 0; j < m_tiles[i].size(); j++)
@@ -96,6 +97,7 @@ void Map::onMouseOver(const sf::Vector2i &tilePos)
     catch (const exception &exception)
     {
         cerr << lua_tostring(LuaVM::getInstance().getLua(), -1) << "\n";
+        m_prevMouseOver = 0;
     }
     m_prevMouseOver = ptr;
     try // Calling lua function "onMouseOverGameEntity"

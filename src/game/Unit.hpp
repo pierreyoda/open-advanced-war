@@ -1,5 +1,5 @@
-#ifndef UNIT_HPP
-#define UNIT_HPP
+#ifndef UNIT_GAMEENTITY_HPP
+#define UNIT_GAMEENTITY_HPP
 
 #include "GameEntity.hpp"
 
@@ -22,4 +22,4 @@ class Unit : public GameEntity
         }
 };
 
-#endif /* UNIT_HPP */
+#endif /* UNIT_GAMEENTITY_HPP */

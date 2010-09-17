@@ -26,14 +26,6 @@ enum Classes
     UNIT /**< Unit. */
 };
 
-/** \brief Represents a caracteristic and its value.
-*/
-struct Caracteristic
-{
-    const std::string name;
-    int value;
-};
-
 class GameEntity
 {
     friend class boost::serialization::access;
@@ -75,7 +67,7 @@ class GameEntity
                 updatePosition(); // useless on saving ; should split serialize into save/load
             ar &BOOST_SERIALIZATION_NVP(m_type);
             ar &BOOST_SERIALIZATION_NVP(m_alias);
-            ar &BOOST_SERIALIZATION_NVP(m_caracteristics);
+            //ar &BOOST_SERIALIZATION_NVP(m_caracteristics);
             ar &BOOST_SERIALIZATION_NVP(m_orientation);
         }
 
@@ -83,7 +75,7 @@ class GameEntity
         sf::Vector2i m_pos; /**< Entity's position (not in pixel but in "tiles"). */
         std::string m_type; /**< Entity type (ex : "tank  factory", "soldier"). */
         std::string m_alias; /**< Entity alias (optionnal; ex : "leaderA", "VIP"). */
-        std::list<Caracteristic> m_caracteristics; /**< List of (variables) caracteristics. */
+        //std::list<Caracteristic> m_caracteristics; /**< List of (variables) caracteristics. */
         Orientation m_orientation; /**< Entity's orientation (by default right). */
         XSprite m_xsprite; /**< Entity's eXtended sprite. */
 };

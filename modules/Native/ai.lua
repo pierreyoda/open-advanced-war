@@ -24,3 +24,11 @@ function canAttackUnit(unit, target)
 	end
 	return isUnitWithinRange(unit, target)
 end
+
+--[[ Decides if a unit can be placed.
+name Unit's type.
+pos Unit's position.
+]]
+function canPlaceUnit(name, pos)
+	return (not game:isUnitPresent(pos))
+end
