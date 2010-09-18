@@ -13,12 +13,21 @@ ArmyGeneral::ArmyGeneral(const unsigned int &id, const string &faction) :
 
 ArmyGeneral::~ArmyGeneral()
 {
-
+    for (std::list<Unit*>::iterator iter = m_units.begin();
+        iter != m_units.end(); iter++)
+        delete *iter;
+    m_units.clear();
 }
 
-void ArmyGeneral::addUnit(const string &position, const string &type)
+void ArmyGeneral::addUnit(const sf::Vector2i &position, const string &type)
 {
-
+    if (database.findUnit(type) == 0) // not in database
+        return;
+    if (position.x < 0 || position.y < 0) // invalid position
+        return;
+    Unit *unit = new Unit(type, m_units.size());
+        unit->setPosition(position);
+    m_units.push_back(unit);
 }
 
 unsigned int ArmyGeneral::getUnitId(sf::Vector2i &pos)

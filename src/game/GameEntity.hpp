@@ -38,6 +38,7 @@ class GameEntity
         void setPosition(const sf::Vector2i &pos);
         void setPosition(const int &x, const int &y);
         void setOrientation(const Orientation &orientation);
+        void changeOwnerId(const unsigned int &ownerId) { m_ownerId = ownerId; }
 
         void playAnim(const std::string &anim) { playAnim(anim, true); }
         void playAnim(const std::string &anim, const bool &loop);
@@ -45,6 +46,7 @@ class GameEntity
         Classes getClass() const { return m_class; }
         std::string type() const { return m_type; }
         std::string alias() const { return m_alias; }
+        unsigned int ownerId() const { return m_ownerId; }
 
         sf::Vector2i position() const { return m_pos; }
         Orientation orientation() const { return m_orientation; }
@@ -67,6 +69,7 @@ class GameEntity
                 updatePosition(); // useless on saving ; should split serialize into save/load
             ar &BOOST_SERIALIZATION_NVP(m_type);
             ar &BOOST_SERIALIZATION_NVP(m_alias);
+            ar &BOOST_SERIALIZATION_NVP(m_ownerId);
             //ar &BOOST_SERIALIZATION_NVP(m_caracteristics);
             ar &BOOST_SERIALIZATION_NVP(m_orientation);
         }
@@ -75,6 +78,7 @@ class GameEntity
         sf::Vector2i m_pos; /**< Entity's position (not in pixel but in "tiles"). */
         std::string m_type; /**< Entity type (ex : "tank  factory", "soldier"). */
         std::string m_alias; /**< Entity alias (optionnal; ex : "leaderA", "VIP"). */
+        unsigned int m_ownerId; /**< Entity (eventual) owner identifier (army ID). */
         //std::list<Caracteristic> m_caracteristics; /**< List of (variables) caracteristics. */
         Orientation m_orientation; /**< Entity's orientation (by default right). */
         XSprite m_xsprite; /**< Entity's eXtended sprite. */

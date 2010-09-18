@@ -27,7 +27,7 @@ class ArmyGeneral
         ArmyGeneral(const unsigned int &id, const std::string &faction);
         ~ArmyGeneral();
 
-        void addUnit(const std::string &position, const std::string &type);
+        void addUnit(const sf::Vector2i &position, const std::string &type);
 
         unsigned int getUnitId(sf::Vector2i &pos);
 

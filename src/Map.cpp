@@ -24,10 +24,15 @@ Map::Map(const sf::Vector2ui &size) : m_prevMouseOver(0)
 Map::~Map()
 {
     m_prevMouseOver = 0;
+    delete m_prevMouseOver;
     for (unsigned int i = 0; i < m_tiles.size(); i++)
         for (unsigned int j = 0; j < m_tiles[i].size(); j++)
             delete m_tiles[i][j];
-    delete m_prevMouseOver;
+    m_tiles.clear();
+    for (std::list<GameEntity*>::iterator iter = m_buildings.begin();
+        iter != m_buildings.end(); iter++)
+        delete *iter;
+    m_buildings.clear();
 }
 
 void Map::renderTo(sf::RenderTarget &target)
