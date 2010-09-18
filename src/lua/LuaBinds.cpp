@@ -7,15 +7,18 @@
     #define db_member def_readonly // Read-only access
     #include "../Map.hpp"
     #include "../Game.hpp"
+    #include "../game/Unit.hpp"
+    #include "../game/ArmyGeneral.hpp"
     #include "../tools/PausableClock.hpp"
     #include "../tools/FilesPathHandler.hpp"
 #endif /* DB_EXPORTER */
 
-using namespace db;
 using namespace luabind;
 
 void LuaBinds::exportDatabase(lua_State *lua)
 {
+    using namespace db;
+
     module(lua, "db")
     [
         // DatabaseItem
@@ -72,10 +75,10 @@ void LuaBinds::exportDatabase(lua_State *lua)
             .def("isOrientable", &Tile::isOrientable)
             .def("protection", &Tile::protection)
         // Unit
-        , class_<Unit, bases<XSpriteItem> >("Unit")
+        , class_<db::Unit, bases<XSpriteItem> >("Unit")
             .def(constructor<const std::string&>())
-            .def("addIntCaracteristic", &Unit::addIntCaracteristic)
-            .def("addBoolCaracteristic", &Unit::addBoolCaracteristic)
+            .def("addIntCaracteristic", &db::Unit::addIntCaracteristic)
+            .def("addBoolCaracteristic", &db::Unit::addBoolCaracteristic)
             .enum_("Tribool")
             [
                 value("INDETERMINATE", 2),
@@ -159,6 +162,12 @@ void LuaBinds::exportGame(lua_State *lua)
             .def("startDrawingXSprite", &Game::startDrawingXSprite)
             .def("stopDrawingXSprite",
                 &Game::stopDrawingXSprite)
+            .def("spawnUnit", &Game::spawnUnit)
+            .def("isUnitPresent", &Game::isUnitPresent)
+        // ArmyGeneral
+        , class_<ArmyGeneral>("ArmyGeneral")
+            .def("id", &ArmyGeneral::getUnitId)
+            .def("getUnitId", &ArmyGeneral::getUnitId)
         // Map
         , class_<Map>("Map")
             // Building
@@ -241,6 +250,7 @@ void LuaBinds::exportGame(lua_State *lua)
                 .def("type", &GameEntity::type)
                 .def("alias", &GameEntity::alias)
                 .def("position", &GameEntity::position)
+                .def("ownerId", &GameEntity::ownerId)
                 .def("orientation", &GameEntity::orientation)
                 .def("setOrientation", &GameEntity::setOrientation)
                 .def("xsprite", &GameEntity::xsprite)
@@ -270,6 +280,9 @@ void LuaBinds::exportGame(lua_State *lua)
                     def("tilesToPixels", (sf::Vector2f(*)(const sf::Vector2i&))
                         &GameEntity::tilesToPixels)
                 ]
+            // GameEntity - Unit (Lua : GameUnit)
+            , class_<Unit, bases<GameEntity> >("GameUnit")
+                .def("id", &Unit::id)
     ];
 }
 

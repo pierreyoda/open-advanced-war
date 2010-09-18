@@ -24,7 +24,7 @@
     luabind::call_function<RTYPE>(LUA, \
     NAME, \
     ARGS); } \
-    catch (const exception &exception) { std::cerr << lua_tostring(LUA, -1) << "\n"; ERROR=true; }
+    catch (const std::exception &exception) { std::cerr << lua_tostring(LUA, -1) << "\n"; ERROR=true; }
 
 /* A macro that facilitates lua function calling (with taking in account what is returned).
 * LUA : Pointer to lua_State used.
@@ -39,7 +39,7 @@
     RVAR = luabind::call_function<RTYPE>(LUA, \
     NAME, \
     ARGS); } \
-    catch (const exception &exception) { std::cerr << lua_tostring(LUA, -1) << "\n"; ERROR=true; }
+    catch (const std::exception &exception) { std::cerr << lua_tostring(LUA, -1) << "\n"; ERROR=true; }
 
 /// TODO (Pierre-Yves#1#): [ERRORS] Add a system (list<string> ?) of function that does not work not to call them anymore (to avoid thousand of errors in console)
 /** \brief Handles lua interpreter.

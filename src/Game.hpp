@@ -31,6 +31,11 @@ class Game
         void startDrawingXSprite(XSprite *xsprite, const std::string &id);
         void stopDrawingXSprite(const std::string &id);
 
+        void spawnUnit(const unsigned int &armyId, const std::string &type,
+            const sf::Vector2i &pos);
+        bool isUnitPresent(const sf::Vector2i &pos);
+        ArmyGeneral *getArmy(const unsigned int &armyId);
+
         Map *getMapPtr() { return m_mapPtr; }
 
     private:

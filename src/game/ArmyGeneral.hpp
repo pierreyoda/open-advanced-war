@@ -4,13 +4,13 @@
 #include <list>
 #include <boost/serialization/serialization.hpp>
 #include <SFML/System/Vector2.hpp>
+#include "Unit.hpp"
 
 namespace sf
 {
     class RenderTarget;
 }
 class ArmyGeneral;
-class Unit;
 
 void drawArmy(sf::RenderTarget &target, ArmyGeneral &army);
 
@@ -29,7 +29,8 @@ class ArmyGeneral
 
         void addUnit(const sf::Vector2i &position, const std::string &type);
 
-        unsigned int getUnitId(sf::Vector2i &pos);
+        unsigned int getUnitId(const sf::Vector2i &pos);
+        Unit *getUnitPtr(const sf::Vector2i &pos);
 
         unsigned int id() const { return m_id; }
 

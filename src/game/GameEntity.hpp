@@ -32,7 +32,7 @@ class GameEntity
 
     public:
         GameEntity(const std::string &type);
-        virtual~GameEntity();
+        virtual ~GameEntity();
 
         void updatePosition();
         void setPosition(const sf::Vector2i &pos);

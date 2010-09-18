@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include "ArmyGeneral.hpp"
 #include "../db/Database.hpp"
+#include "../lua/LuaVirtualMachine.hpp"
 #include "Unit.hpp"
 
 using namespace std;
@@ -27,14 +28,33 @@ void ArmyGeneral::addUnit(const sf::Vector2i &position, const string &type)
         return;
     Unit *unit = new Unit(type, m_units.size());
         unit->setPosition(position);
+        unit->playAnim("base");
+    bool canSpawnUnit = false;
+    static bool luaError = false, luaError2 = false;
+    if (!luaError)
+    {
+        CALL_LUA_RFUNCTION(LuaVM::getInstance().getLua(), bool, canSpawnUnit,
+            "canPlaceUnit", luaError, type, position)
+        if (!luaError2)
+            CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+                "onUnitPlaced", luaError2, unit)
+    }
     m_units.push_back(unit);
 }
 
-unsigned int ArmyGeneral::getUnitId(sf::Vector2i &pos)
+unsigned int ArmyGeneral::getUnitId(const sf::Vector2i &pos)
+{
+    Unit *ptr = getUnitPtr(pos);
+    if (ptr != 0)
+        return ptr->id();
+    return 0; // not found
+}
+
+Unit *ArmyGeneral::getUnitPtr(const sf::Vector2i &pos)
 {
     for (l_units::iterator iter = m_units.begin(); iter != m_units.end(); iter++)
-        if ((*iter) != 0 && (*iter)->position() == pos)
-            return (*iter)->id();
+        if ((*iter)->position() == pos)
+                return (*iter);
     return 0; // not found
 }
 

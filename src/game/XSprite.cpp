@@ -59,7 +59,7 @@ void XSprite::playAnim(const db::Animation *anim, const bool &loop)
 
 void XSprite::setFrame(const unsigned int &id)
 {
-    if (m_anim == 0)
+    if (m_anim == 0 || gFph(m_anim->image()).empty())
         return;
     const db::Frame *framePtr = (*m_anim)[id];
     if (framePtr == 0)

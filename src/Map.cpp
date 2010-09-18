@@ -57,61 +57,57 @@ void Map::renderTo(sf::RenderTarget &target)
 }
 
 /// TODO (Pierre-Yves#3#): [SCRIPTING] Simplifiate lua function calling
-void Map::onMouseOver(const sf::Vector2i &tilePos)
+void Map::onMouseOver(const sf::Vector2i &tilePos, const bool &nomore)
 {
     if (m_prevMouseOver != 0 && m_prevMouseOver->position() == tilePos)
         return; // Already selected
     GameEntity *ptr = 0;
     bool stop = false;
-    for (list<GameEntity*>::iterator iter = m_buildings.begin();
-        iter != m_buildings.end(); iter++)
+    if (!nomore)
     {
-        if (*iter == 0)
-            continue;
-        if ((*iter)->position() == tilePos)
+        for (list<GameEntity*>::iterator iter = m_buildings.begin();
+            iter != m_buildings.end(); iter++)
         {
-            ptr = (*iter);
-            break;
-        }
-    }
-    if (ptr == 0) // Still not found...
-    {
-        for (unsigned int i = 0; i < m_tiles.size(); i++)
-        {
-            for (unsigned int j = 0; j < m_tiles[i].size(); j++)
+            if (*iter == 0)
+                continue;
+            if ((*iter)->position() == tilePos)
             {
-                if (m_tiles[i][j] != 0 && m_tiles[i][j]->position() == tilePos)
-                {
-                    ptr = m_tiles[i][j];
-                    stop = true;
-                    break;
-                }
-            }
-            if (stop)
+                ptr = (*iter);
                 break;
+            }
         }
-    }
-    if (ptr == 0) // Not found : exiting
-        return;
-    try // Calling lua function "onMouseNoMoreOverGameEntity"
-    {
-        luabind::call_function<void>(LuaVM::getInstance().getLua(),
-            "onMouseNoMoreOverGameEntity",
-            m_prevMouseOver);
-    }
-    catch (const exception &exception)
-    {
-        cerr << lua_tostring(LuaVM::getInstance().getLua(), -1) << "\n";
-        m_prevMouseOver = 0;
+        if (ptr == 0) // Still not found...
+        {
+            for (unsigned int i = 0; i < m_tiles.size(); i++)
+            {
+                for (unsigned int j = 0; j < m_tiles[i].size(); j++)
+                {
+                    if (m_tiles[i][j] != 0 &&
+                        m_tiles[i][j]->position() == tilePos)
+                    {
+                        ptr = m_tiles[i][j];
+                        stop = true;
+                        break;
+                    }
+                }
+                if (stop)
+                    break;
+            }
+        }
+        if (ptr == 0) // Not found : exiting
+            return;
     }
     static bool luaError = false, luaError2 = false;
     if (!luaError)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
             "onMouseNoMoreOverGameEntity", luaError, m_prevMouseOver);
     m_prevMouseOver = ptr;
-    if (!luaError2)
-        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
-            "onMouseOverGameEntity", luaError2, ptr)
+    if (!nomore)
+    {
+        if (!luaError2)
+            CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+                "onMouseOverGameEntity", luaError2, ptr)
+    }
 }
 
 void Map::placeBuilding(const sf::Vector2i &pos, const string &type,

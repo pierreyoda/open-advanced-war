@@ -103,6 +103,8 @@ function onTilePlaced(tile, map)
 		map:setTile(6, 4, "Road")
 		map:setTile(6, 6, "Road")
 		map:setTile(6, 5, "Road")
+		game:spawnUnit(0, "Tank", sf.Vector2i(15, 10))
+		game:spawnUnit(0, "HMMWV", sf.Vector2i(20, 10))
 	end
 	if (tile == nil or map == nil) then
 		return
