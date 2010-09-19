@@ -67,26 +67,47 @@ namespace db
             *
             * \param name The tile name (example : "light tank", "infantry").
             */
-            Unit(const std::string &name) : XSpriteItem(name)
+            Unit(const std::string &name) : XSpriteItem(name), m_propulsion("*none*")
             { }
+
+            /** \brief Set the propulsion used.
+            *
+            * \param propulsion Propulsion's name ("*none*" forbidden).
+            * \return Reference to self.
+            */
+            void setPropulsion(const std::string &propulsion)
+            {
+                if (!propulsion.empty())
+                    m_propulsion = propulsion;
+            }
+
+            /** \brief Get the propulsion used.
+            *
+            * \return Propulsion used.
+            */
+            std::string propulsion() const { return m_propulsion; }
 
             /** \brief Add a caracteristic, integer. If already existing, will be replaced.
             *
             * \param name Caracteristic's name.
             * \param value Caracteristic's value.
+            * \return Reference to self.
             */
-            void addIntCaracteristic(const std::string &name, const int &value)
+            Unit &addIntCaracteristic(const std::string &name, const int &value)
             {
                 addCaracteristic<int>(name, value, m_intCaracteristics);
+                return *this;
             }
             /** \brief Add a caracteristic, boolean. If already existing, will be replaced.
             *
             * \param name Caracteristic's name.
             * \param value Caracteristic's value.
+            * \return Reference to self.
             */
-            void addBoolCaracteristic(const std::string &name, const bool &value)
+            Unit &addBoolCaracteristic(const std::string &name, const bool &value)
             {
                 addCaracteristic<bool>(name, value, m_boolCaracteristics);
+                return *this;
             }
 
             /** \brief Find a caracteristic., integer Returns default value (0) if not found.
@@ -142,17 +163,19 @@ namespace db
                 return 0;
             }
 
-            std::list<IntCaracteristic> m_intCaracteristics;
-            std::list<BoolCaracteristic> m_boolCaracteristics;
-
             template <class Archive>
             void serialize(Archive &ar, const unsigned int &version)
             {
                 ar &boost::serialization::make_nvp("XSpriteItem",
                     boost::serialization::base_object<XSpriteItem>(*this));
+                ar &BOOST_SERIALIZATION_NVP(m_propulsion);
                 ar &BOOST_SERIALIZATION_NVP(m_intCaracteristics);
                 ar &BOOST_SERIALIZATION_NVP(m_boolCaracteristics);
             }
+
+            std::string m_propulsion;
+            std::list<IntCaracteristic> m_intCaracteristics;
+            std::list<BoolCaracteristic> m_boolCaracteristics;
     };
 } /* End of namespace db */
 

@@ -17,9 +17,15 @@ struct DatabaseSerialization
         if (!file)
             throw "Error : cannot save database to XML at '" + filename
                 + "'.";
+        try
         {
             boost::archive::xml_oarchive archive(file);
             archive << boost::serialization::make_nvp("database", database);
+        }
+        catch (const std::exception &exception)
+        {
+            std::cerr <<  "[DATABASE EXPORT] Error : " << exception.what()
+                << "\n";
         }
     }
     static void importFromXml(const std::string &filename)
@@ -28,9 +34,15 @@ struct DatabaseSerialization
         if (!file)
             throw "Error : cannot open XML database at '" + filename
                 + "'.";
+        try
         {
             boost::archive::xml_iarchive archive(file);
             archive >> BOOST_SERIALIZATION_NVP(database);
+        }
+        catch (const std::exception &exception)
+        {
+            std::cerr << "[DATABASE IMPORT] Error : " << exception.what()
+                << "\n";
         }
     }
 };

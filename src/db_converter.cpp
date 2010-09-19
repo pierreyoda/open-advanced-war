@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
         output = getFilePath("XML output file", false, input);
     luaVM.include(input);
 
-    database.setModuleName("test");
+    database.setModuleName(luaVM.extractVariable<std::string>("MODULE_NAME"));
     try
     {
         DatabaseSerialization::exportToXml(output);

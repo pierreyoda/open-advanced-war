@@ -97,6 +97,11 @@ void LuaBinds::exportDatabase(lua_State *lua)
             .def(constructor<const std::string&>())
             .def("addItem", &Category::addItem)
             .def("isItemIn", &Category::isItemIn)
+        // Propulsion
+        , class_<Propulsion, bases<DatabaseItem> >("Propulsion")
+            .def(constructor<const std::string>())
+            .def("canMoveTo", &Propulsion::canMoveTo)
+            .def("addCanMoveTo", &Propulsion::addCanMoveTo)
     ];
 }
 
