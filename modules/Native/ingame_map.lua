@@ -57,7 +57,9 @@ function isTileOfGivenType(type_, pos, map)
 	return (map:getTileType(pos) == type_)
 end
 
--- [EXTERNAL] NB : highly inspired from project OpenAWars.
+--[[ [EXTERNAL] NB : method from project OpenAWars, under GPL licence.
+* See : http://code.google.com/p/openawars/
+--]]
 function checkCoherencyForRoad(pos, map)
 	local roadAround = 0 -- number of road tiles around
 	local verticalRoad, horizontalRoad = false, false -- is vertical/horizontal road
@@ -121,7 +123,7 @@ function checkCoherencyForRoad(pos, map)
 			anim = "base_inter3_left"
 		end
 		if (onUp and onDown and onRight) then
-			anim = "base_inter3_righ"
+			anim = "base_inter3_right"
 		end
 	elseif (roadAround == 4) then
 		anim = "base_inter4"

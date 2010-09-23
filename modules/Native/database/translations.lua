@@ -2,7 +2,7 @@
 Part of Native module for Open Advanced War
 Translates strings used. ]]
 
--- French (Français)
+-- French (Fran?ais)
 trans:selectLang("fr")
 -- Tiles
 trans:translateItem("Plain", "Plaine")

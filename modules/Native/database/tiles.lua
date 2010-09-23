@@ -32,3 +32,4 @@ road:addAnim(anim):addAnim(anim2):addAnim(anim3):addAnim(anim4)
 
 -- Finally adding all to database
 database:addTile(plain):addTile(forest):addTile(road)
+
