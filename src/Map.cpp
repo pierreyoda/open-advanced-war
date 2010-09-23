@@ -189,14 +189,17 @@ void Map::setTile(const unsigned int &x, const unsigned int &y,
 {
     if (!isInsideMap(x,y))
         return;
+    const GameEntity *ptr = getTileConstPtr(x, y);
+    if (ptr != 0 && ptr->type() == type) // same tile already present
+        return;
     GameEntity *tile = new GameEntity(type);
     tile->setPosition(x, y);
     tile->playAnim("base", true);
+    m_tiles[y][x] = tile;
     static bool luaError = false;
     if (!luaError)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, "onTilePlaced",
             luaError, tile, this)
-    m_tiles[y][x] = tile;
 }
 
 void Map::setTileAnim(const sf::Vector2i &pos, const string &anim)

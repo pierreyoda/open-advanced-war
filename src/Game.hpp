@@ -3,6 +3,8 @@
 
 #include <list>
 #include <vector>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Input.hpp>
 
 namespace sf
 {
@@ -25,6 +27,7 @@ class Game
 
         void endTurn();
         void onMouseOver(const sf::Vector2i &mousePos);
+        void listenInput(const sf::Input &Input);
 
         void renderGame();
 

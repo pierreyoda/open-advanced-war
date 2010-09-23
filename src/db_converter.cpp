@@ -86,11 +86,11 @@ int main(int argc, char *argv[])
 
     string input = /*getFilePath("Lua input file")*/"modules/Native/database.lua",
         output = getFilePath("XML output file", false, input);
-    luaVM.include(input);
 
-    database.setModuleName(luaVM.extractVariable<std::string>("MODULE_NAME"));
     try
     {
+        luaVM.include(input);
+        database.setModuleName(luaVM.extractVariable<std::string>("MODULE_NAME"));
         DatabaseSerialization::exportToXml(output);
     }
     catch (const std::string &error)

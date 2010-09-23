@@ -5,6 +5,7 @@
 #include "tools/FilesPathHandler.hpp"
 #include "Map.hpp"
 #include "game/ArmyGeneral.hpp"
+#include "game/GameEntity.hpp"
 
 using namespace std;
 
@@ -28,7 +29,7 @@ void Game::initTestMap()
 
 void Game::onMouseOver(const sf::Vector2i &mousePos)
 {
-    sf::Vector2i mousePosTiles(GameEntity::pixelsToTiles(mousePos));
+    const sf::Vector2i mousePosTiles(GameEntity::pixelsToTiles(mousePos));
     Unit *ptr = 0;
     static Unit *prevUnit = 0;
     for (unsigned int i = 0; i < m_armies.size(); i++)
@@ -56,6 +57,14 @@ void Game::onMouseOver(const sf::Vector2i &mousePos)
     }
     if (m_mapPtr != 0)
         m_mapPtr->onMouseOver(mousePosTiles, (ptr != 0));
+}
+
+void Game::listenInput(const sf::Input &Input)
+{
+    const sf::Vector2i mousePosTiles(GameEntity::pixelsToTiles(
+        Input.GetMouseX(), Input.GetMouseY()));
+    if (Input.IsMouseButtonDown(sf::Mouse::Left) && m_mapPtr != 0)
+        m_mapPtr->setTile(mousePosTiles, "Road");
 }
 
 void Game::spawnUnit(const unsigned int &armyId, const string &type,

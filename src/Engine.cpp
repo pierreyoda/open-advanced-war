@@ -43,12 +43,14 @@ void Engine::run()
 {
     game.initTestMap();
     Map *map = game.getMapPtr();
-    map->setTile(3, 0, "Road");
+    map->setTile(3, 0, "Forest");
     map->placeBuilding(10, 10, "Barrack", false);
 
     const Input &Input = App.GetInput();
     while (App.IsOpened())
     {
+        game.listenInput(Input);
+
         Event Event;
         while (App.GetEvent(Event))
         {

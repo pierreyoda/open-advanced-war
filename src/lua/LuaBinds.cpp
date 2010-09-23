@@ -13,6 +13,12 @@
     #include "../tools/FilesPathHandler.hpp"
 #endif /* DB_EXPORTER */
 
+/* A macro that simplifitates method declaration (NB : C++ name will become Lua name).
+* name Method's C++ (and Lua) name
+* class Class name.
+*/
+#define DEF(name, class) .def(BOOST_PP_STRINGIZE(name), &class::name)
+
 using namespace luabind;
 
 void LuaBinds::exportDatabase(lua_State *lua)
@@ -26,21 +32,20 @@ void LuaBinds::exportDatabase(lua_State *lua)
             .def("name", &DatabaseItem::name)
         // Database
         , class_<Database>("Database")
-            .def("getModuleName", &Database::getModuleName)
-            .def("addTile", &Database::addTile)
-            .def("addUnit", &Database::addUnit)
-            .def("addBuilding", &Database::addBuilding)
-            .def("addCategory", &Database::addCategory)
-            .def("findTile", (Tile*(Database::*)(const std::string&))
-                &Database::findTile)
+            DEF(getModuleName, Database)
+            DEF(addTile, Database)
+            DEF(addUnit, Database)
+            DEF(addBuilding, Database)
+            DEF(addCategory, Database)
+            DEF(findTile, Database)
         // TranslationProvider
         , class_<TranslationProvider>("TranslationProvider")
             .def("tr", (std::string(TranslationProvider::*)(const std::string&))
                 &TranslationProvider::tr)
             .def("tr", (std::string(TranslationProvider::*)(const std::string&,
                     const bool&))&TranslationProvider::tr)
-            .def("selectLang", &TranslationProvider::selectLang)
-            .def("translateItem", &TranslationProvider::translateItem)
+            DEF(selectLang, TranslationProvider)
+            DEF(translateItem, TranslationProvider)
         // Frame
         , class_<Frame>("Frame")
             .def(constructor<const unsigned int&, const unsigned int&,
@@ -61,24 +66,26 @@ void LuaBinds::exportDatabase(lua_State *lua)
                 const unsigned int&))&Animation::addFrame)
             .def("addFrame", (Animation&(Animation::*)(const unsigned int &,
                 const unsigned int&, const float&))&Animation::addFrame)
-            .def("setImage", &Animation::setImage)
-            .def("clear", &Animation::clear)
-            .def("image", &Animation::image)
+            DEF(setImage, Animation)
+            DEF(clear, Animation)
+            DEF(image, Animation)
         // XSpriteItem
         , class_<XSpriteItem, bases<DatabaseItem> >("XSpriteItem")
-            .def("addAnim", &XSpriteItem::addAnim)
+            DEF(addAnim, XSpriteItem)
         // Tile
         , class_<Tile, bases<XSpriteItem> >("Tile")
             .def(constructor<const std::string&>())
             .def(constructor<const std::string&, const bool&>())
-            .def("setProtection", &Tile::setProtection)
-            .def("isOrientable", &Tile::isOrientable)
-            .def("protection", &Tile::protection)
+            DEF(setProtection, Tile)
+            DEF(isOrientable, Tile)
+            DEF(protection, Tile)
         // Unit
         , class_<db::Unit, bases<XSpriteItem> >("Unit")
             .def(constructor<const std::string&>())
-            .def("addIntCaracteristic", &db::Unit::addIntCaracteristic)
-            .def("addBoolCaracteristic", &db::Unit::addBoolCaracteristic)
+            DEF(addIntCaracteristic, db::Unit)
+            DEF(addBoolCaracteristic, db::Unit)
+            DEF(findIntCaracteristic, db::Unit)
+            DEF(findBoolCaracteristic, db::Unit)
             .enum_("Tribool")
             [
                 value("INDETERMINATE", 2),
@@ -88,20 +95,20 @@ void LuaBinds::exportDatabase(lua_State *lua)
         // Building
         , class_<Building, bases<XSpriteItem> >("Building")
             .def(constructor<const std::string&, const int&, const bool&>())
-            .def("setResistance", &Building::setResistance)
-            .def("addProduction", &Building::addProduction)
-            .def("resistance", &Building::setResistance)
-            .def("capturable", &Building::capturable)
+            DEF(setResistance, Building)
+            DEF(addProduction, Building)
+            DEF(resistance, Building)
+            DEF(capturable, Building)
         // Category
         , class_<Category, bases<DatabaseItem> >("Category")
             .def(constructor<const std::string&>())
-            .def("addItem", &Category::addItem)
-            .def("isItemIn", &Category::isItemIn)
+            DEF(addItem, Category)
+            DEF(isItemIn, Category)
         // Propulsion
         , class_<Propulsion, bases<DatabaseItem> >("Propulsion")
             .def(constructor<const std::string>())
-            .def("canMoveTo", &Propulsion::canMoveTo)
-            .def("addCanMoveTo", &Propulsion::addCanMoveTo)
+            DEF(canMoveTo, Propulsion)
+            DEF(addCanMoveTo, Propulsion)
     ];
 }
 
@@ -260,6 +267,10 @@ void LuaBinds::exportGame(lua_State *lua)
                 .def("setOrientation", &GameEntity::setOrientation)
                 .def("xsprite", &GameEntity::xsprite)
                 .def("xspriteConst", &GameEntity::xspriteConst)
+                // Caracteristics
+                .def("setIntCaracteristic", &GameEntity::setIntCaracteristic)
+                .def("setBoolCaracteristic", &GameEntity::setIntCaracteristic)
+                .def("setStringCaracteristic", &GameEntity::setIntCaracteristic)
                 .enum_("Orientation") // ENUM - Orientation
                 [
                     value("UNDEFINED", 0),

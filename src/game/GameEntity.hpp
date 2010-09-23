@@ -4,6 +4,7 @@
 #include <list>
 #include "XSprite.hpp"
 #include <boost/serialization/serialization.hpp>
+#include "../db/Unit.hpp"
 
 /** \brief Enumeration of orientations.
 */
@@ -53,8 +54,20 @@ class GameEntity
         XSprite &xsprite() { return m_xsprite; }
         const XSprite &xspriteConst() const { return m_xsprite; }
 
+        GameEntity &setIntCaracteristic(const std::string &name,
+            const int &value);
+        GameEntity &setBoolCaracteristic(const std::string &name,
+            const bool &value);
+        GameEntity &setStringCaracteristic(const std::string &name,
+            const std::string &value);
+        int getIntCaracteristic(const std::string &name,
+            const int &default_ = 0);
+        Tribool getBoolCaracteristic(const std::string &name);
+        std::string getStringCaracteristic(const std::string &name);
+
         static Classes findClassFromType(const std::string &type);
         static sf::Vector2i pixelsToTiles(const sf::Vector2i &pos);
+        static sf::Vector2i pixelsToTiles(const int &posX, const int &posY);
         static sf::Vector2i pixelsToTiles(const sf::Vector2f &pos);
         static sf::Vector2f tilesToPixels(const sf::Vector2i &pos);
 
@@ -79,7 +92,9 @@ class GameEntity
         std::string m_type; /**< Entity type (ex : "tank  factory", "soldier"). */
         std::string m_alias; /**< Entity alias (optionnal; ex : "leaderA", "VIP"). */
         unsigned int m_ownerId; /**< Entity (eventual) owner identifier (army ID). */
-        //std::list<Caracteristic> m_caracteristics; /**< List of (variables) caracteristics. */
+        std::list<db::IntCaracteristic> m_intCaracteristics; /**< List of int caracteristics. */
+        std::list<db::BoolCaracteristic> m_boolCaracteristics; /**< List of bool caracteristics. */
+        std::list<db::StringCaracteristic> m_stringCaracteristics; /**< List of string caracteristics. */
         Orientation m_orientation; /**< Entity's orientation (by default right). */
         XSprite m_xsprite; /**< Entity's eXtended sprite. */
 };

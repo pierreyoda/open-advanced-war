@@ -33,8 +33,8 @@ namespace db
             {
                 m_protection = protection;
             }
-            const bool &isOrientable() { return m_rotating; }
-            const unsigned int &protection() { return m_protection; }
+            bool isOrientable() const { return m_rotating; }
+            unsigned int protection() const { return m_protection;  }
 
         private:
             Tile() : XSpriteItem(""), m_rotating(false), m_protection(0)
@@ -50,7 +50,7 @@ namespace db
             }
 
             bool m_rotating; /**<  Is orientable. */
-            unsigned m_protection; /** < Protection level. */
+            unsigned int m_protection; /** < Protection level. */
     };
 } /* End of namespace db */
 

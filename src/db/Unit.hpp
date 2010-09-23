@@ -20,7 +20,7 @@ namespace
             return TRUE_;
         return FALSE_;
     }
-}
+} /* anonymous namespace */
 
 namespace db
 {
@@ -52,8 +52,32 @@ namespace db
             carac.value);
     }
 
+    template <typename Type>
+    void addCaracteristic(const std::string &name, const Type &value,
+        std::list< Caracteristic<Type> > &in)
+    {
+        Caracteristic<Type> *ptr = findCaracteristic(name, in);
+        if (ptr != 0) // found
+            ptr->value = value;
+        else
+            in.push_back(Caracteristic<Type>(name, value));
+    }
+    template <typename Type>
+    Caracteristic<Type> *findCaracteristic(const std::string &name,
+        std::list< Caracteristic<Type> > &in)
+    {
+        for (typename std::list< Caracteristic<Type> >::iterator iter = in.begin();
+            iter != in.end(); iter++)
+        {
+            if (iter->name == name)
+                return &*iter;
+        }
+        return 0;
+    }
+
     typedef Caracteristic<int> IntCaracteristic;
     typedef Caracteristic<bool> BoolCaracteristic;
+    typedef Caracteristic<std::string> StringCaracteristic;
 
     /**
     * \brief Contains informations to create a tile.
@@ -139,29 +163,6 @@ namespace db
         private:
             Unit() : XSpriteItem("")
             { }
-
-            template <typename Type>
-            void addCaracteristic(const std::string &name, const Type &value,
-                std::list< Caracteristic<Type> > &in)
-            {
-                Caracteristic<Type> *ptr = findCaracteristic(name, in);
-                if (ptr != 0) // found
-                    ptr->value = value;
-                else
-                    in.push_back(Caracteristic<Type>(name, value));
-            }
-            template <typename Type>
-            Caracteristic<Type> *findCaracteristic(const std::string &name,
-                std::list< Caracteristic<Type> > &in)
-            {
-                for (typename std::list< Caracteristic<Type> >::iterator iter = in.begin();
-                    iter != in.end(); iter++)
-                {
-                    if (iter->name == name)
-                        return &*iter;
-                }
-                return 0;
-            }
 
             template <class Archive>
             void serialize(Archive &ar, const unsigned int &version)

@@ -2,8 +2,9 @@
 #define LUAVIRTUALMACHINE_HPP
 
 #include <list>
-#include <string>
 #include <vector>
+#include <string>
+#include <sstream>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -11,6 +12,8 @@
 #include "../tools/Singleton.hpp"
 #include "LuaBinds.hpp"
 #include "../db/DatabaseItem.hpp"
+
+#define PRINT_LUA_ERROR(LUA) std::cerr << lua_tostring(LUA, -1) << "\n";
 
 /* A macro that facilitates lua function calling.
 * LUA : Pointer to lua_State used.
@@ -24,7 +27,7 @@
     luabind::call_function<RTYPE>(LUA, \
     NAME, \
     ARGS); } \
-    catch (const std::exception &exception) { std::cerr << lua_tostring(LUA, -1) << "\n"; ERROR=true; }
+    catch (const std::exception &exception) { PRINT_LUA_ERROR(LUA); ERROR=true; }
 
 /* A macro that facilitates lua function calling (with taking in account what is returned).
 * LUA : Pointer to lua_State used.
@@ -39,7 +42,7 @@
     RVAR = luabind::call_function<RTYPE>(LUA, \
     NAME, \
     ARGS); } \
-    catch (const std::exception &exception) { std::cerr << lua_tostring(LUA, -1) << "\n"; ERROR=true; }
+    catch (const std::exception &exception) { PRINT_LUA_ERROR(LUA); ERROR=true; }
 
 /// TODO (Pierre-Yves#1#): [ERRORS] Add a system (list<string> ?) of function that does not work not to call them anymore (to avoid thousand of errors in console)
 /** \brief Handles lua interpreter.
@@ -90,6 +93,8 @@ class LuaVM : public Singleton<LuaVM>
          */
         void include(const std::string &toInclude, const std::string &prefix)
         {
+            if (toInclude.empty())
+                return;
             std::vector<std::string> files;
             boost::algorithm::split(files, toInclude, boost::is_any_of(";"));
             boost::filesystem::path dir = boost::filesystem::initial_path() / prefix;
@@ -108,11 +113,11 @@ class LuaVM : public Singleton<LuaVM>
                 try
                 {
                     if (luaL_dofile(luaVm, fileString.c_str()) != 0)
-                        throw std::string(lua_tostring(luaVm, -1));
+                        throw std::string();
                 }
                 catch (const std::string &error)
                 {
-                    std::cerr << error << "\n";
+                    std::cerr << "[Lua] " << fileString << " : " << lua_tostring(luaVm, -1) << "\n";
                 }
                 catch (const std::exception &exception)
                 {
@@ -143,6 +148,25 @@ class LuaVM : public Singleton<LuaVM>
                 toReturn = Type();
             }
             return toReturn;
+        }
+
+        static int add_file_and_line(lua_State* L) // from : Luabind doc
+        {
+           lua_Debug d;
+           lua_getstack(L, 1, &d);
+           lua_getinfo(L, "Sln", &d);
+           std::string err = lua_tostring(L, -1);
+           lua_pop(L, 1);
+           std::stringstream msg;
+           msg << d.short_src << ":" << d.currentline;
+
+           if (d.name != 0)
+           {
+              msg << "(" << d.namewhat << " " << d.name << ")";
+           }
+           msg << " " << err;
+           lua_pushstring(L, msg.str().c_str());
+           return 1;
         }
 
     private:
