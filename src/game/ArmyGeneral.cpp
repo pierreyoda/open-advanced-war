@@ -37,7 +37,7 @@ void ArmyGeneral::addUnit(const sf::Vector2i &position, const string &type)
             "canPlaceUnit", luaError, type, position)
         if (!luaError2)
             CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
-                "onUnitPlaced", luaError2, unit)
+                "onGameEntityPlaced", luaError2, unit)
     }
     m_units.push_back(unit);
 }

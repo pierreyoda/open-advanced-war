@@ -198,8 +198,8 @@ void Map::setTile(const unsigned int &x, const unsigned int &y,
     m_tiles[y][x] = tile;
     static bool luaError = false;
     if (!luaError)
-        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, "onTilePlaced",
-            luaError, tile, this)
+        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+            "onGameEntityPlaced", luaError, tile)
 }
 
 void Map::setTileAnim(const sf::Vector2i &pos, const string &anim)

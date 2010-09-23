@@ -159,7 +159,7 @@ end
 
 called = false -- global, for test
 
--- Called when a tile is placed on map (with function  Map::setTile)
+-- Called when a tile is placed on map (function  Map::setTile)
 function onTilePlaced(tile, map)
 	if (tile == nil or map == nil) then
 		return

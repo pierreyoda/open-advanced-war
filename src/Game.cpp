@@ -9,7 +9,7 @@
 
 using namespace std;
 
-Game::Game(sf::RenderTarget &target) : target(target), m_mapPtr(0)
+Game::Game(sf::RenderTarget &target) : target(&target), m_mapPtr(0)
 {
     DatabaseSerialization::importFromXml("a");
     FilesPathHandler::scanDirectory("modules/Native/", gFph);
@@ -97,14 +97,27 @@ ArmyGeneral *Game::getArmy(const unsigned int &armyId)
     return 0;
 }
 
+int Game::getGlobalAffector(const std::string &name)
+{
+    db::IntCaracteristic *ptr = db::findCaracteristic<int>(name,
+        m_globalAffectors);
+    if (ptr == 0) // not found
+        return 0;
+    return ptr->value;
+}
+void Game::setGlobalAffector(const std::string &name, const int &value)
+{
+    db::addCaracteristic<int>(name, value, m_globalAffectors);
+}
+
 void Game::renderGame()
 {
     if (m_mapPtr != 0)
-        m_mapPtr->renderTo(target);
+        m_mapPtr->renderTo(*target);
     for (unsigned int i = 0; i < m_armies.size(); i++)
     {
         if (m_armies[i] != 0)
-            drawArmy(target, *m_armies[i]);
+            drawArmy(*target, *m_armies[i]);
     }
     for (list<p_renderingInfos>::iterator iter = m_renderingList.begin();
         iter != m_renderingList.end(); iter++)
@@ -113,7 +126,7 @@ void Game::renderGame()
         if (ptr == 0)
             continue;*/
         iter->first.update();
-        target.Draw(iter->first);
+        target->Draw(iter->first);
     }
 }
 

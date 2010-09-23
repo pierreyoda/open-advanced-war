@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
     LuaVM &luaVm = LuaVM::getInstance();
     luaVm.init(luaState);
     globals(luaVm())["vm"] = &luaVm;
+    globals(luaVm())["database"] = &database;
     globals(luaVm())["trans"] = &database.translationsRef();
     globals(luaVm())["gFph"] = &gFph;
 

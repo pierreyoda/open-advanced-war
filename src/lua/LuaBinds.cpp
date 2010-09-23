@@ -17,7 +17,7 @@
 * name Method's C++ (and Lua) name
 * class Class name.
 */
-#define DEF(name, class) .def(BOOST_PP_STRINGIZE(name), &class::name)
+#define DEF(class, method) .def(BOOST_PP_STRINGIZE(method), &class::method)
 
 using namespace luabind;
 
@@ -32,20 +32,22 @@ void LuaBinds::exportDatabase(lua_State *lua)
             .def("name", &DatabaseItem::name)
         // Database
         , class_<Database>("Database")
-            DEF(getModuleName, Database)
-            DEF(addTile, Database)
-            DEF(addUnit, Database)
-            DEF(addBuilding, Database)
-            DEF(addCategory, Database)
-            DEF(findTile, Database)
+            DEF(Database, getModuleName)
+            DEF(Database, addTile)
+            DEF(Database, addUnit)
+            DEF(Database, addBuilding)
+            DEF(Database, addCategory)
+            DEF(Database, findTile)
+            DEF(Database, findUnit)
+            DEF(Database, findBuilding)
         // TranslationProvider
         , class_<TranslationProvider>("TranslationProvider")
             .def("tr", (std::string(TranslationProvider::*)(const std::string&))
                 &TranslationProvider::tr)
             .def("tr", (std::string(TranslationProvider::*)(const std::string&,
                     const bool&))&TranslationProvider::tr)
-            DEF(selectLang, TranslationProvider)
-            DEF(translateItem, TranslationProvider)
+            DEF(TranslationProvider, selectLang)
+            DEF(TranslationProvider, translateItem)
         // Frame
         , class_<Frame>("Frame")
             .def(constructor<const unsigned int&, const unsigned int&,
@@ -66,26 +68,26 @@ void LuaBinds::exportDatabase(lua_State *lua)
                 const unsigned int&))&Animation::addFrame)
             .def("addFrame", (Animation&(Animation::*)(const unsigned int &,
                 const unsigned int&, const float&))&Animation::addFrame)
-            DEF(setImage, Animation)
-            DEF(clear, Animation)
-            DEF(image, Animation)
+            DEF(Animation, setImage)
+            DEF(Animation, clear)
+            DEF(Animation, image)
         // XSpriteItem
         , class_<XSpriteItem, bases<DatabaseItem> >("XSpriteItem")
-            DEF(addAnim, XSpriteItem)
+            DEF(XSpriteItem, addAnim)
         // Tile
         , class_<Tile, bases<XSpriteItem> >("Tile")
             .def(constructor<const std::string&>())
             .def(constructor<const std::string&, const bool&>())
-            DEF(setProtection, Tile)
-            DEF(isOrientable, Tile)
-            DEF(protection, Tile)
+            DEF(Tile, setProtection)
+            DEF(Tile, isOrientable)
+            DEF(Tile, protection)
         // Unit
         , class_<db::Unit, bases<XSpriteItem> >("Unit")
             .def(constructor<const std::string&>())
-            DEF(addIntCaracteristic, db::Unit)
-            DEF(addBoolCaracteristic, db::Unit)
-            DEF(findIntCaracteristic, db::Unit)
-            DEF(findBoolCaracteristic, db::Unit)
+            DEF(db::Unit, addIntCaracteristic)
+            DEF(db::Unit, addBoolCaracteristic)
+            DEF(db::Unit, findIntCaracteristic)
+            DEF(db::Unit, findBoolCaracteristic)
             .enum_("Tribool")
             [
                 value("INDETERMINATE", 2),
@@ -95,20 +97,20 @@ void LuaBinds::exportDatabase(lua_State *lua)
         // Building
         , class_<Building, bases<XSpriteItem> >("Building")
             .def(constructor<const std::string&, const int&, const bool&>())
-            DEF(setResistance, Building)
-            DEF(addProduction, Building)
-            DEF(resistance, Building)
-            DEF(capturable, Building)
+            DEF(Building, setResistance)
+            DEF(Building, addProduction)
+            DEF(Building, resistance)
+            DEF(Building, capturable)
         // Category
         , class_<Category, bases<DatabaseItem> >("Category")
             .def(constructor<const std::string&>())
-            DEF(addItem, Category)
-            DEF(isItemIn, Category)
+            DEF(Category, addItem)
+            DEF(Category, isItemIn)
         // Propulsion
         , class_<Propulsion, bases<DatabaseItem> >("Propulsion")
             .def(constructor<const std::string>())
-            DEF(canMoveTo, Propulsion)
-            DEF(addCanMoveTo, Propulsion)
+            DEF(Propulsion, canMoveTo)
+            DEF(Propulsion, addCanMoveTo)
     ];
 }
 
@@ -149,9 +151,9 @@ void LuaBinds::exportTools(lua_State *lua)
         , class_<PausableClock>("PausableClock")
             .def(constructor< >())
             .def(constructor<bool>())
-            .def("pause", &PausableClock::pause)
-            .def("start", &PausableClock::start)
-            .def("getElapsedTime", &PausableClock::getElapsedTime)
+            DEF(PausableClock, pause)
+            DEF(PausableClock, start)
+            DEF(PausableClock, getElapsedTime)
             .def("reset", (void(PausableClock::*)())&PausableClock::reset)
             .def("reset", (void(PausableClock::*)(const bool&))&PausableClock::reset)
         // FilesPathHandler
@@ -160,7 +162,7 @@ void LuaBinds::exportTools(lua_State *lua)
                 const std::string&))&FilesPathHandler::addFile)
             .def("addFile", (void(FilesPathHandler::*)(const std::string&,
                 const std::string&, const bool&))&FilesPathHandler::addFile)
-            .def("getFilepath", &FilesPathHandler::getFilepath)
+            DEF(FilesPathHandler, getFilepath)
     ];
 }
 
@@ -171,15 +173,17 @@ void LuaBinds::exportGame(lua_State *lua)
     [
         // Game
         class_<Game>("Game")
-            .def("startDrawingXSprite", &Game::startDrawingXSprite)
-            .def("stopDrawingXSprite",
-                &Game::stopDrawingXSprite)
-            .def("spawnUnit", &Game::spawnUnit)
-            .def("isUnitPresent", &Game::isUnitPresent)
+            DEF(Game, startDrawingXSprite)
+            DEF(Game, stopDrawingXSprite)
+            DEF(Game, spawnUnit)
+            DEF(Game, isUnitPresent)
+            DEF(Game, getGlobalAffector)
+            DEF(Game, setGlobalAffector)
+            DEF(Game, getMapPtr)
         // ArmyGeneral
         , class_<ArmyGeneral>("ArmyGeneral")
-            .def("id", &ArmyGeneral::getUnitId)
-            .def("getUnitId", &ArmyGeneral::getUnitId)
+            DEF(ArmyGeneral, id)
+            DEF(ArmyGeneral, getUnitId)
         // Map
         , class_<Map>("Map")
             // Building
@@ -228,21 +232,21 @@ void LuaBinds::exportGame(lua_State *lua)
                     &XSprite::playAnim)
                 .def("playAnim", (void(XSprite::*)(const db::Animation *anim,
                    const bool&))&XSprite::playAnim)
-                .def("setFrame", &XSprite::setFrame)
-                .def("pauseAnim", &XSprite::pauseAnim)
-                .def("stopAnim", &XSprite::stopAnim)
-                .def("startAnim", &XSprite::startAnim)
-                .def("restartAnim", &XSprite::startAnim)
+                DEF(XSprite, setFrame)
+                DEF(XSprite, pauseAnim)
+                DEF(XSprite, stopAnim)
+                DEF(XSprite, startAnim)
+                DEF(XSprite, restartAnim)
                 .def("setFilter", (void(XSprite::*)(const sf::Color&))
                     &XSprite::setFilter)
                 .def("setFilter", (void(XSprite::*)(const sf::Color&,
                     const bool&))&XSprite::setFilter)
-                .def("useFilter", &XSprite::useFilter)
-                .def("isAnimPaused", &XSprite::isAnimPaused)
-                .def("isAnimStopped", &XSprite::isAnimStopped)
-                .def("isFilterUsed", &XSprite::isFilterUsed)
-                .def("currentFilter", &XSprite::currentFilter)
-                .def("currentFrame", &XSprite::currentFrame)
+                DEF(XSprite, useFilter)
+                DEF(XSprite, isAnimPaused)
+                DEF(XSprite, isAnimStopped)
+                DEF(XSprite, isFilterUsed)
+                DEF(XSprite, currentFilter)
+                DEF(XSprite, currentFrame)
                 .def("SetPosition", (void(XSprite::*)(float, float))
                     &XSprite::SetPosition)
                 .def("SetPosition", (void(XSprite::*)(const sf::Vector2f&))

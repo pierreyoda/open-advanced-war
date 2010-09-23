@@ -32,10 +32,3 @@ pos Unit's position.
 function canPlaceUnit(name, pos)
 	return (not game:isUnitPresent(pos))
 end
-
---[[ Called when a unit as been placed (spawned).
-unit Reference to the unit.
-]]
-function onUnitPlaced(unit)
-	unit:playAnim("base_right")
-end
