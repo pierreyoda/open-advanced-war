@@ -25,6 +25,14 @@ function getUnitSpeed(unit)
 		)
 end
 
+--[[ Decides if a unit can be placed.
+name Unit's type.
+pos Unit's position.
+]]
+function canPlaceUnit(name, pos)
+	return (not game:isUnitPresent(pos))
+end
+
 -- Called when a GameEntity is placed on map.
 function onGameEntityPlaced(entity)
 	local class = entity:getClass()

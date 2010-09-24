@@ -1,8 +1,8 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <luabind/adopt_policy.hpp>
 #include "Map.hpp"
 #include "lua/LuaVirtualMachine.hpp"
+#include "db/Database.hpp"
 
 using namespace std;
 
@@ -187,8 +187,25 @@ void Map::setTile(const sf::Vector2i &pos, const string &type)
 void Map::setTile(const unsigned int &x, const unsigned int &y,
     const string &type)
 {
-    if (!isInsideMap(x,y))
+    if (!isInsideMap(x,y)) // outside of map
         return;
+    if (database.findTile(type) == 0) // tile not existing
+    {
+        cout << "[Map] SetTile : Error, tile name '" << type << "' not in database.\n";
+        return;
+    }
+    static bool luaError = false, luaError2 = false;
+    if (luaError)
+    {
+        cout << "[Map] SetTile : Error, cannot call lua function 'canPlaceTile'.\n";
+        return;
+    }
+    bool canPlaceTile = false;
+    CALL_LUA_RFUNCTION(LuaVM::getInstance().getLua(), bool, canPlaceTile,
+        "canPlaceTile", luaError, type, sf::Vector2i(x, y), this)
+    if (!canPlaceTile)
+        return;
+
     const GameEntity *ptr = getTileConstPtr(x, y);
     if (ptr != 0 && ptr->type() == type) // same tile already present
         return;
@@ -196,10 +213,9 @@ void Map::setTile(const unsigned int &x, const unsigned int &y,
     tile->setPosition(x, y);
     tile->playAnim("base", true);
     m_tiles[y][x] = tile;
-    static bool luaError = false;
-    if (!luaError)
+    if (!luaError2)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
-            "onGameEntityPlaced", luaError, tile)
+            "onGameEntityPlaced", luaError2, tile)
 }
 
 void Map::setTileAnim(const sf::Vector2i &pos, const string &anim)

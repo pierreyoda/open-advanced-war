@@ -159,6 +159,21 @@ end
 
 called = false -- global, for test
 
+function canPlaceRiver(pos, map)
+	return (map:getTileType(pos) ~= "Sea")
+end
+
+--[[ Decides if a tile can be placed or not.
+type_ Tile's type.
+pos Tile's position.
+]]
+function canPlaceTile(type_, pos, map)
+	if (type_ == "River") then
+		return canPlaceRiver(pos, map)
+	end
+	return true
+end
+
 -- Called when a tile is placed on map (function  Map::setTile)
 function onTilePlaced(tile, map)
 	if (tile == nil or map == nil) then
