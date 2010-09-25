@@ -5,8 +5,10 @@
 #include <vector>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Input.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include "db/Unit.hpp"
 #include "game/XSprite.hpp"
+#include "gui/GuiManager.hpp"
 
 namespace sf
 {
@@ -31,8 +33,9 @@ class Game
         void endTurn();
         void onMouseOver(const sf::Vector2i &mousePos);
         void listenInput(const sf::Input &Input);
+        void listenEvent(const sf::Event &Event);
 
-        void renderGame();
+        void renderGame(const float &frametime);
 
         void startDrawingXSprite(XSprite *xsprite, const std::string &id);
         void stopDrawingXSprite(const std::string &id);
@@ -65,6 +68,8 @@ class Game
         std::vector<ArmyGeneral*> m_armies;
         std::list<p_renderingInfos> m_renderingList;
         std::list<db::IntCaracteristic> m_globalAffectors;
+        bool m_inGame, m_inEditor;
+        InGameGui m_ingameGui;
 };
 
 #endif /* GAME_HPP */

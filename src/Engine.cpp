@@ -1,6 +1,5 @@
 #include "Engine.hpp"
 #include "db/Database.hpp"
-#include "gui/HudManager.hpp"
 #include "Map.hpp"
 #include "lua/LuaVirtualMachine.hpp"
 #include "tools/ImageManager.hpp"
@@ -10,7 +9,7 @@ const std::string ICON_VARIABLE = "ICON_PATH";
 
 using namespace sf;
 
-Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H, 32), "Open Advanced War"),
+Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H+GUI_PART_H, 32), "Open Advanced War"),
     game(App), m_takeScreen(false)
 {
     // Exposing game
@@ -18,6 +17,7 @@ Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H, 32), "Open Advanced War"),
 
     App.SetFramerateLimit(60);
     App.UseVerticalSync(true);
+    App.ShowMouseCursor(false);
 
     // Window icon
     std::string icon = LuaVM::getInstance().extractVariable<std::string>(
@@ -49,8 +49,6 @@ void Engine::run()
     const Input &Input = App.GetInput();
     while (App.IsOpened())
     {
-        game.listenInput(Input);
-
         Event Event;
         while (App.GetEvent(Event))
         {
@@ -63,16 +61,12 @@ void Engine::run()
                 if (Event.Key.Code == Key::F5)
                     m_takeScreen = true;
             }
-            if (Event.Type == Event::MouseMoved)
-            {
-                int x = Input.GetMouseX(), y = Input.GetMouseY();
-                game.onMouseOver(Vector2i(x, y));
-            }
+            game.listenEvent(Event);
         }
+        game.listenInput(Input);
 
         App.Clear();
-            game.renderGame();
-            HudManager::drawFps(App, App.GetFrameTime());
+            game.renderGame(App.GetFrameTime());
         App.Display();
 
         if (m_takeScreen)
