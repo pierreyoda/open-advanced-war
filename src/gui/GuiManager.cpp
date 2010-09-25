@@ -1,3 +1,4 @@
+#include <iostream>
 #include <sstream>
 #include <SFGUI/Align.hpp>
 #include <SFML/Graphics.hpp>
@@ -50,9 +51,11 @@ InGameGui::InGameGui() : GuiManager("data/paper.png",
 {
     m_showFpsBox = sfg::Checkbox::Create(FloatRect(0, GUI_START_H, 50, 30), L"Show FPS");
     m_fpsCounterLabel = sfg::Label::Create(Vector2f(0, GUI_START_H+GUI_PART_H/1.5f), L"0");
+    m_endTurnButton = sfg::Button::Create(FloatRect(0,0,70,50), L"End turn");
 
     getGui().AddWidget(m_showFpsBox);
     getGui().AddWidget(m_fpsCounterLabel);
+    getGui().AddWidget(m_endTurnButton);
 
     sfg::AlignWidgetInRect(
 		*m_showFpsBox,
@@ -66,6 +69,12 @@ InGameGui::InGameGui() : GuiManager("data/paper.png",
 		sfg::AlignLeft | sfg::AlignBottom,
 		Vector2f(5, m_fpsCounterLabel->GetRect().Height+25)
 	);
+	sfg::AlignWidgetInRect(
+		*m_endTurnButton,
+		FloatRect(0, GUI_START_H, SCREEN_W, GUI_PART_H),
+		sfg::AlignRight | sfg::AlignMiddle,
+		Vector2f(50, 0)
+	);
 
     getGui().ApplySkinSettings(m_fpsCounterLabel, "FPSLabel");
 
@@ -73,6 +82,8 @@ InGameGui::InGameGui() : GuiManager("data/paper.png",
     m_showFpsBox->SetSpacing(5.f);
     m_showFpsBox->Checked = sfg::Slot<sfg::Checkbox::CheckSlot>(
         &InGameGui::onShowFpsBoxToggled, this);
+    m_endTurnButton->Clicked = sfg::Slot<sfg::Button::ClickSlot>(
+        &InGameGui::onEndTurnButtonEnded, this);
 }
 
 void InGameGui::render(RenderTarget &target, const float &frametime)
@@ -88,4 +99,9 @@ void InGameGui::render(RenderTarget &target, const float &frametime)
 void InGameGui::onShowFpsBoxToggled(sfg::Widget::Ptr widget)
 {
     m_fpsCounterLabel->Show(m_showFpsBox->IsChecked());
+}
+
+void InGameGui::onEndTurnButtonEnded(sfg::Widget::Ptr widget)
+{
+    std::cout << "End turn!\n";
 }

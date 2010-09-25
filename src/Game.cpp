@@ -66,7 +66,7 @@ void Game::listenInput(const sf::Input &Input)
     const sf::Vector2i mousePosTiles(GameEntity::pixelsToTiles(
         Input.GetMouseX(), Input.GetMouseY()));
     if (Input.IsMouseButtonDown(sf::Mouse::Left) && m_mapPtr != 0)
-        m_mapPtr->setTile(mousePosTiles, "Road");
+        m_mapPtr->setTile(mousePosTiles, "River");
 }
 
 void Game::listenEvent(const sf::Event &Event)

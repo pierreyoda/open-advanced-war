@@ -128,7 +128,78 @@ function checkCoherencyForRoad(pos, map)
 	elseif (roadAround == 4) then
 		anim = "base_inter4"
 	end
-	map:setTileAnim(pos, anim) -- should not be reached
+	map:setTileAnim(pos, anim)
+end
+
+function checkCoherencyForRiver(pos, map)
+	local roadAround = 0 -- number of river tiles around
+	local verticalRoad, horizontalRoad = false, false -- is vertical/horizontal river
+	local onLeft, onRight, onUp, onDown = false, false, false, false
+	-- Checking around cases
+	if (isTileOfGivenType("River", relativePosition(pos, LEFT), map)) then
+		roadAround = roadAround+1
+		horizontalRoad, onLeft = true, true
+	end	
+	if (isTileOfGivenType("River", relativePosition(pos, RIGHT), map)) then
+		roadAround = roadAround+1
+		horizontalRoad, onRight = true, true
+	end	
+	if (isTileOfGivenType("River", relativePosition(pos, UP), map)) then
+		roadAround = roadAround+1
+		verticalRoad, onUp = true, true
+	end
+	if (isTileOfGivenType("River", relativePosition(pos, DOWN), map)) then
+		roadAround = roadAround+1
+		verticalRoad, onDown = true, true
+	end
+	local anim = "base_right"
+	-- Image choice
+	if (roadAround == 0) then
+		anim = "base_right"
+	elseif (roadAround ==1) then
+		if (verticalRoad) then
+			anim = "base_up"
+		elseif (horizontalRoad) then
+			anim = "base_right"
+		end
+	elseif (roadAround == 2) then -- line or corner
+		-- Line case:
+		if (verticalRoad and not horizontalRoad) then
+			anim = "base_up" -- horizontal
+		end
+		if (horizontalRoad and not verticalRoad) then
+			anim = "base_right" -- vertical
+		end
+		-- turn
+		if (onLeft and onUp) then
+			anim = "base_left_up"
+		end
+		if (onRight and onUp) then
+			anim = "base_right_up"
+		end
+		if (onLeft and onDown) then
+			anim = "base_left_down"
+		end
+		if (onRight and onDown) then
+			anim = "base_right_down"
+		end
+	elseif (roadAround == 3) then -- T intersection ("inter_3")
+		if (onLeft and onRight and onUp) then
+			anim = "base_inter3_up"
+		end
+		if (onLeft and onRight and onDown) then
+			anim = "base_inter3_down"
+		end
+		if (onUp and onDown and onLeft) then
+			anim = "base_inter3_left"
+		end
+		if (onUp and onDown and onRight) then
+			anim = "base_inter3_right"
+		end
+	elseif (roadAround == 4) then
+		anim = "base_inter4"
+	end
+	map:setTileAnim(pos, anim)
 end
 
 function checkCoherency(pos, map)
@@ -139,7 +210,7 @@ function checkCoherency(pos, map)
 	if (type_ == "Road") then
 		return checkCoherencyForRoad(pos, map)
 	elseif (type_ == "River") then
-		--return checkCoherencyForRiver(pos)
+		return checkCoherencyForRiver(pos, map)
 	end
 	return ""
 end
@@ -160,7 +231,34 @@ end
 called = false -- global, for test
 
 function canPlaceRiver(pos, map)
-	return (map:getTileType(pos) ~= "Sea")
+	if (map:getTileType(pos) == "Sea") then
+		return false
+	end
+	-- Top left corner
+	if (isTileOfGivenType("River", relativePosition(pos, LEFT), map)
+		and isTileOfGivenType("River", relativePosition(pos, UP), map)
+		and isTileOfGivenType("River", sf.Vector2i(pos.x-1, pos.y-1), map)) then
+		return false
+	end	
+	-- Top right corner
+	if (isTileOfGivenType("River", relativePosition(pos, RIGHT), map)
+		and isTileOfGivenType("River", relativePosition(pos, UP), map)
+		and isTileOfGivenType("River", sf.Vector2i(pos.x+1, pos.y-1), map)) then
+		return false
+	end	
+	-- Bottom left corner
+	if (isTileOfGivenType("River", relativePosition(pos, LEFT), map)
+		and isTileOfGivenType("River", relativePosition(pos, DOWN), map)
+		and isTileOfGivenType("River", sf.Vector2i(pos.x-1, pos.y+1), map)) then
+		return false
+	end	
+	-- Bottom right corner
+	if (isTileOfGivenType("River", relativePosition(pos, RIGHT), map)
+		and isTileOfGivenType("River", relativePosition(pos, DOWN), map)
+		and isTileOfGivenType("River", sf.Vector2i(pos.x+1, pos.y+1), map)) then
+		return false
+	end
+	return true
 end
 
 --[[ Decides if a tile can be placed or not.
