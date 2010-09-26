@@ -15,7 +15,7 @@ NONE, TILE, BUILDING, UNIT =
 	GameEntity.BUILDING,
 	GameEntity.UNIT
 
-vm:include("ingame_map.lua;graphic_effects.lua;ai.lua", MODULE_DIR)
+vm:include("ingame_map.lua;graphic_effects.lua;ai.lua;editor.lua", MODULE_DIR)
 
 -- Return the speed of a given unit.
 function getUnitSpeed(unit)

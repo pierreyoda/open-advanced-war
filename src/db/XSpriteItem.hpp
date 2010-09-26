@@ -124,17 +124,27 @@ namespace db
         */
         unsigned int frameNumber() const { return m_frames.size(); }
 
-        /** \brief Operator []. Provides secured access to frames.
-        *
+        /** \brief Provides secured access to frames.
+            *
         * \param id Frame number.
         * \return Pointer to the required frame if existing, null pointer otherwise.
         */
-        const Frame *operator[](const unsigned int &id) const
+        const Frame *getFrame(const unsigned int &id) const
         {
             if (id < m_frames.size())
                 return &m_frames[id];
             return 0;
         }
+
+        /** \brief Operator []. Provides secured access to frames.
+        *
+        * \see getFrame
+        */
+        const Frame *operator[](const unsigned int &id) const
+        {
+            return getFrame(id);
+        }
+
         private:
             Animation() : DatabaseItem("")
             { }

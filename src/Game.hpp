@@ -8,7 +8,7 @@
 #include <SFML/Graphics/Rect.hpp>
 #include "db/Unit.hpp"
 #include "game/XSprite.hpp"
-#include "gui/GuiManager.hpp"
+#include "gui/EditorGui.hpp"
 
 namespace sf
 {
@@ -69,7 +69,8 @@ class Game
         std::list<p_renderingInfos> m_renderingList;
         std::list<db::IntCaracteristic> m_globalAffectors;
         bool m_inGame, m_inEditor;
-        InGameGui m_ingameGui;
+        //InGameGui m_ingameGui;
+        EditorGui m_editorGui;
 };
 
 #endif /* GAME_HPP */

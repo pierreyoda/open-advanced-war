@@ -1,12 +1,11 @@
 #include "LuaBinds.hpp"
 #include "../db/Database.hpp"
 
-#ifdef DB_EXPORTER
-    #define db_member def_readwrite // Full access
-#else
+#ifndef DB_EXPORTER
     #define db_member def_readonly // Read-only access
     #include "../Map.hpp"
     #include "../Game.hpp"
+    #include "../gui/EditorGui.hpp"
     #include "../game/Unit.hpp"
     #include "../game/ArmyGeneral.hpp"
     #include "../tools/PausableClock.hpp"
@@ -54,11 +53,11 @@ void LuaBinds::exportDatabase(lua_State *lua)
                 const float&>())
             .def(constructor<const unsigned int&, const unsigned int&,
                 const unsigned int&, const unsigned int&, const float&>())
-            .db_member("x", &Frame::x)
-            .db_member("y", &Frame::y)
-            .db_member("w", &Frame::w)
-            .db_member("h", &Frame::h)
-            .db_member("duration", &Frame::duration)
+            .def_readwrite("x", &Frame::x)
+            .def_readwrite("y", &Frame::y)
+            .def_readwrite("w", &Frame::w)
+            .def_readwrite("h", &Frame::h)
+            .def_readwrite("duration", &Frame::duration)
         // Animation
         , class_<Animation, bases<DatabaseItem> >("Anim")
             .def(constructor<const std::string&, const std::string&>())
@@ -71,9 +70,11 @@ void LuaBinds::exportDatabase(lua_State *lua)
             DEF(Animation, setImage)
             DEF(Animation, clear)
             DEF(Animation, image)
+            DEF(Animation, getFrame)
         // XSpriteItem
         , class_<XSpriteItem, bases<DatabaseItem> >("XSpriteItem")
             DEF(XSpriteItem, addAnim)
+            DEF(XSpriteItem, findAnim)
         // Tile
         , class_<Tile, bases<XSpriteItem> >("Tile")
             .def(constructor<const std::string&>())
@@ -146,6 +147,24 @@ void LuaBinds::exportTools(lua_State *lua)
                 .def_readwrite("g", &sf::Color::g)
                 .def_readwrite("b", &sf::Color::b)
                 .def_readwrite("a", &sf::Color::a)
+            // sf::IntRect (sf::Rect<int>)
+            , class_<sf::IntRect>("IntRect")
+                .def(constructor< >())
+                .def(constructor<int, int, int, int>())
+                .def(constructor<sf::IntRect>())
+                .def_readwrite("x", &sf::IntRect::Left)
+                .def_readwrite("y", &sf::IntRect::Top)
+                .def_readwrite("w", &sf::IntRect::Width)
+                .def_readwrite("h", &sf::IntRect::Height)
+            // sf::FloatRect (sf::Rect<float>)
+            , class_<sf::FloatRect>("FloatRect")
+                .def(constructor< >())
+                .def(constructor<float, float, float, float>())
+                .def(constructor<sf::FloatRect>())
+                .def_readwrite("x", &sf::FloatRect::Left)
+                .def_readwrite("y", &sf::FloatRect::Top)
+                .def_readwrite("w", &sf::FloatRect::Width)
+                .def_readwrite("h", &sf::FloatRect::Height)
         ]
         // PausableClock
         , class_<PausableClock>("PausableClock")
@@ -225,84 +244,88 @@ void LuaBinds::exportGame(lua_State *lua)
                 const unsigned int&)const)&Map::isInsideMap)
             .def("isInsideMap", (bool(Map::*)(const sf::Vector2i&)const)
                 &Map::isInsideMap)
-            // XSprite
-            , class_<XSprite>("XSprite")
-                .def(constructor< >())
-                .def("playAnim", (void(XSprite::*)(const db::Animation *anim))
-                    &XSprite::playAnim)
-                .def("playAnim", (void(XSprite::*)(const db::Animation *anim,
-                   const bool&))&XSprite::playAnim)
-                DEF(XSprite, setFrame)
-                DEF(XSprite, pauseAnim)
-                DEF(XSprite, stopAnim)
-                DEF(XSprite, startAnim)
-                DEF(XSprite, restartAnim)
-                .def("setFilter", (void(XSprite::*)(const sf::Color&))
-                    &XSprite::setFilter)
-                .def("setFilter", (void(XSprite::*)(const sf::Color&,
-                    const bool&))&XSprite::setFilter)
-                DEF(XSprite, useFilter)
-                DEF(XSprite, isAnimPaused)
-                DEF(XSprite, isAnimStopped)
-                DEF(XSprite, isFilterUsed)
-                DEF(XSprite, currentFilter)
-                DEF(XSprite, currentFrame)
-                .def("SetPosition", (void(XSprite::*)(float, float))
-                    &XSprite::SetPosition)
-                .def("SetPosition", (void(XSprite::*)(const sf::Vector2f&))
-                    &XSprite::SetPosition)
-            // GameEntity
-            , class_<GameEntity>("GameEntity")
-                .def("setPosition", (void(GameEntity::*)(const sf::Vector2i&))
-                    &GameEntity::setPosition)
-                .def("setPosition", (void(GameEntity::*)(const int&, const int&))
-                    &GameEntity::setPosition)
-                .def("updatePosition", &GameEntity::updatePosition)
-                .def("playAnim", (void(GameEntity::*)(const std::string&))
-                    &GameEntity::playAnim)
-                .def("playAnim", (void(GameEntity::*)(const std::string&,
-                    const bool&))&GameEntity::playAnim)
-                .def("getClass", &GameEntity::getClass)
-                .def("type", &GameEntity::type)
-                .def("alias", &GameEntity::alias)
-                .def("position", &GameEntity::position)
-                .def("ownerId", &GameEntity::ownerId)
-                .def("orientation", &GameEntity::orientation)
-                .def("setOrientation", &GameEntity::setOrientation)
-                .def("xsprite", &GameEntity::xsprite)
-                .def("xspriteConst", &GameEntity::xspriteConst)
-                // Caracteristics
-                .def("setIntCaracteristic", &GameEntity::setIntCaracteristic)
-                .def("setBoolCaracteristic", &GameEntity::setIntCaracteristic)
-                .def("setStringCaracteristic", &GameEntity::setIntCaracteristic)
-                .enum_("Orientation") // ENUM - Orientation
-                [
-                    value("UNDEFINED", 0),
-                    value("RIGHT", 1),
-                    value("LEFT", 2),
-                    value("UPWARD", 3),
-                    value("DOWNWARD", 4)
-                ]
-                .enum_("Classes") // ENUM - Classes
-                [
-                    value("NONE", 0),
-                    value("TILE", 1),
-                    value("BUILDING", 2),
-                    value("UNIT", 3)
-                ]
-                .scope // Static functions
-                [
-                    def("findClassFromType", &GameEntity::findClassFromType),
-                    def("pixelsToTiles", (sf::Vector2i(*)(const sf::Vector2i&))
-                        &GameEntity::pixelsToTiles),
-                    def("pixelsToTiles", (sf::Vector2i(*)(const sf::Vector2f&))
-                        &GameEntity::pixelsToTiles),
-                    def("tilesToPixels", (sf::Vector2f(*)(const sf::Vector2i&))
-                        &GameEntity::tilesToPixels)
-                ]
-            // GameEntity - Unit (Lua : GameUnit)
-            , class_<Unit, bases<GameEntity> >("GameUnit")
-                .def("id", &Unit::id)
+        // XSprite
+        , class_<XSprite>("XSprite")
+            .def(constructor< >())
+            .def("playAnim", (void(XSprite::*)(const db::Animation *anim))
+                &XSprite::playAnim)
+            .def("playAnim", (void(XSprite::*)(const db::Animation *anim,
+               const bool&))&XSprite::playAnim)
+            DEF(XSprite, setFrame)
+            DEF(XSprite, pauseAnim)
+            DEF(XSprite, stopAnim)
+            DEF(XSprite, startAnim)
+            DEF(XSprite, restartAnim)
+            .def("setFilter", (void(XSprite::*)(const sf::Color&))
+                &XSprite::setFilter)
+            .def("setFilter", (void(XSprite::*)(const sf::Color&,
+                const bool&))&XSprite::setFilter)
+            DEF(XSprite, useFilter)
+            DEF(XSprite, isAnimPaused)
+            DEF(XSprite, isAnimStopped)
+            DEF(XSprite, isFilterUsed)
+            DEF(XSprite, currentFilter)
+            DEF(XSprite, currentFrame)
+            .def("SetPosition", (void(XSprite::*)(float, float))
+                &XSprite::SetPosition)
+            .def("SetPosition", (void(XSprite::*)(const sf::Vector2f&))
+                &XSprite::SetPosition)
+        // GameEntity
+        , class_<GameEntity>("GameEntity")
+            .def("setPosition", (void(GameEntity::*)(const sf::Vector2i&))
+                &GameEntity::setPosition)
+            .def("setPosition", (void(GameEntity::*)(const int&, const int&))
+                &GameEntity::setPosition)
+            .def("updatePosition", &GameEntity::updatePosition)
+            .def("playAnim", (void(GameEntity::*)(const std::string&))
+                &GameEntity::playAnim)
+            .def("playAnim", (void(GameEntity::*)(const std::string&,
+                const bool&))&GameEntity::playAnim)
+            .def("getClass", &GameEntity::getClass)
+            .def("type", &GameEntity::type)
+            .def("alias", &GameEntity::alias)
+            .def("position", &GameEntity::position)
+            .def("ownerId", &GameEntity::ownerId)
+            .def("orientation", &GameEntity::orientation)
+            .def("setOrientation", &GameEntity::setOrientation)
+            .def("xsprite", &GameEntity::xsprite)
+            .def("xspriteConst", &GameEntity::xspriteConst)
+            // Caracteristics
+            .def("setIntCaracteristic", &GameEntity::setIntCaracteristic)
+            .def("setBoolCaracteristic", &GameEntity::setIntCaracteristic)
+            .def("setStringCaracteristic", &GameEntity::setIntCaracteristic)
+            .enum_("Orientation") // ENUM - Orientation
+            [
+                value("UNDEFINED", 0),
+                value("RIGHT", 1),
+                value("LEFT", 2),
+                value("UPWARD", 3),
+                value("DOWNWARD", 4)
+            ]
+            .enum_("Classes") // ENUM - Classes
+            [
+                value("NONE", 0),
+                value("TILE", 1),
+                value("BUILDING", 2),
+                value("UNIT", 3)
+            ]
+            .scope // Static functions
+            [
+                def("findClassFromType", &GameEntity::findClassFromType),
+                def("pixelsToTiles", (sf::Vector2i(*)(const sf::Vector2i&))
+                    &GameEntity::pixelsToTiles),
+                def("pixelsToTiles", (sf::Vector2i(*)(const sf::Vector2f&))
+                    &GameEntity::pixelsToTiles),
+                def("tilesToPixels", (sf::Vector2f(*)(const sf::Vector2i&))
+                    &GameEntity::tilesToPixels)
+            ]
+        // GameEntity - Unit (Lua : GameUnit)
+        , class_<Unit, bases<GameEntity> >("GameUnit")
+            .def("id", &Unit::id)
+
+        // GUI
+        , class_<EditorGui>("EditorGui")
+            DEF(EditorGui, addItemToTerrainList)
     ];
 }
 

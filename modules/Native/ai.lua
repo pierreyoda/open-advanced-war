@@ -1,6 +1,6 @@
 --[[ ai.lua
 Part of Native module for Open Advanced War
-Manges Artificial Intelligence (ennemy computer). ]]
+Manages Artificial Intelligence (ennemy computer). ]]
 
 --[[ Determines if a is in the range of another one.
 attacker Attacker.

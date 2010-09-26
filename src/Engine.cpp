@@ -73,7 +73,8 @@ void Engine::run()
         {
             Image screenshot;
             screenshot.CopyScreen(App);
-            screenshot.SaveToFile("screen.png");
+            if (!screenshot.SaveToFile("screen.png"))
+                std::cerr << "Error : cannot save screenshot.\n";
             m_takeScreen = false;
         }
     }

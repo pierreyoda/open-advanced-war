@@ -43,10 +43,10 @@ class InGameGui : public GuiManager
 
         void render(sf::RenderTarget &target, const float &frametime);
 
+    private:
         void onShowFpsBoxToggled(sfg::Widget::Ptr widget);
         void onEndTurnButtonEnded(sfg::Widget::Ptr widget);
 
-    private:
         sfg::Checkbox::Ptr m_showFpsBox;
         sfg::Label::Ptr m_fpsCounterLabel;
         sfg::Button::Ptr m_endTurnButton;

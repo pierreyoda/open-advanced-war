@@ -12,6 +12,7 @@ using namespace sf;
 GuiManager::GuiManager(const std::string &background, const FloatRect &rect) :
     m_gui(rect)
 {
+    m_gui.EnableRenderToImage(false); // otherwise causes some bugs in screenshots
     m_gui.LoadSkinFromFile("data/default.skin");
 
 	Image *ptr = gImageManager.getResource(background);
@@ -21,7 +22,7 @@ GuiManager::GuiManager(const std::string &background, const FloatRect &rect) :
 
 GuiManager::~GuiManager()
 {
-
+    delete m_background;
 }
 
 void GuiManager::render(RenderTarget &target, const float &frametime)

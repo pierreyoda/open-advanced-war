@@ -11,11 +11,15 @@
 using namespace std;
 
 Game::Game(sf::RenderTarget &target) : target(&target), m_mapPtr(0),
-    m_ingameGui()
+    m_editorGui()
 {
     DatabaseSerialization::importFromXml("a");
     FilesPathHandler::scanDirectory("modules/Native/", gFph);
     LuaVM::getInstance().include(gFph("main.lua"));
+
+    bool error = false;
+    CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+        "buildEditorTerrainList", error, &m_editorGui)
 }
 
 Game::~Game()
@@ -76,7 +80,7 @@ void Game::listenEvent(const sf::Event &Event)
         const int x = Event.MouseMove.X, y = Event.MouseMove.Y;
         onMouseOver(sf::Vector2i(x, y));
     }
-    m_ingameGui.handleEvent(Event);
+    m_editorGui.handleEvent(Event);
 }
 
 void Game::spawnUnit(const unsigned int &armyId, const string &type,
@@ -124,7 +128,7 @@ void Game::setGlobalAffector(const std::string &name, const int &value)
 
 void Game::renderGame(const float &frametime)
 {
-    m_ingameGui.render(*target, frametime);
+    m_editorGui.render(*target, frametime);
     static sf::Shape mask = sf::Shape::Rectangle(sf::FloatRect(0, 0, SCREEN_W, SCREEN_H), sf::Color::Black);
     target->Draw(mask); // to mask sfgui's cursor in game (map) part
     if (m_mapPtr != 0)
