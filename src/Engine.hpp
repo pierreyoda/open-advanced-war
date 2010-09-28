@@ -16,7 +16,6 @@ class Engine
 
     private:
         sf::RenderWindow App;
-        Game game;
 
         bool m_takeScreen;
 };

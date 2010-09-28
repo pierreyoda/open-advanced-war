@@ -40,9 +40,8 @@ end
 -- Called to build terrain list (tiles and buildings) in editor GUI.
 function buildEditorTerrainList(editorGui)
 	addItemToTerrainList(editorGui, TILE, "Plain", "base")
+	addItemToTerrainList(editorGui, TILE, "Forest", "base")
 	addItemToTerrainList(editorGui, TILE, "Road", "base_up")
 	addItemToTerrainList(editorGui, TILE, "River", "base_right")
-	addItemToTerrainList(editorGui, TILE, "River", "base_up")
-	addItemToTerrainList(editorGui, TILE, "River", "base_inter4")
 	addItemToTerrainList(editorGui, BUILDING, "Barrack", "base")
 end

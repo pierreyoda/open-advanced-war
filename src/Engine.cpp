@@ -10,14 +10,13 @@ const std::string ICON_VARIABLE = "ICON_PATH";
 using namespace sf;
 
 Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H+GUI_PART_H, 32), "Open Advanced War"),
-    game(App), m_takeScreen(false)
+    m_takeScreen(false)
 {
-    // Exposing game
-    luabind::globals(LuaVM::getInstance().getLua())["game"] = &game;
-
     App.SetFramerateLimit(60);
     App.UseVerticalSync(true);
     App.ShowMouseCursor(false);
+    gGame.setTarget(&App);
+    gGame.initTestMap();
 
     // Window icon
     std::string icon = LuaVM::getInstance().extractVariable<std::string>(
@@ -32,6 +31,9 @@ Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H+GUI_PART_H, 32), "Open Advan
             App.SetIcon(imagePtr->GetWidth(), imagePtr->GetHeight(),
                 imagePtr->GetPixelsPtr());
     }
+
+    // Exposing game
+    luabind::globals(LuaVM::getInstance().getLua())["game"] = &gGame;
 }
 
 Engine::~Engine()
@@ -41,8 +43,7 @@ Engine::~Engine()
 
 void Engine::run()
 {
-    game.initTestMap();
-    Map *map = game.getMapPtr();
+    Map *map = gGame.getMapPtr();
     map->setTile(3, 0, "Forest");
     map->placeBuilding(10, 10, "Barrack", false);
 
@@ -61,19 +62,19 @@ void Engine::run()
                 if (Event.Key.Code == Key::F5)
                     m_takeScreen = true;
             }
-            game.listenEvent(Event);
+            gGame.listenEvent(Event);
         }
-        game.listenInput(Input);
+        gGame.listenInput(Input);
 
         App.Clear();
-            game.renderGame(App.GetFrameTime());
+            gGame.renderGame(App.GetFrameTime());
         App.Display();
 
         if (m_takeScreen)
         {
             Image screenshot;
             screenshot.CopyScreen(App);
-            if (!screenshot.SaveToFile("screen.png"))
+            if (!screenshot.SaveToFile("screen.jpg"))
                 std::cerr << "Error : cannot save screenshot.\n";
             m_takeScreen = false;
         }

@@ -20,13 +20,17 @@ class ArmyGeneral;
 
 typedef std::pair<XSprite, std::string> p_renderingInfos;
 
-class Game
+class Game : public Singleton<Game>
 {
+    friend class Singleton<Game>;
     friend class boost::serialization::access;
 
     public:
-        Game(sf::RenderTarget &target);
-        ~Game();
+        void setTarget(sf::RenderTarget *ntarget)
+        {
+            if (ntarget != 0)
+                target = ntarget;
+        }
 
         void initTestMap();
 
@@ -50,8 +54,11 @@ class Game
 
         Map *getMapPtr() { return m_mapPtr; }
 
+        void changeCurrentTerrain(const std::string &type) { m_terrain = type; }
+
     private:
-        Game() { }
+        Game();
+        ~Game();
 
         template <class Archive>
         void serialize(Archive &ar, const unsigned int &version)
@@ -71,6 +78,9 @@ class Game
         bool m_inGame, m_inEditor;
         //InGameGui m_ingameGui;
         EditorGui m_editorGui;
+        std::string m_terrain;
 };
+
+extern Game &gGame;
 
 #endif /* GAME_HPP */

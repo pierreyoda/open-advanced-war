@@ -8,18 +8,13 @@
 #include "game/GameEntity.hpp"
 #include "constantes.hpp"
 
+Game &gGame = Game::getInstance();
+
 using namespace std;
 
-Game::Game(sf::RenderTarget &target) : target(&target), m_mapPtr(0),
-    m_editorGui()
+Game::Game() : m_mapPtr(0), m_editorGui()
 {
-    DatabaseSerialization::importFromXml("a");
-    FilesPathHandler::scanDirectory("modules/Native/", gFph);
-    LuaVM::getInstance().include(gFph("main.lua"));
 
-    bool error = false;
-    CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
-        "buildEditorTerrainList", error, &m_editorGui)
 }
 
 Game::~Game()
@@ -29,6 +24,14 @@ Game::~Game()
 
 void Game::initTestMap()
 {
+    DatabaseSerialization::importFromXml("a");
+    FilesPathHandler::scanDirectory("modules/Native/", gFph);
+    LuaVM::getInstance().include(gFph("main.lua"));
+
+    bool error = false;
+    CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+        "buildEditorTerrainList", error, &m_editorGui)
+
     m_mapPtr = new Map(); // for test - loading default map
     m_armies.push_back(new ArmyGeneral(m_armies.size(), "US"));
 }
@@ -70,7 +73,7 @@ void Game::listenInput(const sf::Input &Input)
     const sf::Vector2i mousePosTiles(GameEntity::pixelsToTiles(
         Input.GetMouseX(), Input.GetMouseY()));
     if (Input.IsMouseButtonDown(sf::Mouse::Left) && m_mapPtr != 0)
-        m_mapPtr->setTile(mousePosTiles, "River");
+        m_mapPtr->setTile(mousePosTiles, m_terrain);
 }
 
 void Game::listenEvent(const sf::Event &Event)
@@ -128,9 +131,11 @@ void Game::setGlobalAffector(const std::string &name, const int &value)
 
 void Game::renderGame(const float &frametime)
 {
+    if (target == 0)
+        return;
     m_editorGui.render(*target, frametime);
-    static sf::Shape mask = sf::Shape::Rectangle(sf::FloatRect(0, 0, SCREEN_W, SCREEN_H), sf::Color::Black);
-    target->Draw(mask); // to mask sfgui's cursor in game (map) part
+    /*static sf::Shape mask = sf::Shape::Rectangle(sf::FloatRect(0, 0, SCREEN_W, SCREEN_H), sf::Color::Black);
+    target->Draw(mask); // to mask sfgui's cursor in game (map) part*/
     if (m_mapPtr != 0)
         m_mapPtr->renderTo(*target);
     for (unsigned int i = 0; i < m_armies.size(); i++)
