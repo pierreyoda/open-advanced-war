@@ -109,9 +109,15 @@ namespace db
             template <class Derived>
             void addItem(const Derived &toAdd, std::list<Derived> &in)
             {
+                if (toAdd.name().empty())
+                {
+                    std::cerr << "Error : empty item name are not allowed"
+                                    << " in database.\n";
+                    return;
+                }
                 if (itemExists(toAdd.name()))
                 {
-                    std::cerr << "Warning : item name '" << toAdd.name()
+                    std::cerr << "Error : item name '" << toAdd.name()
                         << "' already exists in database.\n";
                     return;
                 }

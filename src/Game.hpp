@@ -54,7 +54,8 @@ class Game : public Singleton<Game>
 
         Map *getMapPtr() { return m_mapPtr; }
 
-        void changeCurrentTerrain(const std::string &type) { m_terrain = type; }
+        void setEditorTile(const std::string &type) { m_tile = type; } // to delete (call lua instead)
+        void setEditorBuilding(const std::string &type) { m_building = type; } // to delete (call lua instead)
 
     private:
         Game();
@@ -78,7 +79,7 @@ class Game : public Singleton<Game>
         bool m_inGame, m_inEditor;
         //InGameGui m_ingameGui;
         EditorGui m_editorGui;
-        std::string m_terrain;
+        std::string m_tile, m_building;
 };
 
 extern Game &gGame;

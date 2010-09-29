@@ -3,50 +3,115 @@
 #include "EditorGui.hpp"
 #include "../constantes.hpp"
 #include "../tools/ImageManager.hpp"
+#include "../lua/LuaVirtualMachine.hpp"
 #include "../Game.hpp"
 
 using namespace sf;
 
-EditorGui::EditorGui() : GuiManager("data/paper.png",
-    FloatRect(0, 0, SCREEN_W, GUI_END_H))
+inline FloatRect intRectToFloatRect(const IntRect &rect)
 {
-    m_listTerrain = sfg::SpriteListbox::Create(FloatRect(0, 0, 500, 90));
-    sfg::AlignWidgetInRect(
-		*m_listTerrain,
-		FloatRect(0, GUI_START_H, SCREEN_W, GUI_PART_H),
-		sfg::AlignLeft| sfg::AlignTop,
-		Vector2f(75, 5)
-	);
-
-    getGui().AddWidget(m_listTerrain);
-
-    m_listTerrain->Selected = sfg::Slot<sfg::DefaultSlot>(
-        &EditorGui::terrainListItemClicked, this);
+    return FloatRect(rect.Left, rect.Top, rect.Width, rect.Height);
 }
 
-void EditorGui::addItemToTerrainList(const std::string &type,
+VerticalSpriteItemList::VerticalSpriteItemList(const std::string &name,
+    const IntRect &rect, const std::string &luaBuildFunctionName) :
+    m_list(sfg::SpriteListbox::Create(intRectToFloatRect(rect), name))
+{
+    bool error = false;
+    CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, luaBuildFunctionName.c_str(),
+        error, this)
+    if (error)
+    {
+        std::cerr << "[VerticalSpriteItemList] - Error : cannot build list '"
+            << name << "\n";
+    }
+}
+
+void VerticalSpriteItemList::addItem(const std::string &id,
     const std::string &image, const IntRect &subRect)
 {
     if (image.empty())
         return;
+    if (id.empty())
+    {
+        std::cerr << "[VerticalSpriteItemList] adding item - "
+            << "Error : cannot accept an empty name.\n";
+        return;
+    }
     Image *ptr = gImageManager.getResource(image);
     if (ptr == 0)
         return;
-    for (std::list<p_listItem>::const_iterator iter = m_listTerrainItems.begin();
-        iter != m_listTerrainItems.end(); iter++)
-        if (iter->first == type) // already present
+    for (std::list<p_ItemId>::const_iterator iter = m_ids.begin();
+        iter != m_ids.end(); iter++)
+        if (iter->first == id) // already present
             return;
-    m_listTerrainItems.push_back(p_listItem(type, m_listTerrain->GetItemCount()));
+    m_ids.push_back(p_ItemId(id, m_list->GetItemCount()));
     Sprite sprite(*ptr);
         sprite.SetSubRect(subRect);
-    m_listTerrain->AddItem(sprite);
+    m_list->AddItem(sprite);
 }
 
-void EditorGui::terrainListItemClicked(sfg::Widget::Ptr widget)
+std::string VerticalSpriteItemList::getIdFromIndex(const unsigned int &index)
+    const
 {
-    unsigned int index = m_listTerrain->GetSelectedIndex();
-    for (std::list<p_listItem>::const_iterator iter = m_listTerrainItems.begin();
-    iter != m_listTerrainItems.end(); iter++)
-    if (iter->second == index) // already present
-        gGame.changeCurrentTerrain(iter->first);
+    for (std::list<p_ItemId>::const_iterator iter = m_ids.begin();
+        iter != m_ids.end(); iter++)
+            if (iter->second == index) // already present
+        return iter->first;
+    return "";
+}
+
+EditorGui::EditorGui() : GuiManager("data/paper.png",
+    FloatRect(0, 0, SCREEN_W, GUI_END_H))
+{
+
+}
+
+/// TODO (Pierre-Yves#1#): [GUI] Add possiblity of placing buttons, lists... outside the gui space
+void EditorGui::addVerticalSpriteList(const std::string &name,
+    const Vector2f &size, const Vector2f &padding,
+    const std::string &luaFunction)
+{
+    if (name.empty())
+    {
+        std::cerr << "[EditorGui] adding list - "
+            << "Error : cannot accept an empty ID.\n";
+        return;
+    }
+    for (std::list<VerticalSpriteItemList>::const_iterator iter =
+         m_verticalLists.begin(); iter != m_verticalLists.end(); iter++)
+        if (iter->name() == name) // same name already present
+        {
+            std::cerr << "[GUI-Editor] : Warning, vertical list name '" <<
+                name << "' is already used.\n";
+            return;
+        }
+    m_verticalLists.push_front(VerticalSpriteItemList(name,
+        IntRect(0, 0, size.x, size.y), luaFunction));
+    sfg::SpriteListbox::Ptr list = m_verticalLists.begin()->getList();
+    list->Selected = sfg::Slot<sfg::DefaultSlot>(
+        &EditorGui::listItemSelected, this);
+    sfg::AlignWidgetInRect(
+        *list,
+        FloatRect(0, GUI_START_H, SCREEN_W, GUI_END_H),
+        sfg::AlignLeft | sfg::AlignTop,
+        padding);
+    getGui().AddWidget(list);
+}
+
+void EditorGui::listItemSelected(sfg::Widget::Ptr widget)
+{
+    static bool error = false;
+    if (error)
+        return;
+    VerticalSpriteItemList *ptr = 0;
+    for (std::list<VerticalSpriteItemList>::iterator iter =
+         m_verticalLists.begin(); iter != m_verticalLists.end(); iter++)
+        if (iter->name() == widget->GetId())
+            ptr = &*iter;
+    if (ptr == 0)
+        return;
+    std::string id = ptr->getIdFromIndex(ptr->getList()->GetSelectedIndex());
+    CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+        "onEditorGuiListItemSelected", error, id)
 }

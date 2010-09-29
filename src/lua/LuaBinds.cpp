@@ -199,6 +199,8 @@ void LuaBinds::exportGame(lua_State *lua)
             DEF(Game, getGlobalAffector)
             DEF(Game, setGlobalAffector)
             DEF(Game, getMapPtr)
+            DEF(Game, setEditorTile)
+            DEF(Game, setEditorBuilding)
         // ArmyGeneral
         , class_<ArmyGeneral>("ArmyGeneral")
             DEF(ArmyGeneral, id)
@@ -211,6 +213,8 @@ void LuaBinds::exportGame(lua_State *lua)
                  &Map::placeBuilding)
             .def("placeBuilding", (void(Map::*)(const sf::Vector2i&,
                 const std::string&, const bool&))&Map::placeBuilding)
+            DEF(Map, removeBuilding)
+            DEF(Map, isBuildingPresent)
             // Tiles - modifiers
             .def("setTile", (void(Map::*)(const unsigned int&,
                 const unsigned int&, const std::string &))&Map::setTile)
@@ -322,10 +326,11 @@ void LuaBinds::exportGame(lua_State *lua)
         // GameEntity - Unit (Lua : GameUnit)
         , class_<Unit, bases<GameEntity> >("GameUnit")
             .def("id", &Unit::id)
-
         // GUI
         , class_<EditorGui>("EditorGui")
-            DEF(EditorGui, addItemToTerrainList)
+            DEF(EditorGui, addVerticalSpriteList)
+        , class_<VerticalSpriteItemList>("VerticalSpriteItemList")
+            DEF(VerticalSpriteItemList, addItem)
     ];
 }
 

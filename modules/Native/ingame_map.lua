@@ -2,25 +2,6 @@
 Part of Native module for Open Advanced War
 Manges tiles transitions in-game. ]]
 
---[[ Decides if a building can be placed.
-name Building's type.
-pos Building's position.
-map Reference to map.
-force If true tile will be set to "Plain" and building allowed.
-]]
-function canPlaceBuilding(name, pos, map, force)
-	if (not map:isInsideMap(pos)) then
-		return false
-	end
-	local ok = true
-	if (force) then
-		map:setTile(pos, "Plain")
-	elseif (map:getTileType(pos) ~= "Plain") then
-		ok = false
-	end
-	return ok
-end
-
 -- For convenience (shorter)
 UNDEFINED, RIGHT, LEFT, UP, DOWN = 
 	GameEntity.UNDEFINED,
@@ -287,6 +268,31 @@ function onTilePlaced(tile, map)
 	end
 	-- Transitions (specific)
 	local pos = tile:position()
+	map:removeBuilding(pos)
 	checkCoherencyAround(pos, map)
 	checkCoherency(pos, map)
+end
+
+-- Called when a building is placed on map (function  Map::placeBuilding)
+function onBuildingPlaced(building, map)
+	if (building == nil or map == nil) then
+		return
+	end
+	map:setTile(building:position(), "Plain")
+end
+
+--[[ Decides if a building can be placed.
+name Building's type.
+pos Building's position.
+map Reference to map.
+force If true tile will be set to "Plain" and building allowed.
+]]
+function canPlaceBuilding(name, pos, map, force)
+	if (not map:isInsideMap(pos)) then
+		return false
+	end
+	if (not force and map:getTileType(pos) ~= "Plain") then
+		return false
+	end
+	return not map:isBuildingPresent(pos)
 end

@@ -30,7 +30,7 @@ void Game::initTestMap()
 
     bool error = false;
     CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
-        "buildEditorTerrainList", error, &m_editorGui)
+        "buildEditorGui", error, &m_editorGui)
 
     m_mapPtr = new Map(); // for test - loading default map
     m_armies.push_back(new ArmyGeneral(m_armies.size(), "US"));
@@ -73,7 +73,12 @@ void Game::listenInput(const sf::Input &Input)
     const sf::Vector2i mousePosTiles(GameEntity::pixelsToTiles(
         Input.GetMouseX(), Input.GetMouseY()));
     if (Input.IsMouseButtonDown(sf::Mouse::Left) && m_mapPtr != 0)
-        m_mapPtr->setTile(mousePosTiles, m_terrain);
+    {
+        if (!m_building.empty())
+            m_mapPtr->placeBuilding(mousePosTiles, m_building, true);
+        else
+            m_mapPtr->setTile(mousePosTiles, m_tile);
+    }
 }
 
 void Game::listenEvent(const sf::Event &Event)

@@ -44,7 +44,7 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-lsfml2-audio-s" />
-					<Add option="-lsfml2-graphics-s-d" />
+					<Add option="-lsfml2-graphics-s" />
 					<Add option="-lsfml2-window-s" />
 					<Add option="-lsfml2-system-s" />
 					<Add option="-lluabind" />

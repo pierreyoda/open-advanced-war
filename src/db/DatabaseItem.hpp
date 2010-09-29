@@ -46,6 +46,8 @@ namespace db
     template <typename Derived>
     Derived *findItemIn(const std::string &item, std::list<Derived> &in)
     {
+        if (item.empty())
+            return 0;
         for (typename std::list<Derived>::iterator iter = in.begin();
             iter != in.end(); iter++)
         if (iter->name() == item)
@@ -56,6 +58,8 @@ namespace db
     const Derived *findItemInConst(const std::string &item,
         const std::list<Derived> &in)
     {
+        if (item.empty())
+            return 0;
         for (typename std::list<Derived>::const_iterator iter = in.begin();
             iter != in.end(); iter++)
         if (iter->name() == item)

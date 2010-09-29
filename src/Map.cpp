@@ -56,7 +56,6 @@ void Map::renderTo(sf::RenderTarget &target)
     }
 }
 
-/// TODO (Pierre-Yves#3#): [SCRIPTING] Simplifiate lua function calling
 void Map::onMouseOver(const sf::Vector2i &tilePos, const bool &nomore)
 {
     if (m_prevMouseOver != 0 && m_prevMouseOver->position() == tilePos)
@@ -102,7 +101,7 @@ void Map::onMouseOver(const sf::Vector2i &tilePos, const bool &nomore)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
             "onMouseNoMoreOverGameEntity", luaError, m_prevMouseOver);
     m_prevMouseOver = ptr;
-    if (!nomore)
+    if (!nomore && ptr != 0)
     {
         if (!luaError2)
             CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
@@ -113,8 +112,15 @@ void Map::onMouseOver(const sf::Vector2i &tilePos, const bool &nomore)
 void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
     const bool &force)
 {
+    if (type.empty())
+        return;
+    if (database.findBuilding(type) == 0) // tile not existing
+    {
+        cout << "[Map] placeBuilding : Error, building name '" << type << "' not in database.\n";
+        return;
+    }
     bool ok = false;
-    static bool luaError = false;
+    static bool luaError = false, luaError2 = false;
     if (!luaError)
         CALL_LUA_RFUNCTION(LuaVM::getInstance().getLua(), bool, ok,
            "canPlaceBuilding", luaError, type, pos, this, force)
@@ -124,11 +130,41 @@ void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
         building->setPosition(pos);
         building->playAnim("base", true);
     m_buildings.push_back(building);
+    if (!luaError2)
+        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+            "onBuildingPlaced", luaError2, building, this)
 }
 void Map::placeBuilding(const unsigned int &x, const unsigned int &y,
     const string &type, const bool &force)
 {
     placeBuilding(sf::Vector2i(x, y), type, force);
+}
+
+void Map::removeBuilding(const sf::Vector2i &pos)
+{
+    if (!isInsideMap(pos))
+        return;
+    for (list<GameEntity*>::iterator iter = m_buildings.begin();
+        iter != m_buildings.end(); iter++)
+        if ((*iter)->position() == pos)
+        {
+            if (m_prevMouseOver != 0 && m_prevMouseOver->position() == pos)
+                m_prevMouseOver = 0;
+            delete *iter;
+            m_buildings.erase(iter);
+            break;
+        }
+}
+
+bool Map::isBuildingPresent(const sf::Vector2i &pos)
+{
+    if (!isInsideMap(pos))
+        return false;
+    for (list<GameEntity*>::iterator iter = m_buildings.begin();
+        iter != m_buildings.end(); iter++)
+        if ((*iter) && (*iter)->position() == pos)
+            return true;
+    return false;
 }
 
 string Map::getTileType(const sf::Vector2i &pos) const
@@ -187,7 +223,7 @@ void Map::setTile(const sf::Vector2i &pos, const string &type)
 void Map::setTile(const unsigned int &x, const unsigned int &y,
     const string &type)
 {
-    if (!isInsideMap(x,y)) // outside of map
+    if (!isInsideMap(x,y) || type.empty()) // outside of map / empty type
         return;
     if (database.findTile(type) == 0) // tile not existing
     {
