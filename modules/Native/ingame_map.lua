@@ -278,7 +278,6 @@ function onBuildingPlaced(building, map)
 	if (building == nil or map == nil) then
 		return
 	end
-	map:setTile(building:position(), "Plain")
 end
 
 --[[ Decides if a building can be placed.
@@ -294,5 +293,9 @@ function canPlaceBuilding(name, pos, map, force)
 	if (not force and map:getTileType(pos) ~= "Plain") then
 		return false
 	end
-	return not map:isBuildingPresent(pos)
+	local ok = not map:isBuildingPresent(pos)
+	if (ok and force) then
+		map:setTile(pos, "Plain")
+	end
+	return ok
 end

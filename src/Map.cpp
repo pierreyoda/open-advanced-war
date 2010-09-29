@@ -243,7 +243,7 @@ void Map::setTile(const unsigned int &x, const unsigned int &y,
         return;
 
     const GameEntity *ptr = getTileConstPtr(x, y);
-    if (ptr != 0 && ptr->type() == type) // same tile already present
+    if (ptr != 0 && (ptr->type() == type && !isBuildingPresent(sf::Vector2i(x, y)))) // same tile already present (when no building present!)
         return;
     GameEntity *tile = new GameEntity(type);
     tile->setPosition(x, y);

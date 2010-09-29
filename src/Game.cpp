@@ -72,8 +72,11 @@ void Game::listenInput(const sf::Input &Input)
 {
     const sf::Vector2i mousePosTiles(GameEntity::pixelsToTiles(
         Input.GetMouseX(), Input.GetMouseY()));
-    if (Input.IsMouseButtonDown(sf::Mouse::Left) && m_mapPtr != 0)
+    static sf::Vector2i prevPos(-1, -1);
+    if (prevPos != mousePosTiles && Input.IsMouseButtonDown(sf::Mouse::Left)
+        && m_mapPtr != 0)
     {
+        prevPos = mousePosTiles;
         if (!m_building.empty())
             m_mapPtr->placeBuilding(mousePosTiles, m_building, true);
         else
