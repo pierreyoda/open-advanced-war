@@ -182,6 +182,7 @@ void LuaBinds::exportTools(lua_State *lua)
             .def("addFile", (void(FilesPathHandler::*)(const std::string&,
                 const std::string&, const bool&))&FilesPathHandler::addFile)
             DEF(FilesPathHandler, getFilepath)
+            DEF(FilesPathHandler, scanDirectory)
     ];
 }
 

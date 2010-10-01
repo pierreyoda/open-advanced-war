@@ -1,6 +1,7 @@
 #ifndef FILESPATHHANDLER_HPP
 #define FILESPATHHANDLER_HPP
 
+#include <iostream>
 #include <map>
 #include <string>
 #include <boost/filesystem.hpp>
@@ -61,12 +62,13 @@ class FilesPathHandler
             return getFilepath(alias);
         }
 
-        static bool scanDirectory(const std::string &dir, FilesPathHandler &fph)
+        bool scanDirectory(const std::string &dir)
         {
             namespace fs = boost::filesystem;
             if (!fs::exists(dir))
             {
-                //gLog << logH << "Error : folder '" << imgdir << "' does not exist.\n";
+                std::cerr << "[FilesPathHandler - Error : folder '" << dir
+                    << "' does not exist.\n";
                 return false;
             }
             const fs::path path(dir);
@@ -76,11 +78,11 @@ class FilesPathHandler
             {
                 if (fs::is_directory(it->status()))
                 {
-                    if (!scanDirectory(it->path().string(), fph))
+                    if (!scanDirectory(it->path().string()))
                         return false;
                 }
                 else if (fs::is_regular(it->status()))
-                    fph.addFile(it->filename(), it->string(), true);
+                    addFile(it->filename(), it->string(), true);
             }
             return true;
         }

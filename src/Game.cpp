@@ -3,6 +3,7 @@
 #include "db/DatabaseSerialization.hpp"
 #include "lua/LuaVirtualMachine.hpp"
 #include "tools/FilesPathHandler.hpp"
+#include "tools/others.hpp"
 #include "Map.hpp"
 #include "game/ArmyGeneral.hpp"
 #include "game/GameEntity.hpp"
@@ -22,11 +23,41 @@ Game::~Game()
     delete m_mapPtr;
 }
 
+void criticalModuleError()
+{
+    std::cerr << "Critical module error : game will now exit.\n";
+    printSystemPause();
+    exit(1);
+}
+
 void Game::initTestMap()
 {
-    DatabaseSerialization::importFromXml("a");
-    FilesPathHandler::scanDirectory("modules/Native/", gFph);
-    LuaVM::getInstance().include(gFph("main.lua"));
+    std::string path = "modules/Native/"; /// TODO (Pierre-Yves#1#): Make user can choose module (a list with sfgui? in an option menu?)
+    if (path.empty() || !boost::filesystem::exists(path))
+    {
+        std::cerr << "Error :  '" << path << "' is an invalid module path.\n";
+        criticalModuleError();
+    }
+    const boost::filesystem::path modulePath(path), mainPath = modulePath / "main.lua";
+    if (!boost::filesystem::exists(mainPath))
+    {
+        std::cerr << "Error : file 'main.lua' is not present in module path '"
+            << modulePath << "\n";
+        criticalModuleError();
+    }
+    LuaVM::getInstance().include(mainPath.string());
+    std::string database(LuaVM::getInstance().extractVariable<std::string>(
+        "DATABASE_PATH"));
+    if (database.empty() || !boost::filesystem::exists(database)) // invalid file
+    {
+        std::cerr << "Error :  '" << database << "' is an invalid database file path.\n";
+        criticalModuleError();
+    }
+    if (!DatabaseSerialization::importFromXml(database))
+    {
+        std::cerr << "Error while loading database file '" << database << "'.\n";
+        criticalModuleError();
+    }
 
     bool error = false;
     CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,

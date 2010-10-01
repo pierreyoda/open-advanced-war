@@ -11,7 +11,7 @@
 */
 struct DatabaseSerialization
 {
-    static void exportToXml(const std::string &filename)
+    static bool exportToXml(const std::string &filename)
     {
         std::ofstream file(filename.c_str());
         if (!file)
@@ -26,9 +26,11 @@ struct DatabaseSerialization
         {
             std::cerr <<  "[DATABASE EXPORT] Error : " << exception.what()
                 << "\n";
+            return false;
         }
+        return true;
     }
-    static void importFromXml(const std::string &filename)
+    static bool importFromXml(const std::string &filename)
     {
         std::ifstream file(filename.c_str());
         if (!file)
@@ -43,7 +45,9 @@ struct DatabaseSerialization
         {
             std::cerr << "[DATABASE IMPORT] Error : " << exception.what()
                 << "\n";
+            return false;
         }
+        return true;
     }
 };
 

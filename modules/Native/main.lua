@@ -3,8 +3,8 @@ Part of Native module for Open Advanced War
 Module's entry in-game. ]]
 
 -- "Constantes" DO NOT MODIFY!
-MODULE_NAME, MODULE_DIR = "Native", "modules/Native"
-DATABASE_PATH = "database.xml"
+MODULE_NAME, MODULE_DIR = "Native", "modules/Native/"
+DATABASE_PATH = --[[MODULE_DIR .. (later)]] "native_db.xml" -- Database's path (will be extracted)
 ICON_PATH = "tank.png" -- Window's icon (will be extracted)
 -- /"Constantes"
 
@@ -15,23 +15,10 @@ NONE, TILE, BUILDING, UNIT =
 	GameEntity.BUILDING,
 	GameEntity.UNIT
 
-vm:include("ingame_map.lua;graphic_effects.lua;ai.lua;editor.lua", MODULE_DIR)
-
--- Return the speed of a given unit.
-function getUnitSpeed(unit)
-	return (unit:getIntCaracteristic("speed") 
-		+ game:getGlobalAffector("speed")
-		--+ game:getSpecificAffector("speed", unit:owner(), unit:type())
-		)
-end
-
---[[ Decides if a unit can be placed.
-name Unit's type.
-pos Unit's position.
-]]
-function canPlaceUnit(name, pos)
-	return (not game:isUnitPresent(pos))
-end
+vm:include("ingame_map.lua;graphic_effects.lua;ai.lua;editor.lua;ingame_units.lua", 
+	MODULE_DIR)
+	
+gFph:scanDirectory(MODULE_DIR) -- scanning module directory (searching for resources)
 
 -- Called when a GameEntity is placed on map.
 function onGameEntityPlaced(entity)
