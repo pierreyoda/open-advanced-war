@@ -245,9 +245,10 @@ void Map::setTile(const unsigned int &x, const unsigned int &y,
     const GameEntity *ptr = getTileConstPtr(x, y);
     if (ptr != 0 && (ptr->type() == type && !isBuildingPresent(sf::Vector2i(x, y)))) // same tile already present (when no building present!)
         return;
+    delete m_tiles[y][x];
     GameEntity *tile = new GameEntity(type);
-    tile->setPosition(x, y);
-    tile->playAnim("base", true);
+        tile->setPosition(x, y);
+        tile->playAnim("base", true);
     m_tiles[y][x] = tile;
     if (!luaError2)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,

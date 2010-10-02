@@ -26,6 +26,8 @@ void ArmyGeneral::addUnit(const sf::Vector2i &position, const string &type)
         return;
     if (position.x < 0 || position.y < 0) // invalid position
         return;
+    if (getUnitPtr(position) != 0) // other unit already present
+        return;
     Unit *unit = new Unit(type, m_units.size());
         unit->setPosition(position);
         unit->playAnim("base");
