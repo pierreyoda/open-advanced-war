@@ -45,7 +45,6 @@ void Engine::run()
 {
     Map *map = gGame.getMapPtr();
     map->setTile(3, 0, "Forest");
-    map->placeBuilding(10, 10, "Barrack", false);
 
     const Input &Input = App.GetInput();
     while (App.IsOpened())

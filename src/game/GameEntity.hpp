@@ -32,7 +32,7 @@ class GameEntity
     friend class boost::serialization::access;
 
     public:
-        GameEntity(const std::string &type);
+        GameEntity(const std::string &type, const std::string &faction);
         virtual ~GameEntity();
 
         void updatePosition();
@@ -91,6 +91,7 @@ class GameEntity
         sf::Vector2i m_pos; /**< Entity's position (not in pixel but in "tiles"). */
         std::string m_type; /**< Entity type (ex : "tank  factory", "soldier"). */
         std::string m_alias; /**< Entity alias (optionnal; ex : "leaderA", "VIP"). */
+        std::string m_faction; /**< Entity faction (null by default). */
         unsigned int m_ownerId; /**< Entity (eventual) owner identifier (army ID). */
         std::list<db::IntCaracteristic> m_intCaracteristics; /**< List of int caracteristics. */
         std::list<db::BoolCaracteristic> m_boolCaracteristics; /**< List of bool caracteristics. */

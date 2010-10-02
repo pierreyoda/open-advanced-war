@@ -2,9 +2,9 @@
 #include "../GameGlobals.hpp"
 #include "../db/Database.hpp"
 
-GameEntity::GameEntity(const std::string &type) :
+GameEntity::GameEntity(const std::string &type, const std::string &faction) :
     m_class(findClassFromType(type)), m_pos(0, 0), m_type(type),
-    m_alias(/*TODO*/), m_orientation(RIGHT)
+    m_alias(/*TODO*/), m_faction(faction), m_orientation(RIGHT)
 {
 
 }
@@ -37,7 +37,7 @@ void GameEntity::setOrientation(const Orientation &orientation)
 
 void GameEntity::playAnim(const std::string &anim, const bool &loop)
 {
-    db::XSpriteItem *ptr = 0;
+    const db::XSpriteItem *ptr = 0;
     if (m_class == TILE)
         ptr = database.findTile(m_type);
     else if (m_class == BUILDING)
@@ -45,7 +45,7 @@ void GameEntity::playAnim(const std::string &anim, const bool &loop)
     else if (m_class == UNIT)
         ptr = database.findUnit(m_type);
     if (ptr != 0)
-        m_xsprite.playAnim(ptr->findAnim(anim), loop);
+        m_xsprite.playAnim(ptr->findAnim(anim, m_faction), loop);
 }
 
 Classes GameEntity::findClassFromType(const std::string &type)

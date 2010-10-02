@@ -56,6 +56,8 @@ class Game : public Singleton<Game>
 
         void setEditorTile(const std::string &type) { m_tile = type; } // to delete (call lua instead)
         void setEditorBuilding(const std::string &type) { m_building = type; } // to delete (call lua instead)
+        void setEditorUnit(const std::string &type) { m_unit = type; } // to delete (call lua instead)
+        void setEditorFaction(const std::string &faction) { m_faction = faction; } // to delete (call lua instead)
 
     private:
         Game();
@@ -79,7 +81,8 @@ class Game : public Singleton<Game>
         bool m_inGame, m_inEditor;
         //InGameGui m_ingameGui;
         EditorGui m_editorGui;
-        std::string m_tile, m_building;
+        std::string m_tile, m_building, m_unit;
+        std::string m_faction;
 };
 
 extern Game &gGame;

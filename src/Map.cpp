@@ -13,7 +13,7 @@ Map::Map(const sf::Vector2ui &size) : m_prevMouseOver(0)
         m_tiles.push_back(vector<GameEntity*>());
         for (unsigned int j = 0; j < size.x; j++)
         {
-            GameEntity *tile = new GameEntity("Plain");
+            GameEntity *tile = new GameEntity("Plain", "");
             tile->setPosition(j, i);
             tile->playAnim("base");
             m_tiles[i].push_back(tile);
@@ -110,7 +110,7 @@ void Map::onMouseOver(const sf::Vector2i &tilePos, const bool &nomore)
 }
 
 void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
-    const bool &force)
+    const std::string &faction, const bool &force)
 {
     if (type.empty())
         return;
@@ -126,7 +126,7 @@ void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
            "canPlaceBuilding", luaError, type, pos, this, force)
     if (!ok)
         return;
-    GameEntity *building = new GameEntity(type);
+    GameEntity *building = new GameEntity(type, faction);
         building->setPosition(pos);
         building->playAnim("base", true);
     m_buildings.push_back(building);
@@ -135,9 +135,9 @@ void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
             "onBuildingPlaced", luaError2, building, this)
 }
 void Map::placeBuilding(const unsigned int &x, const unsigned int &y,
-    const string &type, const bool &force)
+    const string &type, const std::string &faction,  const bool &force)
 {
-    placeBuilding(sf::Vector2i(x, y), type, force);
+    placeBuilding(sf::Vector2i(x, y), type, faction, force);
 }
 
 void Map::removeBuilding(const sf::Vector2i &pos)
@@ -246,7 +246,7 @@ void Map::setTile(const unsigned int &x, const unsigned int &y,
     if (ptr != 0 && (ptr->type() == type && !isBuildingPresent(sf::Vector2i(x, y)))) // same tile already present (when no building present!)
         return;
     delete m_tiles[y][x];
-    GameEntity *tile = new GameEntity(type);
+    GameEntity *tile = new GameEntity(type, "");
         tile->setPosition(x, y);
         tile->playAnim("base", true);
     m_tiles[y][x] = tile;

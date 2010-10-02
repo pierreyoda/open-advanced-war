@@ -30,9 +30,10 @@ class Map
         void onMouseOver(const sf::Vector2i &tilePos, const bool &nomore = false);
 
         void placeBuilding(const sf::Vector2i &pos, const std::string &type,
-            const bool &force);
+            const std::string &faction, const bool &force);
         void placeBuilding(const unsigned int &x, const unsigned int &y,
-            const std::string &type, const bool &force);
+            const std::string &faction,  const std::string &type,
+            const bool &force);
         void removeBuilding(const sf::Vector2i &pos);
         bool isBuildingPresent(const sf::Vector2i &pos);
 

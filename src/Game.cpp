@@ -32,7 +32,7 @@ void criticalModuleError()
 
 void Game::initTestMap()
 {
-    std::string path = "modules/Native/"; /// TODO (Pierre-Yves#1#): Make user can choose module (a list with sfgui? in an option menu?)
+    std::string path = "modules/AW1/"; /// TODO (Pierre-Yves#1#): Make user can choose module (a list with sfgui? in an option menu?)
     if (path.empty() || !boost::filesystem::exists(path))
     {
         std::cerr << "Error :  '" << path << "' is an invalid module path.\n";
@@ -108,8 +108,10 @@ void Game::listenInput(const sf::Input &Input)
         && m_mapPtr != 0)
     {
         prevPos = mousePosTiles;
-        if (!m_building.empty())
-            m_mapPtr->placeBuilding(mousePosTiles, m_building, true);
+        if (!m_unit.empty())
+            spawnUnit(0, m_unit, mousePosTiles);
+        else if (!m_building.empty())
+            m_mapPtr->placeBuilding(mousePosTiles, m_building, m_faction, true);
         else
             m_mapPtr->setTile(mousePosTiles, m_tile);
     }
@@ -136,7 +138,7 @@ void Game::spawnUnit(const unsigned int &armyId, const string &type,
         cerr << "Error : no army of identifier '" << armyId << "'.\n";
         return;
     }
-    ptr->addUnit(pos, type);
+    ptr->addUnit(pos, type, m_faction);
 }
 
 bool Game::isUnitPresent(const sf::Vector2i &pos)

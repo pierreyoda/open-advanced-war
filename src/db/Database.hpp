@@ -60,29 +60,36 @@ namespace db
             * \return Reference to self.
             */
             Database &addCategory(const Category *category);
+            /** \brief Add a faction to the database (if not present yet).
+            *
+            * \param faction Faction to add (pointer to avoid crashes).
+            * \return Reference to self.
+            */
+            Database &addFaction(const Faction *faction);
 
-            Tile *findTile(const std::string &item);
+            /*Tile *findTile(const std::string &item);
             Building *findBuilding(const std::string &item);
             Weapon *findWeapon(const std::string &item);
             Propulsion *findPropulsion(const std::string &item);
             Unit *findUnit(const std::string &item);
             Faction *findFaction(const std::string &item);
-            Category *findCategory(const std::string &item);
+            Category *findCategory(const std::string &item);*/
 
             // Lua side (const pointer) -- Crashes when trying to modify!
-            /*const Tile *findTile(const std::string &item) const;
+            const Tile *findTile(const std::string &item) const;
             const Building *findBuilding(const std::string &item) const;
             const Weapon *findWeapon(const std::string &item) const;
             const Propulsion *findPropulsion(const std::string &item) const;
             const Unit *findUnit(const std::string &item) const;
-            const Faction *findFaction(const std::string &item) const;*/
+            const Faction *findFaction(const std::string &item) const;
+            const Category *findCategory(const std::string &item) const;
 
             /** \brief Checks if item exists. Searchs in all lists (but translations).
             *
             * \param item Item's name.
             * \return True if existing, false otherwise.
             */
-            bool itemExists(const std::string &item);
+            bool itemExists(const std::string &item) const;
 
         private:
             /**

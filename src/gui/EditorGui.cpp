@@ -23,7 +23,7 @@ VerticalSpriteItemList::VerticalSpriteItemList(const std::string &name,
     if (error)
     {
         std::cerr << "[VerticalSpriteItemList] - Error : cannot build list '"
-            << name << "\n";
+            << name << "'\n";
     }
 }
 
@@ -113,5 +113,5 @@ void EditorGui::listItemSelected(sfg::Widget::Ptr widget)
         return;
     std::string id = ptr->getIdFromIndex(ptr->getList()->GetSelectedIndex());
     CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
-        "onEditorGuiListItemSelected", error, id)
+        "onEditorGuiListItemSelected", error, ptr->name(), id)
 }

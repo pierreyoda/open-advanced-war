@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
     globals(luaVM())["database"] = &db;
     globals(luaVM())["trans"] = &db.translationsRef();
 
-    string input = /*getFilePath("Lua input file")*/"modules/Native/database.lua",
+    string input = getFilePath("Lua input file"),
         output = getFilePath("XML output file", false, input);
 
     try
@@ -105,6 +105,8 @@ int main(int argc, char *argv[])
         printSystemPause();
         return 1;
     }
+
+    cout << "Done.\n";
 
     printSystemPause(false); // needed but don't know why...
     printSystemPause();

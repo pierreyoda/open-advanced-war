@@ -162,29 +162,69 @@ namespace db
             std::string m_image; /** < Image filename. */
     };
 
+    typedef std::list<Animation> l_anim;
+    typedef std::pair<std::string, l_anim> p_animSpecs; // Animation specializations
+
     /** \brief Contains informations to create an eXtended Sprite (XSprite).
     */
     struct XSpriteItem : public DatabaseItem
     {
         friend class boost::serialization::access;
 
-        typedef std::list<Animation> l_anim;
         XSpriteItem(const std::string &name) : DatabaseItem(name)
         { }
 
         XSpriteItem &addAnim(const Animation &anim)
         {
-            Animation *ptr = findItemIn<Animation>(anim.name(), m_anims);
+            return addAnim(anim, "");
+        }
+        XSpriteItem &addAnim(const Animation &anim, const std::string &faction)
+        {
+            l_anim *ptr = findAnimSpecs(faction);
             if (ptr == 0)
-                m_anims.push_back(anim);
+            {
+                m_anims.push_front(p_animSpecs(faction, l_anim()));
+                ptr = &(m_anims.begin()->second);
+            }
+            const Animation *ptr2 = findItemInConst<Animation>(anim.name(), *ptr);
+            if (ptr2 != 0) // anim name already present in faction specialization
+            {
+                std::cerr << "[XSpriteItem '" << name() << "'] addAnim : "
+                    << "Warning, animation '" << anim.name()
+                    << "' already exists in faction specialization '" << faction
+                    << "'.\n";
+                return *this;
+            }
+            ptr->push_back(anim);
             return *this;
         }
-        const Animation *findAnim(const std::string &anim)
+        const Animation *findAnim(const std::string &anim,
+            const std::string &faction) const
         {
-            return findItemInConst<Animation>(anim, m_anims);
+            const l_anim *ptr = findAnimSpecsConst(faction);
+            if (ptr == 0) // specified faction specialization not found
+                return 0;
+            return findItemInConst<Animation>(anim, *ptr);
         }
 
         private:
+            l_anim *findAnimSpecs(const std::string &faction)
+            {
+                for (std::list<p_animSpecs>::iterator iter =
+                     m_anims.begin(); iter != m_anims.end(); iter++)
+                    if (iter->first == faction)
+                        return &iter->second;
+                return 0;
+            }
+            const l_anim *findAnimSpecsConst(const std::string &faction) const
+            {
+                for (std::list<p_animSpecs>::const_iterator iter =
+                     m_anims.begin(); iter != m_anims.end(); iter++)
+                    if (iter->first == faction)
+                        return &iter->second;
+                return 0;
+            }
+
             template<class Archive>
             void serialize(Archive &ar, const unsigned int &version)
             {
@@ -193,7 +233,7 @@ namespace db
                 ar &BOOST_SERIALIZATION_NVP(m_anims);
             }
 
-            l_anim m_anims;
+            std::list<p_animSpecs> m_anims;
     };
 } /* End of namespace db */
 

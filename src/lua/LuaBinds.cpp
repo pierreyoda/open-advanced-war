@@ -36,9 +36,11 @@ void LuaBinds::exportDatabase(lua_State *lua)
             DEF(Database, addUnit)
             DEF(Database, addBuilding)
             DEF(Database, addCategory)
+            DEF(Database, addFaction)
             DEF(Database, findTile)
             DEF(Database, findUnit)
             DEF(Database, findBuilding)
+            DEF(Database, findFaction)
         // TranslationProvider
         , class_<TranslationProvider>("TranslationProvider")
             .def("tr", (std::string(TranslationProvider::*)(const std::string&))
@@ -73,7 +75,10 @@ void LuaBinds::exportDatabase(lua_State *lua)
             DEF(Animation, getFrame)
         // XSpriteItem
         , class_<XSpriteItem, bases<DatabaseItem> >("XSpriteItem")
-            DEF(XSpriteItem, addAnim)
+            .def("addAnim", (XSpriteItem&(XSpriteItem::*)(const Animation&))
+                &XSpriteItem::addAnim)
+            .def("addAnim", (XSpriteItem&(XSpriteItem::*)(const Animation&,
+                const std::string&))&XSpriteItem::addAnim)
             DEF(XSpriteItem, findAnim)
         // Tile
         , class_<Tile, bases<XSpriteItem> >("Tile")
@@ -109,9 +114,12 @@ void LuaBinds::exportDatabase(lua_State *lua)
             DEF(Category, isItemIn)
         // Propulsion
         , class_<Propulsion, bases<DatabaseItem> >("Propulsion")
-            .def(constructor<const std::string>())
+            .def(constructor<const std::string&>())
             DEF(Propulsion, canMoveTo)
             DEF(Propulsion, addCanMoveTo)
+        // Faction
+        , class_<Faction, bases<DatabaseItem> >("Faction")
+            .def(constructor<const std::string&>())
     ];
 }
 
@@ -202,6 +210,8 @@ void LuaBinds::exportGame(lua_State *lua)
             DEF(Game, getMapPtr)
             DEF(Game, setEditorTile)
             DEF(Game, setEditorBuilding)
+            DEF(Game, setEditorUnit)
+            DEF(Game, setEditorFaction)
         // ArmyGeneral
         , class_<ArmyGeneral>("ArmyGeneral")
             DEF(ArmyGeneral, id)
@@ -210,10 +220,11 @@ void LuaBinds::exportGame(lua_State *lua)
         , class_<Map>("Map")
             // Building
             .def("placeBuilding", (void(Map::*)(const unsigned int&,
-                const unsigned int&, const std::string&, const bool&))
-                 &Map::placeBuilding)
+                const unsigned int&, const std::string&, const std::string&,
+                const bool&))&Map::placeBuilding)
             .def("placeBuilding", (void(Map::*)(const sf::Vector2i&,
-                const std::string&, const bool&))&Map::placeBuilding)
+                const std::string&, const std::string&, const bool&))
+                 &Map::placeBuilding)
             DEF(Map, removeBuilding)
             DEF(Map, isBuildingPresent)
             // Tiles - modifiers

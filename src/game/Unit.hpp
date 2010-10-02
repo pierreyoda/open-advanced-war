@@ -10,7 +10,7 @@ class Unit : public GameEntity
     friend class boost::serialization::access;
 
     public:
-        Unit(const std::string &type, const unsigned int &id);
+        Unit(const std::string &type, const std::string &faction, const unsigned int &id);
         virtual ~Unit();
 
         unsigned int id() const { return m_id; }

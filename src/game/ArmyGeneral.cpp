@@ -20,15 +20,19 @@ ArmyGeneral::~ArmyGeneral()
     m_units.clear();
 }
 
-void ArmyGeneral::addUnit(const sf::Vector2i &position, const string &type)
+void ArmyGeneral::addUnit(const sf::Vector2i &position, const string &type,
+    const std::string &faction)
 {
+    std::string usedFaction = faction;
+    if (faction.empty())
+        usedFaction = m_faction;
     if (database.findUnit(type) == 0) // not in database
         return;
     if (position.x < 0 || position.y < 0) // invalid position
         return;
     if (getUnitPtr(position) != 0) // other unit already present
         return;
-    Unit *unit = new Unit(type, m_units.size());
+    Unit *unit = new Unit(type, usedFaction, m_units.size());
         unit->setPosition(position);
         unit->playAnim("base");
     bool canSpawnUnit = false;

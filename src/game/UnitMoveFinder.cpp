@@ -62,10 +62,10 @@ bool UnitMoveFinder::tileAlreadyAdded(const l_Vector2i &in,
 
 bool UnitMoveFinder::canUnitMoveTo(const string &unit, const string &tile)
 {
-    db::Unit *ptr = database.findUnit(unit);
+    const db::Unit *ptr = database.findUnit(unit);
     if (ptr == 0)
         return false;
-    db::Propulsion *ptr2 = database.findPropulsion(ptr->propulsion());
+    const db::Propulsion *ptr2 = database.findPropulsion(ptr->propulsion());
     if (ptr2 == 0)
         return false;
     return (ptr2->canMoveTo(tile));

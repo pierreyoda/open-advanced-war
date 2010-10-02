@@ -66,12 +66,20 @@ namespace db
     Caracteristic<Type> *findCaracteristic(const std::string &name,
         std::list< Caracteristic<Type> > &in)
     {
-        for (typename std::list< Caracteristic<Type> >::iterator iter = in.begin();
-            iter != in.end(); iter++)
-        {
+        for (typename std::list< Caracteristic<Type> >::iterator
+            iter = in.begin(); iter != in.end(); iter++)
             if (iter->name == name)
                 return &*iter;
-        }
+        return 0;
+    }
+    template <typename Type>
+    const Caracteristic<Type> *findCaracteristicConst(const std::string &name,
+        const std::list< Caracteristic<Type> > &in)
+    {
+        for (typename std::list< Caracteristic<Type> >::const_iterator
+            iter = in.begin(); iter != in.end(); iter++)
+            if (iter->name == name)
+                return &*iter;
         return 0;
     }
 
@@ -138,9 +146,9 @@ namespace db
             *
             * \param name Caracteristic's name.
             */
-            int findIntCaracteristic(const std::string &name)
+            int findIntCaracteristic(const std::string &name) const
             {
-                IntCaracteristic *ptr = findCaracteristic<int>(name,
+                const IntCaracteristic *ptr = findCaracteristicConst<int>(name,
                     m_intCaracteristics);
                 if (ptr == 0) // not found
                     return 0;
@@ -151,9 +159,9 @@ namespace db
             *
             * \param name Caracteristic's name.
             */
-            Tribool findBoolCaracteristic(const std::string &name)
+            Tribool findBoolCaracteristic(const std::string &name) const
             {
-                BoolCaracteristic *ptr = findCaracteristic<bool>(name,
+                const BoolCaracteristic *ptr = findCaracteristicConst<bool>(name,
                     m_boolCaracteristics);
                 if (ptr == 0) // not found
                     return INDETERMINATE;

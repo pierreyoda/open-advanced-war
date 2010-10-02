@@ -15,10 +15,12 @@ namespace db
         public:
             /**
             * \brief Default constructor.
-            * \param name Faction name (example : "Orange Star", "Red").
+            * \param name Faction name (example : "Orange Star", "URSS", "USA").
             */
             Faction(const std::string &name) : DatabaseItem(name)
             { }
+
+            //Faction &addUniqueUnit(const Unit &unit) /// TODO
 
         private:
             Faction() : DatabaseItem("")

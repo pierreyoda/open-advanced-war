@@ -41,15 +41,21 @@ namespace db
             addItem<Category>(*category, m_categories);
         return *this;
     }
+    Database &Database::addFaction(const Faction *faction)
+    {
+        if (faction != 0)
+            addItem<Faction>(*faction, m_factions);
+        return *this;
+    }
 
-    bool Database::itemExists(const std::string &item)
+    bool Database::itemExists(const std::string &item) const
     {
         return (findTile(item) || findBuilding(item) || findWeapon(item)
             || findPropulsion(item) || findUnit(item) || findFaction(item)
             || findCategory(item));
     }
 
-    Tile *Database::findTile(const std::string &item)
+    /*Tile *Database::findTile(const std::string &item)
     {
         return findItemIn<Tile>(item, m_tiles);
     }
@@ -76,9 +82,9 @@ namespace db
     Category *Database::findCategory(const std::string &item)
     {
         return findItemIn<Category>(item, m_categories);
-    }
+    }*/
 
-    /*const Tile *Database::findTile(const std::string &item) const
+    const Tile *Database::findTile(const std::string &item) const
     {
         return findItemInConst<Tile>(item, m_tiles);
     }
@@ -101,5 +107,9 @@ namespace db
     const Faction *Database::findFaction(const std::string &item) const
     {
         return findItemInConst<Faction>(item, m_factions);
-    }*/
+    }
+    const Category *Database::findCategory(const std::string &item) const
+    {
+        return findItemInConst<Category>(item, m_categories);
+    }
 } /* End of namespace db */
