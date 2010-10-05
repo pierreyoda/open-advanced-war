@@ -46,16 +46,22 @@ void Game::initTestMap()
         criticalModuleError();
     }
     LuaVM::getInstance().include(mainPath.string());
-    std::string database(LuaVM::getInstance().extractVariable<std::string>(
+    std::string databasePath(LuaVM::getInstance().extractVariable<std::string>(
         "DATABASE_PATH"));
-    if (database.empty() || !boost::filesystem::exists(database)) // invalid file
+    if (databasePath.empty() || !boost::filesystem::exists(databasePath)) // invalid file
     {
-        std::cerr << "Error :  '" << database << "' is an invalid database file path.\n";
+        std::cerr << "Error :  '" << databasePath << "' is an invalid database file path.\n";
         criticalModuleError();
     }
-    if (!DatabaseSerialization::importFromXml(database))
+    if (!DatabaseSerialization::importFromXml(databasePath))
     {
-        std::cerr << "Error while loading database file '" << database << "'.\n";
+        std::cerr << "Error while loading database file '" << databasePath << "'.\n";
+        criticalModuleError();
+    }
+    if (database.getModuleName() !=
+        LuaVM::getInstance().extractVariable<std::string>("MODULE_NAME"))
+    {
+        std::cerr << "Error, module and database does not have the same names.\n";
         criticalModuleError();
     }
 
