@@ -5,8 +5,8 @@ AW1 = Advance Wars 1 - Project to "recreate" the first Advance Wars (GBA)
 Module's entry in-game. ]]
 
 -- "Constantes" DO NOT MODIFY!
-MODULE_NAME, MODULE_DIR = "AW1", "modules/AW1/"
-DATABASE_PATH = --[[MODULE_DIR .. (later)]] "aw1_db.xml" -- Database's path (will be extracted)
+vm:include("shared_globals.lua", 
+	"modules/AW1/") -- we cannot use the global MODULE_DIR here...
 ICON_PATH = "tank.png" -- Window's icon (will be extracted)
 -- /"Constantes"
 

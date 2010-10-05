@@ -4,11 +4,8 @@ Insert module's informations into database.
 DO NOT INCLUDE IN-GAME! ; use it with DatabaseConverter tool 
 (same thing for other databases files) ]]
 
--- "Constantes" (DO NOT MODIFY)
-MODULE_DIR = "modules/AW1/"
-DATABASE_FILES_PATH = MODULE_DIR .. "database/"
-MODULE_NAME = "AW1"
--- /"Constantes" (DO NOT MODIFY)
+vm:include("shared_globals.lua", 
+	"modules/AW1/") -- we cannot use the global MODULE_DIR here...
 
 vm:include("tiles.lua;translations.lua;categories.lua;units.lua;buildings.lua",
-	DATABASE_FILES_PATH)
+	MODULE_DIR .. "database/")
