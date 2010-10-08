@@ -36,6 +36,7 @@ class Map
             const bool &force);
         void removeBuilding(const sf::Vector2i &pos);
         bool isBuildingPresent(const sf::Vector2i &pos);
+        std::string getBuildingType(const sf::Vector2i &pos);
 
         std::string getTileType(const sf::Vector2i &pos) const;
         std::string getTileType(const unsigned int &x, const unsigned int &y)

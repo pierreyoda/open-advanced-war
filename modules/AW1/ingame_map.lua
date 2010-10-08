@@ -3,12 +3,13 @@ Part of AW1 module for Open Advanced War
 Manges tiles transitions in-game. ]]
 
 -- For convenience (shorter)
-UNDEFINED, RIGHT, LEFT, UP, DOWN = 
+UNDEFINED, RIGHT, LEFT, UP, DOWN, UPLEFT, UPRIGHT, DOWNLEFT, DOWNRIGHT = 
 	GameEntity.UNDEFINED,
 	GameEntity.RIGHT,
 	GameEntity.LEFT,
 	GameEntity.UPWARD,
-	GameEntity.DOWNWARD
+	GameEntity.DOWNWARD,
+	5, 6, 7, 8
 
 -- From a given orientation returns a relative pos (if unknown returns "pos")
 function relativePosition(pos, orientation)
@@ -21,6 +22,14 @@ function relativePosition(pos, orientation)
 		toReturn.y = toReturn.y-1
 	elseif (orientation == DOWN) then
 		toReturn.y = toReturn.y+1
+	elseif (orientation == UPLEFT) then
+		toReturn.x, toReturn.y = toReturn.x-1, toReturn.y-1
+	elseif (orientation == UPRIGHT) then
+		toReturn.x, toReturn.y = toReturn.x+1, toReturn.y-1
+	elseif (orientation == DOWNLEFT) then
+		toReturn.x, toReturn.y = toReturn.x-1, toReturn.y+1
+	elseif (orientation == DOWNRIGHT) then
+		toReturn.x, toReturn.y = toReturn.x+1, toReturn.y+1
 	end
 	return toReturn
 end
@@ -32,9 +41,6 @@ function onTileOriented(tile, map, pos)
 end
 
 function isTileOfGivenType(type_, pos, map)
-	if (type_ == "") then
-		return false
-	end
 	return (map:getTileType(pos) == type_)
 end
 
@@ -113,37 +119,37 @@ function checkCoherencyForRoad(pos, map)
 end
 
 function checkCoherencyForRiver(pos, map)
-	local roadAround = 0 -- number of river tiles around
+	local riverAround = 0 -- number of river tiles around
 	local verticalRoad, horizontalRoad = false, false -- is vertical/horizontal river
 	local onLeft, onRight, onUp, onDown = false, false, false, false
 	-- Checking around cases
 	if (isTileOfGivenType("River", relativePosition(pos, LEFT), map)) then
-		roadAround = roadAround+1
+		riverAround = riverAround+1
 		horizontalRoad, onLeft = true, true
 	end	
 	if (isTileOfGivenType("River", relativePosition(pos, RIGHT), map)) then
-		roadAround = roadAround+1
+		riverAround = riverAround+1
 		horizontalRoad, onRight = true, true
 	end	
 	if (isTileOfGivenType("River", relativePosition(pos, UP), map)) then
-		roadAround = roadAround+1
+		riverAround = riverAround+1
 		verticalRoad, onUp = true, true
 	end
 	if (isTileOfGivenType("River", relativePosition(pos, DOWN), map)) then
-		roadAround = roadAround+1
+		riverAround = riverAround+1
 		verticalRoad, onDown = true, true
 	end
 	local anim = "base_right"
 	-- Image choice
-	if (roadAround == 0) then
+	if (riverAround == 0) then
 		anim = "base_right"
-	elseif (roadAround ==1) then
+	elseif (riverAround ==1) then
 		if (verticalRoad) then
 			anim = "base_up"
 		elseif (horizontalRoad) then
 			anim = "base_right"
 		end
-	elseif (roadAround == 2) then -- line or corner
+	elseif (riverAround == 2) then -- line or corner
 		-- Line case:
 		if (verticalRoad and not horizontalRoad) then
 			anim = "base_up" -- horizontal
@@ -164,7 +170,7 @@ function checkCoherencyForRiver(pos, map)
 		if (onRight and onDown) then
 			anim = "base_right_down"
 		end
-	elseif (roadAround == 3) then -- T intersection ("inter_3")
+	elseif (riverAround == 3) then -- T intersection ("inter_3")
 		if (onLeft and onRight and onUp) then
 			anim = "base_inter3_up"
 		end
@@ -177,9 +183,150 @@ function checkCoherencyForRiver(pos, map)
 		if (onUp and onDown and onRight) then
 			anim = "base_inter3_right"
 		end
-	elseif (roadAround == 4) then
+	elseif (riverAround == 4) then
 		anim = "base_inter4"
 	end
+	map:setTileAnim(pos, anim)
+end
+
+function checkCoherencyForSea(pos, map)
+	local nbSeaAround, nbSeaDiagonal = 0, 0
+	local verticalSea, horizontalSea = false, false
+	local onLeft, onRight, onUp, onDown = false, false, false, false
+	local onUpLeft, onUpRight, onDownLeft, onDownRight = false, false, false, false
+	local beachOnLeft, beachOnRight, beachOnUp, beachOnDown = false, false, false, false
+	
+	local function seaOrBridge(pos)
+		return (isTileOfGivenType("Sea", pos, map) 
+			or map:getBuildingType(pos) == "Bridge"
+			or isTileOfGivenType("", pos, map)) -- null tiles (out of the map)
+	end
+	
+	-- Checking all adjacent tiles
+	if (seaOrBridge(relativePosition(pos, LEFT))) then
+		nbSeaAround = nbSeaAround+1
+		horizontalSea, onLeft = true, true
+		if (isTileOfGivenType("Beach", relativePosition(pos, LEFT), map)) then
+			beachOnLeft = true
+		end
+	end
+	if (seaOrBridge(relativePosition(pos, RIGHT))) then
+		nbSeaAround = nbSeaAround+1
+		horizontalSea, onRight = true, true
+		if (isTileOfGivenType("Beach", relativePosition(pos, RIGHT), map)) then
+			beachOnRight = true
+		end
+	end
+	if (seaOrBridge(relativePosition(pos, UP))) then
+		nbSeaAround = nbSeaAround+1
+		verticalSea, onUp = true, true
+		if (isTileOfGivenType("Beach", relativePosition(pos, UP), map)) then
+			beachOnUp = true
+		end
+	end
+	if (seaOrBridge(relativePosition(pos, DOWN))) then
+		nbSeaAround = nbSeaAround+1
+		verticalSea, onDown = true, true
+		if (isTileOfGivenType("Beach", relativePosition(pos, DOWN), map)) then
+			beachOnDown = true
+		end
+	end
+	if (seaOrBridge(relativePosition(pos, UPLEFT))) then
+		nbSeaDiagonal = nbSeaDiagonal+1
+		onUpLeft = true
+	end	
+	if (seaOrBridge(relativePosition(pos, UPRIGHT))) then
+		nbSeaDiagonal = nbSeaDiagonal+1
+		onUpRight = true
+	end	
+	if (seaOrBridge(relativePosition(pos, DOWNLEFT))) then
+		nbSeaDiagonal = nbSeaDiagonal+1
+		onDownLeft = true
+	end	
+	if (seaOrBridge(relativePosition(pos, DOWNRIGHT))) then
+		nbSeaDiagonal = nbSeaDiagonal+1
+		onDownRight = true
+	end
+	
+	-- Image choice
+	local anim = "base_deep"
+	if (nbSeaAround == 0) then
+		anim = "base_alone"
+	elseif (nbSeaAround == 1) then
+		if (onLeft) then
+			anim = "base_end_left"
+		elseif (onRight) then
+			anim = "base_end_right"
+		elseif (onUp) then
+			anim = "base_end_up"
+		elseif (onDown) then
+			anim = "base_end_down"
+		end
+	elseif (nbSeaAround == 2) then -- line or corner
+		-- line case
+			if (verticalSea and not horizontalSea) then
+				anim = "base_up"
+			elseif (horizontalSea and not verticalSea) then
+				anim = "base_right"
+			end
+		-- corner case
+		if (onLeft and onUp) then
+			anim = "base_left_up"
+			if (onUpLeft) then -- coast
+				anim = anim .. "_deep"
+			end
+		end		
+		if (onRight and onUp) then
+			anim = "base_right_up"
+			if (onUpRight) then -- coast
+				anim = anim .. "_deep"
+			end
+		end		
+		if (onLeft and onDown) then
+			anim = "base_left_down"
+			if (onDownLeft) then -- coast
+				anim = anim .. "_deep"
+			end
+		end		
+		if (onRight and onDown) then
+			anim = "base_right_down"
+			if (onDownRight) then -- coast
+				anim = anim .. "_deep"
+			end
+		end
+	elseif (nbSeaAround == 3) then -- T intersection or corner
+		anim = "base_inter3_down"
+		if (onLeft and onRight and onUp) then
+			anim = "base_inter3_up"
+			if (onUpLeft or onUpRight) then
+				anim = anim .. "_deep"
+			end
+		end
+		if (onLeft and onRight and onDown) then
+			anim = "base_inter3_down"
+			if (onDownLeft or onDownRight) then
+				anim = anim .. "_deep"
+			end
+		end
+		if (onUp and onDown and onLeft) then
+			anim = "base_inter3_left"
+			if (onUpLeft or onDownLeft) then
+				anim = anim .. "_deep"
+			end
+		end
+		if (onUp and onDown and onRight) then
+			anim = "base_inter3_right"
+			if (onUpRight or onDownRight) then
+				anim = anim .. "_deep"
+			end
+		end
+	elseif (nbSeaAround ==4) then -- 4 intersection
+		anim = "base_inter4"
+		if (nbSeaDiagonal >= 1) then
+			anim = "base_deep"
+		end
+	end
+	
 	map:setTileAnim(pos, anim)
 end
 
@@ -192,6 +339,10 @@ function checkCoherency(pos, map)
 		return checkCoherencyForRoad(pos, map)
 	elseif (type_ == "River") then
 		return checkCoherencyForRiver(pos, map)
+	elseif (type_ == "Sea") then
+		return checkCoherencyForSea(pos, map)
+	elseif (type_ == "Beach") then
+		return checkCoherencyForBeach(pos, map)
 	end
 	return ""
 end
@@ -202,10 +353,10 @@ function checkCoherencyAround(pos, map)
 	checkCoherency(relativePosition(pos, UP), map)
 	checkCoherency(relativePosition(pos, DOWN), map)
 	-- Diagonals
-	checkCoherency(sf.Vector2i(pos.x-1,pos.y+1), map); -- Down Left
-	checkCoherency(sf.Vector2i(pos.x+1,pos.y+1), map); -- Down Right
-	checkCoherency(sf.Vector2i(pos.x-1,pos.y-1), map); -- Up Left
-	checkCoherency(sf.Vector2i(pos.x+1,pos.y-1), map); -- Up Right
+	checkCoherency(relativePosition(pos, UPLEFT), map);
+	checkCoherency(relativePosition(pos, UPRIGHT), map);
+	checkCoherency(relativePosition(pos, DOWNLEFT), map);
+	checkCoherency(relativePosition(pos, DOWNRIGHT), map);
 end
 -- [/EXTERNAL]
 
@@ -218,25 +369,25 @@ function canPlaceRiver(pos, map)
 	-- Top left corner
 	if (isTileOfGivenType("River", relativePosition(pos, LEFT), map)
 		and isTileOfGivenType("River", relativePosition(pos, UP), map)
-		and isTileOfGivenType("River", sf.Vector2i(pos.x-1, pos.y-1), map)) then
+		and isTileOfGivenType("River", relativePosition(pos, UPLEFT), map)) then
 		return false
 	end	
 	-- Top right corner
 	if (isTileOfGivenType("River", relativePosition(pos, RIGHT), map)
 		and isTileOfGivenType("River", relativePosition(pos, UP), map)
-		and isTileOfGivenType("River", sf.Vector2i(pos.x+1, pos.y-1), map)) then
+		and isTileOfGivenType("River", relativePosition(pos, UPRIGHT), map)) then
 		return false
 	end	
 	-- Bottom left corner
 	if (isTileOfGivenType("River", relativePosition(pos, LEFT), map)
 		and isTileOfGivenType("River", relativePosition(pos, DOWN), map)
-		and isTileOfGivenType("River", sf.Vector2i(pos.x-1, pos.y+1), map)) then
+		and isTileOfGivenType("River", relativePosition(pos, DOWNLEFT), map)) then
 		return false
 	end	
 	-- Bottom right corner
 	if (isTileOfGivenType("River", relativePosition(pos, RIGHT), map)
 		and isTileOfGivenType("River", relativePosition(pos, DOWN), map)
-		and isTileOfGivenType("River", sf.Vector2i(pos.x+1, pos.y+1), map)) then
+		and isTileOfGivenType("River", relativePosition(pos, DOWNRIGHT), map)) then
 		return false
 	end
 	return true
@@ -263,6 +414,7 @@ function onTilePlaced(tile, map)
 		for i = 0, 25, 1 do
 			map:setTile(i, 2, "Forest")
 		end
+		game:setEditorFaction("Orange Star")
 		game:spawnUnit(0, "Tank", sf.Vector2i(15, 10))
 		game:spawnUnit(0, "Soldier", sf.Vector2i(20, 10))
 		map:placeBuilding(20, 20, "Base", "", true)
@@ -295,9 +447,8 @@ function canPlaceBuilding(name, pos, map, force)
 	if (not force and map:getTileType(pos) ~= "Plain") then
 		return false
 	end
-	local ok = not map:isBuildingPresent(pos)
-	if (ok and force) then
+	if (force) then
 		map:setTile(pos, "Plain")
 	end
-	return ok
+	return map:isBuildingPresent(pos)
 end

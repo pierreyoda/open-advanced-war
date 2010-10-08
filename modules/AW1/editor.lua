@@ -49,6 +49,7 @@ function buildEditorTerrainList(verticalSpriteList)
 	addSpriteItemToList(verticalSpriteList, TILE, "Forest", "base")
 	addSpriteItemToList(verticalSpriteList, TILE, "Road", "base_up")
 	addSpriteItemToList(verticalSpriteList, TILE, "River", "base_right")
+	addSpriteItemToList(verticalSpriteList, TILE, "Sea", "base_deep")
 	addSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
 end
 

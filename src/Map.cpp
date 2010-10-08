@@ -97,7 +97,7 @@ void Map::onMouseOver(const sf::Vector2i &tilePos, const bool &nomore)
             return;
     }
     static bool luaError = false, luaError2 = false;
-    if (!luaError)
+    if (!luaError && m_prevMouseOver != 0)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
             "onMouseNoMoreOverGameEntity", luaError, m_prevMouseOver);
     m_prevMouseOver = ptr;
@@ -158,13 +158,17 @@ void Map::removeBuilding(const sf::Vector2i &pos)
 
 bool Map::isBuildingPresent(const sf::Vector2i &pos)
 {
+    return (getBuildingType(pos).empty());
+}
+std::string Map::getBuildingType(const sf::Vector2i &pos)
+{
     if (!isInsideMap(pos))
-        return false;
+        return "";
     for (list<GameEntity*>::iterator iter = m_buildings.begin();
         iter != m_buildings.end(); iter++)
         if ((*iter) && (*iter)->position() == pos)
-            return true;
-    return false;
+            return (*iter)->type();
+    return "";
 }
 
 string Map::getTileType(const sf::Vector2i &pos) const
@@ -250,6 +254,8 @@ void Map::setTile(const unsigned int &x, const unsigned int &y,
         tile->setPosition(x, y);
         tile->playAnim("base", true);
     m_tiles[y][x] = tile;
+    if (m_prevMouseOver != 0 && m_prevMouseOver->position() == sf::Vector2i(x, y))
+        m_prevMouseOver = tile; // replacing the tile under the mouse if needed
     if (!luaError2)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
             "onGameEntityPlaced", luaError2, tile)
