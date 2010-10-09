@@ -17,9 +17,7 @@ NONE, TILE, BUILDING, UNIT =
 	GameEntity.BUILDING,
 	GameEntity.UNIT
 
-vm:include("graphic_effects.lua;ai.lua;ingame_units.lua", 
-	"modules/Native/") -- we don't need to reimplement all...
-vm:include("ingame_map.lua;editor.lua", MODULE_DIR)
+vm:include("ingame_map.lua;ingame_units.lua;ai.lua;graphic_effects.lua;editor.lua", MODULE_DIR)
 	
 gFph:scanDirectory(MODULE_DIR) -- scanning module directory (searching for resources)
 

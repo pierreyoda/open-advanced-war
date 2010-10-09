@@ -44,7 +44,6 @@
     ARGS); } \
     catch (const std::exception &exception) { PRINT_LUA_ERROR(LUA); ERROR=true; }
 
-/// TODO (Pierre-Yves#1#): [ERRORS] Add a system (list<string> ?) of function that does not work not to call them anymore (to avoid thousand of errors in console)
 /** \brief Handles lua interpreter.
 */
 class LuaVM : public Singleton<LuaVM>

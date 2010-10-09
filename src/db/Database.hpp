@@ -66,6 +66,18 @@ namespace db
             * \return Reference to self.
             */
             Database &addFaction(const Faction *faction);
+            /** \brief Add a propulsion to the database (if not present yet).
+            *
+            * \param propulsion Propulsion to add (pointer to avoid crashes).
+            * \return Reference to self.
+            */
+            Database &addPropulsion(const Propulsion *propulsion);
+            /** \brief Add a weapon to the database (if not present yet).
+            *
+            * \param weapon Weapon to add (pointer to avoid crashes).
+            * \return Reference to self.
+            */
+            Database &addWeapon(const Weapon *weapon);
 
             /*Tile *findTile(const std::string &item);
             Building *findBuilding(const std::string &item);

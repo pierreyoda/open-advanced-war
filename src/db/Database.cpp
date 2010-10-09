@@ -47,6 +47,18 @@ namespace db
             addItem<Faction>(*faction, m_factions);
         return *this;
     }
+    Database &Database::addPropulsion(const Propulsion *propulsion)
+    {
+        if (propulsion != 0)
+            addItem<Propulsion>(*propulsion, m_propulsions);
+        return *this;
+    }
+    Database &Database::addWeapon(const Weapon *weapon)
+    {
+        if (weapon != 0)
+            addItem<Weapon>(*weapon, m_weapons);
+        return *this;
+    }
 
     bool Database::itemExists(const std::string &item) const
     {

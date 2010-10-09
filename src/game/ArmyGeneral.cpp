@@ -26,25 +26,26 @@ void ArmyGeneral::addUnit(const sf::Vector2i &position, const string &type,
     std::string usedFaction = faction;
     if (faction.empty())
         usedFaction = m_faction;
-    if (database.findUnit(type) == 0) // not in database
-        return;
     if (position.x < 0 || position.y < 0) // invalid position
         return;
     if (getUnitPtr(position) != 0) // other unit already present
         return;
+    const db::Unit *unitDb = database.findUnit(type);
+    if (unitDb == 0) // not in database
+        return;
+    static bool luaError = false, luaError2 = false;
+    bool canSpawnUnit = false;
+    if (!luaError)
+        CALL_LUA_RFUNCTION(LuaVM::getInstance().getLua(), bool, canSpawnUnit,
+            "canPlaceUnit", luaError, unitDb, position)
+    if (!canSpawnUnit)
+        return;
     Unit *unit = new Unit(type, usedFaction, m_units.size());
         unit->setPosition(position);
         unit->playAnim("base");
-    bool canSpawnUnit = false;
-    static bool luaError = false, luaError2 = false;
-    if (!luaError)
-    {
-        CALL_LUA_RFUNCTION(LuaVM::getInstance().getLua(), bool, canSpawnUnit,
-            "canPlaceUnit", luaError, type, position)
-        if (!luaError2)
-            CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
-                "onGameEntityPlaced", luaError2, unit)
-    }
+    if (!luaError2)
+        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+            "onGameEntityPlaced", luaError2, unit)
     m_units.push_back(unit);
 }
 
