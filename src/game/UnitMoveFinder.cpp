@@ -1,15 +1,26 @@
 #include <algorithm>
 #include "UnitMoveFinder.hpp"
 #include "../db/Database.hpp"
+#include "../lua/LuaVirtualMachine.hpp"
 #include "../Map.hpp"
-#include "Unit.hpp"
 
 using namespace std;
 
 bool UnitMoveFinder::run(const Unit &unit, const Map &map, l_Vector2i &canMoveTo)
 {
+    static bool luaError = false;
+    if (luaError)
+        return false;
     const sf::Vector2i startPos = unit.position();
     if (!map.isInsideMap(startPos))
+        return false;
+    l_Vector2i alreadyAdded;
+    unsigned int move = 0;
+    /*if (!addAdjacentTiles(map, unit, startPos, alreadyAdded,))
+        return false;*/
+    CALL_LUA_RFUNCTION(LuaVM::getInstance().getLua(), unsigned int, move,
+        "getUnitMovePoints", luaError, &unit)
+    if (luaError)
         return false;
     return true;
 }
@@ -19,7 +30,7 @@ bool UnitMoveFinder::addAdjacentTiles(const Map &map, const Unit &unit,
     const unsigned int &remainingCurrency)
 {
     list<const GameEntity*> cases;
-    static const GameEntity *nullPtr;
+    static const GameEntity *nullPtr = 0;
     // Getting all cases
     cases.push_back(map.getTileConstPtr(pos.x-1, pos.y)); // left
     cases.push_back(map.getTileConstPtr(pos.x+1, pos.y)); // right

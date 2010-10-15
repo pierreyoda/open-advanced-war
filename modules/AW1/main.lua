@@ -29,6 +29,7 @@ function onGameEntityPlaced(entity)
 	elseif (class == UNIT) then
 		entity:playAnim("base_right")
 		local dbUnit = database:findUnit(entity:type())
-		entity:setIntCaracteristic("speed", dbUnit:findIntCaracteristic("speed"))
+		entity:setIntCaracteristic("move", dbUnit:findIntCaracteristic("move"))
+		entity:setIntCaracteristic("fuel", dbUnit:findIntCaracteristic("fuel"))
 	end
 end

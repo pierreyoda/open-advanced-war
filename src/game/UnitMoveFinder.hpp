@@ -4,10 +4,9 @@
 #include <string>
 #include <list>
 #include <SFML/System/Vector2.hpp>
+#include "Unit.hpp"
 
 class Map;
-class GameEntity;
-class Unit;
 
 typedef std::list<sf::Vector2i> l_Vector2i;
 

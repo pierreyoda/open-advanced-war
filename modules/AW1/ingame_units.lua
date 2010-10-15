@@ -2,12 +2,12 @@
 Part of Native module for Open Advanced War
 Manages units in-game. ]]
 
--- Return the speed of a given unit.
-function getUnitSpeed(unit)
-	return (unit:getIntCaracteristic("speed") 
-		+ game:getGlobalAffector("speed")
-		--+ game:getSpecificAffector("speed", unit:owner(), unit:type())
-		)
+-- Return the "movement currency" (move points) of a given unit.
+function getUnitMovePoints(unit)
+	return (unit:getIntCaracteristic("move") -- we stocked the value on unit creation (onGameEntityPlaced)
+		+ game:getGlobalAffector("move")
+		--+ game:getSpecificAffector("move", unit:owner(), unit:type())
+		)	
 end
 
 --[[ Returns if a unit can move on a given tile.
