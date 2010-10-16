@@ -82,14 +82,14 @@ void EditorGui::addVerticalSpriteList(const std::string &name,
          m_verticalLists.begin(); iter != m_verticalLists.end(); iter++)
         if (iter->name() == name) // same name already present
         {
-            std::cerr << "[GUI-Editor] : Warning, vertical list name '" <<
+            std::cerr << "[GUI-Editor] : Error, vertical list name '" <<
                 name << "' is already used.\n";
             return;
         }
     m_verticalLists.push_front(VerticalSpriteItemList(name,
         IntRect(0, 0, size.x, size.y), luaFunction));
     sfg::SpriteListbox::Ptr list = m_verticalLists.begin()->getList();
-    list->Selected = sfg::Slot<sfg::DefaultSlot>(
+    list->Selected = sfg::Slot<sfg::SpriteListbox::SelectSlot>(
         &EditorGui::listItemSelected, this);
     sfg::AlignWidgetInRect(
         *list,
@@ -114,4 +114,43 @@ void EditorGui::listItemSelected(sfg::Widget::Ptr widget)
     std::string id = ptr->getIdFromIndex(ptr->getList()->GetSelectedIndex());
     CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
         "onEditorGuiListItemSelected", error, ptr->name(), id)
+}
+
+void EditorGui::addButton(const std::string &id, const std::string &text,
+    const Vector2f &size, const Vector2f &padding)
+{
+    if (id.empty())
+    {
+        std::cerr << "[EditorGui] adding button - "
+            << "Error : cannot accept an empty ID.\n";
+        return;
+    }
+    for (std::list<sfg::Button::Ptr>::const_iterator iter = m_buttons.begin();
+        iter != m_buttons.end(); iter++)
+        if ((*iter)->GetId() == id) // same ID already present
+        {
+            std::cerr << "[GUI-Editor] : Error, button ID'" <<
+                id << "' is already used.\n";
+            return;
+        }
+    sfg::Button::Ptr button = sfg::Button::Create(
+        FloatRect(0, 0, size.x, size.y), text, id);
+    m_buttons.push_back(button);
+    button->Clicked = sfg::Slot<sfg::Button::ClickSlot>(
+        &EditorGui::buttonClicked, this);
+    sfg::AlignWidgetInRect(
+        *button,
+        FloatRect(0, GUI_START_H, SCREEN_W, GUI_END_H),
+        sfg::AlignLeft | sfg::AlignTop,
+        padding);
+    getGui().AddWidget(button);
+}
+
+void EditorGui::buttonClicked(sfg::Widget::Ptr widget)
+{
+    static bool error = false;
+    if (error)
+        return;
+    CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
+        "onEditorGuiButtonClicked", error, widget->GetId())
 }

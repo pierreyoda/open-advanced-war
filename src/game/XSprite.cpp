@@ -57,6 +57,13 @@ void XSprite::playAnim(const db::Animation *anim, const bool &loop)
     m_timer.start();
 }
 
+std::string XSprite::currentAnimPlayed() const
+{
+    if (m_anim == 0)
+        return 0;
+    return m_anim->name();
+}
+
 void XSprite::setFrame(const unsigned int &id)
 {
     if (m_anim == 0 || gFph(m_anim->image()).empty())

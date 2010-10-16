@@ -90,6 +90,11 @@ class XSprite : public sf::Sprite
         * \return m_currentFrame.
         */
         unsigned int currentFrame() const { return m_currentFrame; }
+        /** \brief Return the current anim played name (if existing).
+        *
+        * \return Anim played name if existing, empty string else.
+        */
+        std::string currentAnimPlayed() const;
 
     private:
         void updateFilter(const bool &remove = false);

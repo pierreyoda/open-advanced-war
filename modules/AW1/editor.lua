@@ -78,14 +78,26 @@ function onEditorGuiListItemSelected(listName, itemId)
 	end
 end
 
+function onEditorGuiButtonClicked(buttonId)
+	print(buttonId)
+end
+
 -- Called to build terrain list (tiles and buildings) in editor GUI.
 function buildEditorGui(editorGui)
 	editorGui:addVerticalSpriteList("terrain", -- id
 		sf.Vector2f(500, 90), -- size
 		sf.Vector2f(50, 5), -- padding with gui space start
 		"buildEditorTerrainList") -- build function to call (see higher)	
-	editorGui:addVerticalSpriteList("OrangeStar", -- id
-		sf.Vector2f(90, 90), -- size
-		sf.Vector2f(590, 5), -- padding with gui space start
-		"buildEditorOrangeStarList") -- build function to call (see higher)
+	editorGui:addVerticalSpriteList("OrangeStar",
+		sf.Vector2f(90, 90),
+		sf.Vector2f(590, 5),
+		"buildEditorOrangeStarList")
+	editorGui:addButton("saveButton", --id
+		trans:tr("Save"), -- text
+		sf.Vector2f(80, 40), -- size
+		sf.Vector2f(700, 5)) -- padding with gui space start	
+	editorGui:addButton("loadButton",
+		trans:tr("Load"),
+		sf.Vector2f(80, 40),
+		sf.Vector2f(700, 55))
 end

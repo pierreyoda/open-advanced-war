@@ -4,6 +4,7 @@
 #include <list>
 #include "XSprite.hpp"
 #include <boost/serialization/serialization.hpp>
+#include <boost/serialization/split_member.hpp>
 #include "../db/Unit.hpp"
 
 /** \brief Enumeration of orientations.
@@ -74,18 +75,37 @@ class GameEntity
     private:
         GameEntity() : m_class(NONE) { }
 
+        template<class Archive>
+        void save(Archive & ar, const unsigned int &version)
+        {
+            serializeCommon(ar, version);
+            ar &boost::serialization::make_nvp("anim_played",
+                m_xsprite.currentAnimPlayed());
+        }
+        template<class Archive>
+        void load(Archive & ar, const unsigned int &version)
+        {
+            serializeCommon(ar, version);
+            std::string animToPlay;
+            ar &boost::serialization::make_nvp("anim_played",
+                animToPlay);
+            playAnim(animToPlay);
+            updatePosition();
+        }
         template <typename Archive>
-        void serialize(Archive &ar, const unsigned int &version)
+        void serializeCommon(Archive &ar, const unsigned int &version)
         {
             ar &BOOST_SERIALIZATION_NVP(m_class);
             ar &BOOST_SERIALIZATION_NVP(m_pos);
-                updatePosition(); // useless on saving ; should split serialize into save/load
             ar &BOOST_SERIALIZATION_NVP(m_type);
             ar &BOOST_SERIALIZATION_NVP(m_alias);
+            ar &BOOST_SERIALIZATION_NVP(m_faction);
             ar &BOOST_SERIALIZATION_NVP(m_ownerId);
             //ar &BOOST_SERIALIZATION_NVP(m_caracteristics);
             ar &BOOST_SERIALIZATION_NVP(m_orientation);
         }
+
+        BOOST_SERIALIZATION_SPLIT_MEMBER()
 
         Classes m_class; /**< Entity's class (ex : "UNIT", "BUILDING"). */
         sf::Vector2i m_pos; /**< Entity's position (not in pixel but in "tiles"). */

@@ -49,11 +49,15 @@ class EditorGui : public GuiManager
         void addVerticalSpriteList(const std::string &name,
             const sf::Vector2f &size, const sf::Vector2f &padding,
             const std::string &luaFunction);
+        void addButton(const std::string &id, const std::string &text,
+            const sf::Vector2f &size, const sf::Vector2f &padding);
 
     private:
         void listItemSelected(sfg::Widget::Ptr widget);
+        void buttonClicked(sfg::Widget::Ptr widget);
 
         std::list<VerticalSpriteItemList> m_verticalLists;
+        std::list<sfg::Button::Ptr> m_buttons;
 };
 
 #endif /* EDITORGUI_HPP */
