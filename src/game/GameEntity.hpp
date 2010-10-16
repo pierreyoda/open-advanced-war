@@ -80,7 +80,9 @@ class GameEntity
         {
             // Common
             ar &BOOST_SERIALIZATION_NVP(m_class);
-            //ar &BOOST_SERIALIZATION_NVP(m_pos); bug
+                // to fix
+                ar &boost::serialization::make_nvp("pos_x", m_pos.x);
+                ar &boost::serialization::make_nvp("pos_y", m_pos.y);
             ar &BOOST_SERIALIZATION_NVP(m_type);
             ar &BOOST_SERIALIZATION_NVP(m_alias);
             ar &BOOST_SERIALIZATION_NVP(m_faction);
@@ -96,7 +98,9 @@ class GameEntity
         {
             // Common
             ar &BOOST_SERIALIZATION_NVP(m_class);
-            ar &BOOST_SERIALIZATION_NVP(m_pos);
+                // to fix
+                ar &boost::serialization::make_nvp("pos_x", m_pos.x);
+                ar &boost::serialization::make_nvp("pos_y", m_pos.y);
             ar &BOOST_SERIALIZATION_NVP(m_type);
             ar &BOOST_SERIALIZATION_NVP(m_alias);
             ar &BOOST_SERIALIZATION_NVP(m_faction);
@@ -123,18 +127,5 @@ class GameEntity
         Orientation m_orientation; /**< Entity's orientation (by default right). */
         XSprite m_xsprite; /**< Entity's eXtended sprite. */
 };
-
-template <typename Archive>
-void serialize(Archive &ar, sf::Vector2i &vec, const unsigned int &version)
-{
-    ar &boost::serialization::make_nvp("x", vec.x);
-    ar &boost::serialization::make_nvp("y", vec.y);
-}
-template <typename Archive>
-void serialize(Archive &ar, const sf::Vector2i &vec, const unsigned int &version)
-{
-    ar &boost::serialization::make_nvp("x", vec.x);
-    ar &boost::serialization::make_nvp("y", vec.y);
-}
 
 #endif /* GAMEENTITY_HPP */

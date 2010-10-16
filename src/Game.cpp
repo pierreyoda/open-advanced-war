@@ -81,13 +81,19 @@ bool Game::saveMap(const string &filename)
     {
         ofstream file(filename.c_str());
         if (!file)
-            throw string("Game - Error : cannot save map into " + filename + ".");
+            throw string("cannot save map to " + filename + ".");
         boost::archive::xml_oarchive archive(file);
         archive << boost::serialization::make_nvp("map", *m_mapPtr);
     }
     catch (const string &error)
     {
-        cout << error << "\n";
+        cout << "[Map saving] Error : " << error << "\n";
+        return false;
+    }
+    catch (const exception &exception)
+    {
+        cout << "[Map saving] Error : " << exception.what()
+         << "\n";
         return false;
     }
     return true;
@@ -95,7 +101,28 @@ bool Game::saveMap(const string &filename)
 
 bool Game::loadMap(const string &filename)
 {
-    return false;
+    if (m_mapPtr == 0)
+        return false;
+    try
+    {
+        ifstream file(filename.c_str());
+        if (!file)
+            throw string("cannot load map from " + filename + ".");
+        boost::archive::xml_iarchive archive(file);
+        archive >> boost::serialization::make_nvp("map", *m_mapPtr);
+    }
+    catch (const string &error)
+    {
+        cout << "[Map saving] Error : " << error << "\n";
+        return false;
+    }
+    catch (const exception &exception)
+    {
+        cout << "[Map saving] Error : " << exception.what()
+         << "\n";
+        return false;
+    }
+    return true;
 }
 
 void Game::onMouseOver(const sf::Vector2i &mousePos)

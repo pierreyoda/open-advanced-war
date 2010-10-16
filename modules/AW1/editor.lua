@@ -79,12 +79,13 @@ function onEditorGuiListItemSelected(listName, itemId)
 end
 
 function onEditorGuiButtonClicked(buttonId)
+	local timer = PausableClock()
 	if (buttonId == "saveButton") then
-		local timer = PausableClock()
 		game:saveMap("map.xml")
-		print(timer:getElapsedTime())
 	elseif (buttonId == "loadButton") then
+		game:loadMap("map.xml")
 	end
+	io.write("Map saving/loading time : ", timer:getElapsedTime()) print()
 end
 
 -- Called to build terrain list (tiles and buildings) in editor GUI.
