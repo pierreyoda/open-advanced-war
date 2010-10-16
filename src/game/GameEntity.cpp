@@ -4,7 +4,7 @@
 
 GameEntity::GameEntity(const std::string &type, const std::string &faction) :
     m_class(findClassFromType(type)), m_pos(0, 0), m_type(type),
-    m_alias(/*TODO*/), m_faction(faction), m_orientation(RIGHT)
+    m_alias(/*TODO*/), m_faction(faction), m_ownerId(0), m_orientation(RIGHT)
 {
 
 }

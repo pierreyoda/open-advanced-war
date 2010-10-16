@@ -25,43 +25,43 @@ Game::~Game()
 
 void criticalModuleError()
 {
-    std::cerr << "Critical module error : game will now exit.\n";
+    cerr << "Critical module error : game will now exit.\n";
     printSystemPause();
     exit(1);
 }
 
 void Game::initTestMap()
 {
-    std::string path = "modules/AW1/"; /// TODO (Pierre-Yves#1#): Make user can choose module (a list with sfgui? in an option menu?)
+    string path = "modules/AW1/"; /// TODO (Pierre-Yves#1#): Make user can choose module (a list with sfgui? in an option menu?)
     if (path.empty() || !boost::filesystem::exists(path))
     {
-        std::cerr << "Error :  '" << path << "' is an invalid module path.\n";
+        cerr << "Error :  '" << path << "' is an invalid module path.\n";
         criticalModuleError();
     }
     const boost::filesystem::path modulePath(path), mainPath = modulePath / "main.lua";
     if (!boost::filesystem::exists(mainPath))
     {
-        std::cerr << "Error : file 'main.lua' is not present in module path '"
+        cerr << "Error : file 'main.lua' is not present in module path '"
             << modulePath << "\n";
         criticalModuleError();
     }
     LuaVM::getInstance().include(mainPath.string());
-    std::string databasePath(LuaVM::getInstance().extractVariable<std::string>(
+    string databasePath(LuaVM::getInstance().extractVariable<string>(
         "DATABASE_PATH"));
     if (databasePath.empty() || !boost::filesystem::exists(databasePath)) // invalid file
     {
-        std::cerr << "Error :  '" << databasePath << "' is an invalid database file path.\n";
+        cerr << "Error :  '" << databasePath << "' is an invalid database file path.\n";
         criticalModuleError();
     }
     if (!DatabaseSerialization::importFromXml(databasePath))
     {
-        std::cerr << "Error while loading database file '" << databasePath << "'.\n";
+        cerr << "Error while loading database file '" << databasePath << "'.\n";
         criticalModuleError();
     }
     if (database.getModuleName() !=
-        LuaVM::getInstance().extractVariable<std::string>("MODULE_NAME"))
+        LuaVM::getInstance().extractVariable<string>("MODULE_NAME"))
     {
-        std::cerr << "Error, module and database does not have the same names.\n";
+        cerr << "Error, module and database does not have the same names.\n";
         criticalModuleError();
     }
 
@@ -71,6 +71,31 @@ void Game::initTestMap()
 
     m_mapPtr = new Map(); // for test - loading default map
     m_armies.push_back(new ArmyGeneral(m_armies.size(), "US"));
+}
+
+bool Game::saveMap(const string &filename)
+{
+    if (m_mapPtr == 0)
+        return false;
+    try
+    {
+        ofstream file(filename.c_str());
+        if (!file)
+            throw string("Game - Error : cannot save map into " + filename + ".");
+        boost::archive::xml_oarchive archive(file);
+        archive << boost::serialization::make_nvp("map", *m_mapPtr);
+    }
+    catch (const string &error)
+    {
+        cout << error << "\n";
+        return false;
+    }
+    return true;
+}
+
+bool Game::loadMap(const string &filename)
+{
+    return false;
 }
 
 void Game::onMouseOver(const sf::Vector2i &mousePos)
@@ -163,7 +188,7 @@ ArmyGeneral *Game::getArmy(const unsigned int &armyId)
     return 0;
 }
 
-int Game::getGlobalAffector(const std::string &name)
+int Game::getGlobalAffector(const string &name)
 {
     db::IntCaracteristic *ptr = db::findCaracteristic<int>(name,
         m_globalAffectors);
@@ -171,7 +196,7 @@ int Game::getGlobalAffector(const std::string &name)
         return 0;
     return ptr->value;
 }
-void Game::setGlobalAffector(const std::string &name, const int &value)
+void Game::setGlobalAffector(const string &name, const int &value)
 {
     db::addCaracteristic<int>(name, value, m_globalAffectors);
 }

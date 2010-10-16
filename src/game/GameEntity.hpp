@@ -76,35 +76,39 @@ class GameEntity
         GameEntity() : m_class(NONE) { }
 
         template<class Archive>
-        void save(Archive & ar, const unsigned int &version)
+        void save(Archive & ar, const unsigned int &version) const
         {
-            serializeCommon(ar, version);
+            // Common
+            ar &BOOST_SERIALIZATION_NVP(m_class);
+            //ar &BOOST_SERIALIZATION_NVP(m_pos); bug
+            ar &BOOST_SERIALIZATION_NVP(m_type);
+            ar &BOOST_SERIALIZATION_NVP(m_alias);
+            ar &BOOST_SERIALIZATION_NVP(m_faction);
+            ar &BOOST_SERIALIZATION_NVP(m_ownerId);
+            ar &BOOST_SERIALIZATION_NVP(m_orientation);
+            // Specific
+            std::string animToPlay(m_xsprite.currentAnimPlayed());
             ar &boost::serialization::make_nvp("anim_played",
-                m_xsprite.currentAnimPlayed());
+                animToPlay);
         }
         template<class Archive>
         void load(Archive & ar, const unsigned int &version)
         {
-            serializeCommon(ar, version);
-            std::string animToPlay;
-            ar &boost::serialization::make_nvp("anim_played",
-                animToPlay);
-            playAnim(animToPlay);
-            updatePosition();
-        }
-        template <typename Archive>
-        void serializeCommon(Archive &ar, const unsigned int &version)
-        {
+            // Common
             ar &BOOST_SERIALIZATION_NVP(m_class);
             ar &BOOST_SERIALIZATION_NVP(m_pos);
             ar &BOOST_SERIALIZATION_NVP(m_type);
             ar &BOOST_SERIALIZATION_NVP(m_alias);
             ar &BOOST_SERIALIZATION_NVP(m_faction);
             ar &BOOST_SERIALIZATION_NVP(m_ownerId);
-            //ar &BOOST_SERIALIZATION_NVP(m_caracteristics);
             ar &BOOST_SERIALIZATION_NVP(m_orientation);
+            // Specific
+            std::string animToPlay;
+            ar &boost::serialization::make_nvp("anim_played",
+                animToPlay);
+            playAnim(animToPlay);
+            updatePosition();
         }
-
         BOOST_SERIALIZATION_SPLIT_MEMBER()
 
         Classes m_class; /**< Entity's class (ex : "UNIT", "BUILDING"). */
@@ -119,5 +123,18 @@ class GameEntity
         Orientation m_orientation; /**< Entity's orientation (by default right). */
         XSprite m_xsprite; /**< Entity's eXtended sprite. */
 };
+
+template <typename Archive>
+void serialize(Archive &ar, sf::Vector2i &vec, const unsigned int &version)
+{
+    ar &boost::serialization::make_nvp("x", vec.x);
+    ar &boost::serialization::make_nvp("y", vec.y);
+}
+template <typename Archive>
+void serialize(Archive &ar, const sf::Vector2i &vec, const unsigned int &version)
+{
+    ar &boost::serialization::make_nvp("x", vec.x);
+    ar &boost::serialization::make_nvp("y", vec.y);
+}
 
 #endif /* GAMEENTITY_HPP */

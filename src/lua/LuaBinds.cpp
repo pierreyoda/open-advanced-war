@@ -220,6 +220,8 @@ void LuaBinds::exportGame(lua_State *lua)
             DEF(Game, setEditorBuilding)
             DEF(Game, setEditorUnit)
             DEF(Game, setEditorFaction)
+            DEF(Game, saveMap)
+            DEF(Game, loadMap)
         // ArmyGeneral
         , class_<ArmyGeneral>("ArmyGeneral")
             DEF(ArmyGeneral, id)

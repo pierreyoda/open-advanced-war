@@ -33,6 +33,8 @@ class Game : public Singleton<Game>
         }
 
         void initTestMap();
+        bool saveMap(const std::string &filename);
+        bool loadMap(const std::string &filename);
 
         void endTurn();
         void onMouseOver(const sf::Vector2i &mousePos);
