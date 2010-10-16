@@ -48,6 +48,7 @@ Original work from Hiura.
 
 /** \brief sf::Clock with pause function.
 *
+* \author Hiura
 * \see http://www.sfml-dev.org/wiki/en/sources/pausableclock (English)
 */
 class PausableClock
