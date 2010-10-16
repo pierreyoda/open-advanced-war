@@ -48,6 +48,7 @@ class GameEntity
         Classes getClass() const { return m_class; }
         std::string type() const { return m_type; }
         std::string alias() const { return m_alias; }
+        std::string faction() const { return m_faction; }
         unsigned int ownerId() const { return m_ownerId; }
 
         sf::Vector2i position() const { return m_pos; }

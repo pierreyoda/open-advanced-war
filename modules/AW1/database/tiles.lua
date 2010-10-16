@@ -12,6 +12,12 @@ forest = db.Tile("Forest")
 forest:setProtection(3)
 anim:clear():setImage("forest.png"):addFrame(0, 0) -- We can use same animation instance for simple tiles (clearing it before)
 forest:addAnim(anim)
+-- Mountain
+mountain = db.Tile("Mountain")
+mountain:setProtection(4)
+anim:clear():setImage("mountain.png"):addFrame(0, 0)
+anim2 = db.Anim("base_high", "mountain.png") anim2:addFrame(db.Frame(20, 0, 20, 22, 1))
+mountain:addAnim(anim):addAnim(anim2)
 -- Road
 road = db.Tile("Road")
 road:setProtection(0)
@@ -81,4 +87,4 @@ anim = db.Anim("base_inter4", "sea.png") anim:addFrame(21, 42)
 sea:addAnim(anim)
 
 -- Finally adding all to database
-database:addTile(plain):addTile(forest):addTile(road):addTile(river):addTile(sea)
+database:addTile(plain):addTile(forest):addTile(road):addTile(mountain):addTile(river):addTile(sea)

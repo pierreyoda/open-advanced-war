@@ -122,6 +122,10 @@ bool Game::loadMap(const string &filename)
          << "\n";
         return false;
     }
+    static bool luaError = false;
+    if (!luaError)
+        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, "onMapLoaded",
+            luaError, m_mapPtr)
     return true;
 }
 

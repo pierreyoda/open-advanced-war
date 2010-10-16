@@ -425,12 +425,26 @@ function onTilePlaced(tile, map)
 	map:removeBuilding(pos)
 	checkCoherencyAround(pos, map)
 	checkCoherency(pos, map)
+	if (tile:type() == "Mountain") then
+		tile:playAnim("base_high")
+		print(tile:xsprite():currentAnimPlayed())
+	end
 end
 
 -- Called when a building is placed on map (function  Map::placeBuilding)
 function onBuildingPlaced(building, map)
 	if (building == nil or map == nil) then
 		return
+	end
+end
+
+-- Called when a map is loaded (function Game::loadMap)
+function onMapLoaded(map)
+	local size = map:size()
+	for i = 0, size.y, 1 do
+		for j = 0, size.x, 1 do
+			checkCoherency(sf.Vector2i(j, i), map) -- checking tile graphical coherency
+		end
 	end
 end
 

@@ -228,6 +228,7 @@ void LuaBinds::exportGame(lua_State *lua)
             DEF(ArmyGeneral, getUnitId)
         // Map
         , class_<Map>("Map")
+            DEF(Map, size)
             // Building
             .def("placeBuilding", (void(Map::*)(const unsigned int&,
                 const unsigned int&, const std::string&, const std::string&,
@@ -312,6 +313,7 @@ void LuaBinds::exportGame(lua_State *lua)
             .def("getClass", &GameEntity::getClass)
             .def("type", &GameEntity::type)
             .def("alias", &GameEntity::alias)
+            .def("faction", &GameEntity::faction)
             .def("position", &GameEntity::position)
             .def("ownerId", &GameEntity::ownerId)
             .def("orientation", &GameEntity::orientation)

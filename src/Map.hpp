@@ -27,6 +27,13 @@ class Map
 
         void renderTo(sf::RenderTarget &target);
 
+        sf::Vector2i size() const
+        {
+            if (m_tiles.empty())
+                return sf::Vector2i();
+            return sf::Vector2i(m_tiles[0].size(), m_tiles.size());
+        }
+
         void onMouseOver(const sf::Vector2i &tilePos, const bool &nomore = false);
 
         void placeBuilding(const sf::Vector2i &pos, const std::string &type,
