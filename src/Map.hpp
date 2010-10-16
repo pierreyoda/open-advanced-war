@@ -13,7 +13,8 @@ namespace sf
     typedef Vector2<unsigned int> Vector2ui; // For convenience
 }
 
-/// TODO (Pierre-Yves#1#): Add documentation to all functions getTile... and setTile... .
+/// TODO (Pierre-Yves#1#): Handling non-standart sizes tiles! (actually buggy because drawing from up-left point)
+/// TODO (Pierre-Yves#3#): Add documentation to all functions getTile... and setTile... .
 /** \brief Represents a map.
 */
 class Map

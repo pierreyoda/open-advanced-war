@@ -330,12 +330,18 @@ function checkCoherencyForSea(pos, map)
 	map:setTileAnim(pos, anim)
 end
 
+function checkCoherencyForMountain(pos, map)
+	map:setTileAnim(pos, "base_high")
+	if (isTileOfGivenType("Plain", relativePosition(pos, RIGHT), map)) then
+		map:setTileAnim(relativePosition(pos, RIGHT), "base_shady")
+	end
+end
+
 function checkCoherency(pos, map)
 	local type_ = map:getTileType(pos)
 	if (type_ == "") then
 		return
-	end
-	if (type_ == "Road") then
+	elseif (type_ == "Road") then
 		return checkCoherencyForRoad(pos, map)
 	elseif (type_ == "River") then
 		return checkCoherencyForRiver(pos, map)
@@ -343,8 +349,9 @@ function checkCoherency(pos, map)
 		return checkCoherencyForSea(pos, map)
 	elseif (type_ == "Beach") then
 		return checkCoherencyForBeach(pos, map)
+	elseif (type_ == "Mountain") then
+		return checkCoherencyForMountain(pos, map)
 	end
-	return ""
 end
 
 function checkCoherencyAround(pos, map)
@@ -425,10 +432,6 @@ function onTilePlaced(tile, map)
 	map:removeBuilding(pos)
 	checkCoherencyAround(pos, map)
 	checkCoherency(pos, map)
-	if (tile:type() == "Mountain") then
-		tile:playAnim("base_high")
-		print(tile:xsprite():currentAnimPlayed())
-	end
 end
 
 -- Called when a building is placed on map (function  Map::placeBuilding)

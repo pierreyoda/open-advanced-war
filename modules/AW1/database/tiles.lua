@@ -6,7 +6,8 @@ Describes tiles used. ]]
 plain = db.Tile("Plain")
 plain:setProtection(1)
 anim = db.Anim("base", "plain.png") anim:addFrame(0, 0)
-plain:addAnim(anim)
+anim2 = db.Anim("base_shady", "plain.png") anim2:addFrame(20, 0)
+plain:addAnim(anim):addAnim(anim2)
 -- Forest
 forest = db.Tile("Forest")
 forest:setProtection(3)
