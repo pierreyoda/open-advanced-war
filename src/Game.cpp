@@ -248,6 +248,7 @@ void Game::renderGame(const float &frametime)
     m_editorGui.render(*target, frametime);
     /*static sf::Shape mask = sf::Shape::Rectangle(sf::FloatRect(0, 0, SCREEN_W, SCREEN_H), sf::Color::Black);
     target->Draw(mask); // to mask sfgui's cursor in game (map) part*/
+/// TODO (Pierre-Yves#1#): Units/building drawing order ; example : unit "behind" HQ
     if (m_mapPtr != 0)
         m_mapPtr->renderTo(*target);
     for (unsigned int i = 0; i < m_armies.size(); i++)

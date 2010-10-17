@@ -43,6 +43,9 @@ end
 function addOrangeStarSpriteItemToList(list, class, type_, anim, frameId)
 	addSpriteItemToList(list, class, type_, anim, "Orange Star", frameId)
 end
+function addBlueMoonSpriteItemToList(list, class, type_, anim, frameId)
+	addSpriteItemToList(list, class, type_, anim, "Blue Moon", frameId)
+end
 
 function buildEditorTerrainList(verticalSpriteList)
 	addSpriteItemToList(verticalSpriteList, TILE, "Plain", "base")
@@ -55,9 +58,14 @@ function buildEditorTerrainList(verticalSpriteList)
 end
 
 function buildEditorOrangeStarList(verticalSpriteList)
+	addOrangeStarSpriteItemToList(verticalSpriteList, BUILDING, "HQ", "base")
 	addOrangeStarSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
 	addOrangeStarSpriteItemToList(verticalSpriteList, UNIT, "Soldier", "base")
 	addOrangeStarSpriteItemToList(verticalSpriteList, UNIT, "Tank", "base")
+end
+function buildEditorBlueMoonList(verticalSpriteList)
+	addBlueMoonSpriteItemToList(verticalSpriteList, BUILDING, "HQ", "base")
+	addBlueMoonSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
 end
 
 function onEditorGuiListItemSelected(listName, itemId)
@@ -66,6 +74,8 @@ function onEditorGuiListItemSelected(listName, itemId)
 		game:setEditorFaction("") -- null faction (neutral for buildings)
 	elseif (listName == "OrangeStar") then
 		game:setEditorFaction("Orange Star")
+	elseif (listName == "BlueMoon") then
+		game:setEditorFaction("Blue Moon")
 	end
 	if (class == BUILDING) then
 		game:setEditorBuilding(itemId)
@@ -106,13 +116,17 @@ end
 -- Called to build terrain list (tiles and buildings) in editor GUI.
 function buildEditorGui(editorGui)
 	editorGui:addVerticalSpriteList("terrain", -- id
-		sf.Vector2f(500, 90), -- size
+		sf.Vector2f(90, 90), -- size
 		sf.Vector2f(50, 5), -- padding with gui space start
 		"buildEditorTerrainList") -- build function to call (see higher)	
 	editorGui:addVerticalSpriteList("OrangeStar",
 		sf.Vector2f(90, 90),
-		sf.Vector2f(590, 5),
-		"buildEditorOrangeStarList")
+		sf.Vector2f(300, 5),
+		"buildEditorOrangeStarList")	
+	editorGui:addVerticalSpriteList("BlueMoon",
+		sf.Vector2f(90, 90),
+		sf.Vector2f(400, 5),
+		"buildEditorBlueMoonList")
 	editorGui:addButton("saveButton", --id
 		trans:tr("Save"), -- text
 		sf.Vector2f(80, 40), -- size

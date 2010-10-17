@@ -44,8 +44,12 @@ void GameEntity::playAnim(const std::string &anim, const bool &loop)
         ptr = database.findBuilding(m_type);
     else if (m_class == UNIT)
         ptr = database.findUnit(m_type);
-    if (ptr != 0)
-        m_xsprite.playAnim(ptr->findAnim(anim, m_faction), loop);
+    if (ptr == 0)
+        return;
+    m_xsprite.playAnim(ptr->findAnim(anim, m_faction), loop);
+    sf::IntRect subRect(m_xsprite.GetSubRect());
+    if (subRect.Height > (int)gg.case_h)
+        m_xsprite.SetOrigin(0, subRect.Height-gg.case_h);
 }
 
 Classes GameEntity::findClassFromType(const std::string &type)

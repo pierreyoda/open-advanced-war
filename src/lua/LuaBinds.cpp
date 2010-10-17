@@ -356,7 +356,7 @@ void LuaBinds::exportGame(lua_State *lua)
             ]
         // GameEntity - Unit (Lua : GameUnit)
         , class_<Unit, bases<GameEntity> >("GameUnit")
-            .def("id", &Unit::id)
+            DEF(Unit, id)
         // GUI
         , class_<EditorGui>("EditorGui")
             DEF(EditorGui, addVerticalSpriteList)
