@@ -13,7 +13,7 @@ Game &gGame = Game::getInstance();
 
 using namespace std;
 
-Game::Game() : m_mapPtr(0), m_editorGui()
+Game::Game() : m_mapPtr(0), m_unitDeleted(false), m_editorGui()
 {
 
 }
@@ -134,6 +134,7 @@ void Game::onMouseOver(const sf::Vector2i &mousePos)
     const sf::Vector2i mousePosTiles(GameEntity::pixelsToTiles(mousePos));
     Unit *ptr = 0;
     static Unit *prevUnit = 0;
+    static sf::Vector2i prevUnitPos;
     for (unsigned int i = 0; i < m_armies.size(); i++)
         if (m_armies[i] != 0)
         {
@@ -143,7 +144,9 @@ void Game::onMouseOver(const sf::Vector2i &mousePos)
             ptr = ptr2;
             break;
         }
-    static bool luaError =false, luaError2 = false;
+    static bool luaError = false, luaError2 = false;
+    if (m_unitDeleted && prevUnitPos == m_unitDeletedPos)
+        prevUnit = 0;
     if (!luaError && prevUnit != 0)
     {
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
@@ -156,6 +159,7 @@ void Game::onMouseOver(const sf::Vector2i &mousePos)
             CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
                 "onMouseOverGameEntity", luaError2, (GameEntity*)ptr) // upcasting
         prevUnit = ptr;
+        prevUnitPos = prevUnit->position();
     }
     if (m_mapPtr != 0)
         m_mapPtr->onMouseOver(mousePosTiles, (ptr != 0));
@@ -217,6 +221,11 @@ ArmyGeneral *Game::getArmy(const unsigned int &armyId)
         if (m_armies[i] != 0 && m_armies[i]->id() == armyId)
             return m_armies[i];
     return 0;
+}
+
+unsigned int Game::nbOfArmies() const
+{
+    return m_armies.size();
 }
 
 int Game::getGlobalAffector(const string &name)

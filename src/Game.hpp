@@ -50,6 +50,7 @@ class Game : public Singleton<Game>
             const sf::Vector2i &pos);
         bool isUnitPresent(const sf::Vector2i &pos);
         ArmyGeneral *getArmy(const unsigned int &armyId);
+        unsigned int nbOfArmies() const;
 
         int getGlobalAffector(const std::string &name);
         void setGlobalAffector(const std::string &name, const int &value);
@@ -60,6 +61,9 @@ class Game : public Singleton<Game>
         void setEditorBuilding(const std::string &type) { m_building = type; } // to delete (call lua instead)
         void setEditorUnit(const std::string &type) { m_unit = type; } // to delete (call lua instead)
         void setEditorFaction(const std::string &faction) { m_faction = faction; } // to delete (call lua instead)
+
+        // internal (ugly)
+        void unitDeleted(const sf::Vector2i &pos) { m_unitDeleted = true; m_unitDeletedPos = pos; }
 
     private:
         Game();
@@ -80,7 +84,8 @@ class Game : public Singleton<Game>
         std::vector<ArmyGeneral*> m_armies;
         std::list<p_renderingInfos> m_renderingList;
         std::list<db::IntCaracteristic> m_globalAffectors;
-        bool m_inGame, m_inEditor;
+        bool m_inGame, m_inEditor, m_unitDeleted;
+        sf::Vector2i m_unitDeletedPos;
         //InGameGui m_ingameGui;
         EditorGui m_editorGui;
         std::string m_tile, m_building, m_unit;

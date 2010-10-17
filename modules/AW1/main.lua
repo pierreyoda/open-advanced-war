@@ -17,7 +17,7 @@ NONE, TILE, BUILDING, UNIT =
 	GameEntity.BUILDING,
 	GameEntity.UNIT
 
-vm:include("ingame_map.lua;ingame_units.lua;ai.lua;graphic_effects.lua;editor.lua", MODULE_DIR)
+vm:include("ingame_units.lua;ingame_map.lua;ai.lua;graphic_effects.lua;editor.lua", MODULE_DIR)
 	
 gFph:scanDirectory(MODULE_DIR) -- scanning module directory (searching for resources)
 

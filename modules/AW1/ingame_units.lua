@@ -15,11 +15,10 @@ unitDb Const pointer to database unit.
 tile Tile's name.
 ]]
 function canUnitMoveTo(unitDb, tile)
-	if (unitDb == nil) then
+	if (unitDb == nil or tile == nil or tile == "") then
 		return false
 	end
 	local propulsionDb = database:findPropulsion(unitDb:propulsion())
-	print (unitDb:propulsion())
 	if (propulsionDb == nil) then
 		return false
 	end

@@ -2,6 +2,7 @@
 #include "ArmyGeneral.hpp"
 #include "../db/Database.hpp"
 #include "../lua/LuaVirtualMachine.hpp"
+#include "../Game.hpp"
 #include "Unit.hpp"
 
 using namespace std;
@@ -14,39 +15,52 @@ ArmyGeneral::ArmyGeneral(const unsigned int &id, const string &faction) :
 
 ArmyGeneral::~ArmyGeneral()
 {
-    for (std::list<Unit*>::iterator iter = m_units.begin();
+    for (list<Unit*>::iterator iter = m_units.begin();
         iter != m_units.end(); iter++)
         delete *iter;
     m_units.clear();
 }
 
-void ArmyGeneral::addUnit(const sf::Vector2i &position, const string &type,
-    const std::string &faction)
+bool ArmyGeneral::addUnit(const sf::Vector2i &pos, const string &type,
+    const string &faction)
 {
-    std::string usedFaction = faction;
+    string usedFaction = faction;
     if (faction.empty())
         usedFaction = m_faction;
-    if (position.x < 0 || position.y < 0) // invalid position
-        return;
-    if (getUnitPtr(position) != 0) // other unit already present
-        return;
+    if (pos.x < 0 || pos.y < 0) // invalid position
+        return false;
+    if (getUnitPtr(pos) != 0) // other unit already present
+        return false;
     const db::Unit *unitDb = database.findUnit(type);
     if (unitDb == 0) // not in database
-        return;
+        return false;
     static bool luaError = false, luaError2 = false;
     bool canSpawnUnit = false;
     if (!luaError)
         CALL_LUA_RFUNCTION(LuaVM::getInstance().getLua(), bool, canSpawnUnit,
-            "canPlaceUnit", luaError, unitDb, position)
-    if (!canSpawnUnit)
-        return;
+            "canPlaceUnit", luaError, unitDb, pos)
+    if (luaError || !canSpawnUnit)
+        return false;
     Unit *unit = new Unit(type, usedFaction, m_units.size());
-        unit->setPosition(position);
+        unit->setPosition(pos);
         unit->playAnim("base");
     if (!luaError2)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
             "onGameEntityPlaced", luaError2, unit)
     m_units.push_back(unit);
+    return true;
+}
+
+bool ArmyGeneral::removeUnit(const sf::Vector2i &pos)
+{
+    l_units::iterator iter = getUnitIter(pos);
+    if (iter == m_units.end())
+        return false;
+    delete *iter;
+    *iter = 0;
+    m_units.erase(iter);
+    gGame.unitDeleted(pos);
+    return true;
 }
 
 unsigned int ArmyGeneral::getUnitId(const sf::Vector2i &pos)
@@ -59,10 +73,18 @@ unsigned int ArmyGeneral::getUnitId(const sf::Vector2i &pos)
 
 Unit *ArmyGeneral::getUnitPtr(const sf::Vector2i &pos)
 {
+    l_units::iterator iter = getUnitIter(pos);
+    if (iter == m_units.end())
+        return 0;
+    return *iter;
+}
+
+l_units::iterator ArmyGeneral::getUnitIter(const sf::Vector2i &pos)
+{
     for (l_units::iterator iter = m_units.begin(); iter != m_units.end(); iter++)
         if ((*iter)->position() == pos)
-                return (*iter);
-    return 0; // not found
+                return iter;
+    return m_units.end(); // not found
 }
 
 void drawArmy(sf::RenderTarget &target, ArmyGeneral &army)

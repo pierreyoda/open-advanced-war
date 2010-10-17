@@ -9,7 +9,7 @@ soldier:addAnim(anim, "Orange Star")
 soldier:addIntCaracteristic("move", 3):addIntCaracteristic("cost", 1000)
 
 -- Tank (basic)
-tank = db.Unit("Tank") tank:setPropulsion("TrackedProp")
+tank = db.Unit("Tank") tank:setPropulsion("TreadsProp")
 anim:clear():setImage("tank.png"):addFrame(0, 0)
 tank:addAnim(anim, "Orange Star")
 tank:addIntCaracteristic("move", 6):addIntCaracteristic("fuel", 70):addIntCaracteristic("cost", 7000)

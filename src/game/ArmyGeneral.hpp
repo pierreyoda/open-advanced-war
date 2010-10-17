@@ -27,8 +27,9 @@ class ArmyGeneral
         ArmyGeneral(const unsigned int &id, const std::string &faction);
         ~ArmyGeneral();
 
-        void addUnit(const sf::Vector2i &position, const std::string &type,
+        bool addUnit(const sf::Vector2i &pos, const std::string &type,
             const std::string &faction = "");
+        bool removeUnit(const sf::Vector2i &pos);
 
         unsigned int getUnitId(const sf::Vector2i &pos);
         Unit *getUnitPtr(const sf::Vector2i &pos);
@@ -36,6 +37,8 @@ class ArmyGeneral
         unsigned int id() const { return m_id; }
 
     private:
+        l_units::iterator getUnitIter(const sf::Vector2i &pos);
+
         template <typename Archive>
         void serialize(Archive &ar, const unsigned int &version)
         {

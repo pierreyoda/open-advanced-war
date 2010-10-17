@@ -432,6 +432,27 @@ function onTilePlaced(tile, map)
 	map:removeBuilding(pos)
 	checkCoherencyAround(pos, map)
 	checkCoherency(pos, map)
+	eraseUnitIfNeeded(pos) -- Deleting present unit if needed
+end
+
+-- Erase a unit if present and if cannot stay there
+function eraseUnitIfNeeded(pos)
+	local nbOfArmies = game:nbOfArmies()
+	local map = game:getMapPtr()
+	if (map == nil) then
+		return
+	end
+	for i = 0, nbOfArmies, 1 do
+		local army = game:getArmy(i)
+		if (army ~= nil) then
+			local unit = army:getUnitPtr(pos)
+			if (unit ~= nil and not canUnitMoveTo(
+				database:findUnit(unit:type()), map:getTileType(pos))) then
+				army:removeUnit(pos)
+				break -- we can stop (1 unit per tile)
+			end
+		end
+	end
 end
 
 -- Called when a building is placed on map (function  Map::placeBuilding)
@@ -446,7 +467,9 @@ function onMapLoaded(map)
 	local size = map:size()
 	for i = 0, size.y, 1 do
 		for j = 0, size.x, 1 do
-			checkCoherency(sf.Vector2i(j, i), map) -- checking tile graphical coherency
+			local pos = sf.Vector2i(j, i)
+			checkCoherency(pos, map) -- checking tile graphical coherency
+			eraseUnitIfNeeded(pos) -- to delete when unit will be saved with the map
 		end
 	end
 end
