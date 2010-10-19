@@ -332,8 +332,12 @@ end
 
 function checkCoherencyForMountain(pos, map)
 	map:setTileAnim(pos, "base_high")
-	if (isTileOfGivenType("Plain", relativePosition(pos, RIGHT), map)) then
-		map:setTileAnim(relativePosition(pos, RIGHT), "base_shady")
+end
+function checkCoherencyForPlain(pos, map)
+	if (isTileOfGivenType("Mountain", relativePosition(pos, LEFT), map)) then -- if mountain on left
+		map:setTileAnim(pos, "base_shady")
+	else
+		map:setTileAnim(pos, "base")
 	end
 end
 
@@ -341,6 +345,8 @@ function checkCoherency(pos, map)
 	local type_ = map:getTileType(pos)
 	if (type_ == "") then
 		return
+	elseif (type_ == "Plain") then
+		return checkCoherencyForPlain(pos, map)
 	elseif (type_ == "Road") then
 		return checkCoherencyForRoad(pos, map)
 	elseif (type_ == "River") then

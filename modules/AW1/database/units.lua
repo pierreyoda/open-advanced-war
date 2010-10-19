@@ -19,8 +19,8 @@ database:addUnit(soldier):addUnit(tank)
 
 -- Propulsions
 local propInfantry = db.Propulsion("InfantryProp")
-propInfantry:addCanMoveTo("Plain", 1):addCanMoveTo("Forest", 1):addCanMoveTo("River", 2):addCanMoveTo("Mountain", 2)
+propInfantry:addCanMoveTo("Road", 1):addCanMoveTo("Plain", 1):addCanMoveTo("Forest", 1):addCanMoveTo("River", 2):addCanMoveTo("Mountain", 2)
 local propTreads = db.Propulsion("TreadsProp")
-propTreads:addCanMoveTo("Plain", 1):addCanMoveTo("Forest", 1)
+propTreads:addCanMoveTo("Road", 1):addCanMoveTo("Plain", 2):addCanMoveTo("Forest", 3)
 database:addPropulsion(propInfantry):addPropulsion(propTreads)
 
