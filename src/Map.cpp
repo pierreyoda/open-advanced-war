@@ -132,7 +132,7 @@ void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
     m_buildings.push_back(building);
     if (!luaError2)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
-            "onBuildingPlaced", luaError2, building, this)
+            "onGameEntityPlaced", luaError2, building)
 }
 void Map::placeBuilding(const unsigned int &x, const unsigned int &y,
     const string &type, const std::string &faction,  const bool &force)

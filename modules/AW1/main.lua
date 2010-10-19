@@ -24,12 +24,15 @@ gFph:scanDirectory(MODULE_DIR) -- scanning module directory (searching for resou
 -- Called when a GameEntity is placed on map.
 function onGameEntityPlaced(entity)
 	local class = entity:getClass()
-	if (class == TILE and game:getMapPtr() ~= nil) then
-		onTilePlaced(entity, game:getMapPtr())
+	local map = game:getMapPtr()
+	if (class == TILE and map ~= nil) then
+		onTilePlaced(entity, map)
 	elseif (class == UNIT) then
 		entity:playAnim("base_right")
 		local dbUnit = database:findUnit(entity:type())
 		entity:setIntCaracteristic("move", dbUnit:findIntCaracteristic("move"))
 		entity:setIntCaracteristic("fuel", dbUnit:findIntCaracteristic("fuel"))
+	elseif (class == BUILDING and map ~= nil) then
+		onBuildingPlaced(entity, map)
 	end
 end

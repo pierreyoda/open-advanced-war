@@ -455,10 +455,28 @@ function eraseUnitIfNeeded(pos)
 	end
 end
 
+local nullPos = sf.Vector2i(-1, -1)
+local hqPos = { nullPos, nullPos, nullPos, nullPos }
+
 -- Called when a building is placed on map (function  Map::placeBuilding)
 function onBuildingPlaced(building, map)
 	if (building == nil or map == nil) then
 		return
+	end
+	-- Removing older HQ if needed
+	if (building:type() == "HQ") then
+		local id, faction = -1, building:faction()
+		if (building:faction() == "Orange Star") then
+			id = 1
+		elseif (building:faction() == "Blue Moon") then
+			id = 2
+		--elseif... TO-DO : OTHER FACTIONS
+		end
+		if (id > 0 and id < 5) then
+			map:removeBuilding(hqPos[id])
+			print(hqPos[id].x)
+			hqPos[id] = building:position()
+		end
 	end
 end
 
