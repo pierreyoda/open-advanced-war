@@ -29,7 +29,7 @@ Map::~Map()
         for (unsigned int j = 0; j < m_tiles[i].size(); j++)
             delete m_tiles[i][j];
     m_tiles.clear();
-    for (std::list<GameEntity*>::iterator iter = m_buildings.begin();
+    for (list<GameEntity*>::iterator iter = m_buildings.begin();
         iter != m_buildings.end(); iter++)
         delete *iter;
     m_buildings.clear();
@@ -110,7 +110,7 @@ void Map::onMouseOver(const sf::Vector2i &tilePos, const bool &nomore)
 }
 
 void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
-    const std::string &faction, const bool &force)
+    const string &faction, const bool &force)
 {
     if (type.empty())
         return;
@@ -135,7 +135,7 @@ void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
             "onGameEntityPlaced", luaError2, building)
 }
 void Map::placeBuilding(const unsigned int &x, const unsigned int &y,
-    const string &type, const std::string &faction,  const bool &force)
+    const string &type, const string &faction,  const bool &force)
 {
     placeBuilding(sf::Vector2i(x, y), type, faction, force);
 }
@@ -160,7 +160,7 @@ bool Map::isBuildingPresent(const sf::Vector2i &pos)
 {
     return (getBuildingType(pos).empty());
 }
-std::string Map::getBuildingType(const sf::Vector2i &pos)
+string Map::getBuildingType(const sf::Vector2i &pos)
 {
     if (!isInsideMap(pos))
         return "";
@@ -169,6 +169,20 @@ std::string Map::getBuildingType(const sf::Vector2i &pos)
         if ((*iter) && (*iter)->position() == pos)
             return (*iter)->type();
     return "";
+}
+
+sf::Vector2i Map::findBuildingPos(const string &type,
+    const string &faction) const
+{
+    const GameEntity *ptr = 0;
+    for (list<GameEntity*>::const_iterator iter = m_buildings.begin();
+        iter != m_buildings.end(); iter++)
+        if (*iter != 0 && (*iter)->type() == type
+            && (*iter)->faction() == faction)
+            ptr = *iter;
+    if (ptr != 0) // found
+        return ptr->position();
+    return sf::Vector2i(-1, -1); // null pos
 }
 
 string Map::getTileType(const sf::Vector2i &pos) const

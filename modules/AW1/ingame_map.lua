@@ -474,7 +474,6 @@ function onBuildingPlaced(building, map)
 		end
 		if (id > 0 and id < 5) then
 			map:removeBuilding(hqPos[id])
-			print(hqPos[id].x)
 			hqPos[id] = building:position()
 		end
 	end
@@ -483,6 +482,10 @@ end
 -- Called when a map is loaded (function Game::loadMap)
 function onMapLoaded(map)
 	local size = map:size()
+	hqPos = { map:findBuildingPos("HQ", "Orange Star"), 
+		map:findBuildingPos("HQ", "Blue Moon"),
+		map:findBuildingPos("HQ", "Blue Moon"),
+		map:findBuildingPos("HQ", "Blue Moon") }
 	for i = 0, size.y, 1 do
 		for j = 0, size.x, 1 do
 			local pos = sf.Vector2i(j, i)

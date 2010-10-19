@@ -244,6 +244,7 @@ void LuaBinds::exportGame(lua_State *lua)
             DEF(Map, removeBuilding)
             DEF(Map, isBuildingPresent)
             DEF(Map, getBuildingType)
+            DEF(Map, findBuildingPos)
             // Tiles - modifiers
             .def("setTile", (void(Map::*)(const unsigned int&,
                 const unsigned int&, const std::string &))&Map::setTile)
