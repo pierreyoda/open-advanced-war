@@ -7,6 +7,7 @@ extern "C"
     #include <lualib.h>
 }
 #include <luabind/luabind.hpp>
+#include <luabind/operator.hpp>
 
 /** \brief Stores static functions that bind C++ classes and functions to Lua.
 */

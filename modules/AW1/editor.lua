@@ -46,6 +46,12 @@ end
 function addBlueMoonSpriteItemToList(list, class, type_, anim, frameId)
 	addSpriteItemToList(list, class, type_, anim, "Blue Moon", frameId)
 end
+function addGreenEarthSpriteItemToList(list, class, type_, anim, frameId)
+	addSpriteItemToList(list, class, type_, anim, "Green Earth", frameId)
+end
+function addYellowCometSpriteItemToList(list, class, type_, anim, frameId)
+	addSpriteItemToList(list, class, type_, anim, "Yellow Comet", frameId)
+end
 
 function buildEditorTerrainList(verticalSpriteList)
 	addSpriteItemToList(verticalSpriteList, TILE, "Plain", "base")
@@ -67,6 +73,14 @@ function buildEditorBlueMoonList(verticalSpriteList)
 	addBlueMoonSpriteItemToList(verticalSpriteList, BUILDING, "HQ", "base")
 	addBlueMoonSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
 end
+function buildEditorGreenEarthList(verticalSpriteList)
+	addGreenEarthSpriteItemToList(verticalSpriteList, BUILDING, "HQ", "base")
+	addGreenEarthSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
+end
+function buildEditorYellowCometList(verticalSpriteList)
+	addYellowCometSpriteItemToList(verticalSpriteList, BUILDING, "HQ", "base")
+	addYellowCometSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
+end
 
 function onEditorGuiListItemSelected(listName, itemId)
 	local class = GameEntity.findClassFromType(itemId)
@@ -76,6 +90,10 @@ function onEditorGuiListItemSelected(listName, itemId)
 		game:setEditorFaction("Orange Star")
 	elseif (listName == "BlueMoon") then
 		game:setEditorFaction("Blue Moon")
+	elseif(listName == "GreenEarth") then
+		game:setEditorFaction("Green Earth")	
+	elseif(listName == "YellowComet") then
+		game:setEditorFaction("Yellow Comet")
 	end
 	if (class == BUILDING) then
 		game:setEditorBuilding(itemId)
@@ -120,13 +138,21 @@ function buildEditorGui(editorGui)
 		sf.Vector2f(50, 5), -- padding with gui space start
 		"buildEditorTerrainList") -- build function to call (see higher)	
 	editorGui:addVerticalSpriteList("OrangeStar",
-		sf.Vector2f(90, 90),
+		sf.Vector2f(60, 90),
 		sf.Vector2f(300, 5),
 		"buildEditorOrangeStarList")	
 	editorGui:addVerticalSpriteList("BlueMoon",
-		sf.Vector2f(90, 90),
-		sf.Vector2f(400, 5),
-		"buildEditorBlueMoonList")
+		sf.Vector2f(60, 90),
+		sf.Vector2f(390, 5),
+		"buildEditorBlueMoonList")	
+	editorGui:addVerticalSpriteList("GreenEarth",
+		sf.Vector2f(60, 90),
+		sf.Vector2f(470, 5),
+		"buildEditorGreenEarthList")	
+	editorGui:addVerticalSpriteList("YellowComet",
+		sf.Vector2f(60, 90),
+		sf.Vector2f(560, 5),
+		"buildEditorYellowCometList")
 	editorGui:addButton("saveButton", --id
 		trans:tr("Save"), -- text
 		sf.Vector2f(80, 40), -- size

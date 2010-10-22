@@ -475,28 +475,26 @@ function onBuildingPlaced(building, map)
 		if (building:faction() == "Orange Star") then
 			id = 1
 		elseif (building:faction() == "Blue Moon") then
-			id = 2
-		--elseif... TO-DO : OTHER FACTIONS
+			id = 2		
+		elseif (building:faction() == "Green Earth") then
+			id = 3		
+		elseif (building:faction() == "Yellow Comet") then
+			id = 4
 		end
 		if (id > 0 and id < 5) then
-			map:removeBuilding(hqPos[id])
-			hqPos[id] = building:position()
-		end
-	end
-end
-
--- Called when a map is loaded (function Game::loadMap)
-function onMapLoaded(map)
-	local size = map:size()
-	hqPos = { map:findBuildingPos("HQ", "Orange Star"), 
-		map:findBuildingPos("HQ", "Blue Moon"),
-		map:findBuildingPos("HQ", "Blue Moon"),
-		map:findBuildingPos("HQ", "Blue Moon") }
-	for i = 0, size.y, 1 do
-		for j = 0, size.x, 1 do
-			local pos = sf.Vector2i(j, i)
-			checkCoherency(pos, map) -- checking tile graphical coherency
-			eraseUnitIfNeeded(pos) -- to delete when unit will be saved with the map
+			if (hqPos[id] ~= building:position()) then -- would remove the placed HQ!
+				map:removeBuilding(hqPos[id])
+				hqPos[id] = building:position()
+				-- Finally checking if placed over another HQ
+				for i = 1, 4, 1 do
+					if (i ~= id) then
+						if (hqPos[i] == hqPos[id]) then
+							hqPos[i] = nullPos -- otherwise would remove new HQ when older will be replaced
+							break
+						end
+					end
+				end
+			end
 		end
 	end
 end
@@ -516,6 +514,23 @@ function canPlaceBuilding(name, pos, map, force)
 	end
 	if (force) then
 		map:setTile(pos, "Plain")
+		map:removeBuilding(pos)
 	end
 	return map:isBuildingPresent(pos)
+end
+
+-- Called when a map is loaded (function Game::loadMap)
+function onMapLoaded(map)
+	local size = map:size()
+	hqPos = { map:findBuildingPos("HQ", "Orange Star"), 
+		map:findBuildingPos("HQ", "Blue Moon"),
+		map:findBuildingPos("HQ", "Green Earth"),
+		map:findBuildingPos("HQ", "Yellow Comet") }
+	for i = 0, size.y, 1 do
+		for j = 0, size.x, 1 do
+			local pos = sf.Vector2i(j, i)
+			checkCoherency(pos, map) -- checking tile graphical coherency
+			eraseUnitIfNeeded(pos) -- to delete when unit will be saved with the map
+		end
+	end
 end

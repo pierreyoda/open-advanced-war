@@ -17,6 +17,11 @@
 * class Class name.
 */
 #define DEF(class, method) .def(BOOST_PP_STRINGIZE(method), &class::method)
+/* A macro that simplifitates operator declaration.
+* Ex : operator+(int) --> OPERATOR(+, int())
+*/
+#define OPERATOR(operator, otherType) .def(self operator otherType)
+#define OPERATOR_CONST(operator, otherType) .def(const_self operator otherType)
 
 using namespace luabind;
 
@@ -147,6 +152,11 @@ void LuaBinds::exportTools(lua_State *lua)
                 .def(constructor<sf::Vector2i>())
                 .def_readwrite("x", &sf::Vector2i::x)
                 .def_readwrite("y", &sf::Vector2i::y)
+                OPERATOR(+, sf::Vector2i())
+                OPERATOR(-, sf::Vector2i())
+                OPERATOR(/, int())
+                OPERATOR(*, int())
+                OPERATOR_CONST(==, sf::Vector2i())
             // sf::Vector2f (sf::Vector2<float>)
             , class_<sf::Vector2f>("Vector2f")
                 .def(constructor< >())
@@ -154,6 +164,11 @@ void LuaBinds::exportTools(lua_State *lua)
                 .def(constructor<sf::Vector2f>())
                 .def_readwrite("x", &sf::Vector2f::x)
                 .def_readwrite("y", &sf::Vector2f::y)
+                OPERATOR(+, sf::Vector2f())
+                OPERATOR(-, sf::Vector2f())
+                OPERATOR(/, float())
+                OPERATOR(*, float())
+                OPERATOR_CONST(==, sf::Vector2f())
             // sf::Color
             , class_<sf::Color>("Color")
                 .def(constructor< >())
