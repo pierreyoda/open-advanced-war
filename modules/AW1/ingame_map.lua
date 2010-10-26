@@ -520,6 +520,7 @@ function onBuildingPlaced(building, map)
 					if (i ~= id) then
 						if (hqPos[i] == hqPos[id]) then
 							hqPos[i] = nullPos -- otherwise would remove new HQ when older will be replaced
+							game:stopDrawingXSprite("HQ_up_" .. i) -- removing upper part
 							break
 						end
 					end

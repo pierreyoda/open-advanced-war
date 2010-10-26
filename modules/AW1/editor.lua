@@ -64,21 +64,21 @@ function buildEditorTerrainList(verticalSpriteList)
 end
 
 function buildEditorOrangeStarList(verticalSpriteList)
-	addOrangeStarSpriteItemToList(verticalSpriteList, BUILDING, "HQ", "base")
+	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(0, 2, 20, 38))
 	addOrangeStarSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
 	addOrangeStarSpriteItemToList(verticalSpriteList, UNIT, "Soldier", "base")
 	addOrangeStarSpriteItemToList(verticalSpriteList, UNIT, "Tank", "base")
 end
 function buildEditorBlueMoonList(verticalSpriteList)
-	addBlueMoonSpriteItemToList(verticalSpriteList, BUILDING, "HQ", "base")
+	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(20, 2, 20, 38))
 	addBlueMoonSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
 end
 function buildEditorGreenEarthList(verticalSpriteList)
-	addGreenEarthSpriteItemToList(verticalSpriteList, BUILDING, "HQ", "base")
+	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(40, 2, 20, 38))
 	addGreenEarthSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
 end
 function buildEditorYellowCometList(verticalSpriteList)
-	addYellowCometSpriteItemToList(verticalSpriteList, BUILDING, "HQ", "base")
+	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(60, 2, 20, 38))
 	addYellowCometSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
 end
 
