@@ -463,26 +463,56 @@ end
 
 local nullPos = sf.Vector2i(-1, -1)
 local hqPos = { nullPos, nullPos, nullPos, nullPos }
+local hqUpAnims = { db.Anim("hq_up_1", "hq.png"),
+	db.Anim("hq_up_2", "hq.png"),
+	db.Anim("hq_up_3", "hq.png"),
+	db.Anim("hq_up_4", "hq.png") }
+for i = 1, 4, 1 do
+	hqUpAnims[i]:addFrame((i-1)*20, 2)
+end
+
+-- Returns faction ID from faction name
+function factionToID(faction)
+	if (faction == "Orange Star") then
+		return 1
+	elseif (faction == "Blue Moon") then
+		return 2		
+	elseif (faction == "Green Earth") then
+		return 3		
+	elseif (faction == "Yellow Comet") then
+		return 4
+	elseif (faction == "") then
+		return 0 -- neutral
+	else
+		return -1 -- null faction
+	end
+end
+-- Draw up part of HQ
+function drawHqUpperPart(pos, id, filter)
+	if (pos == nil or id == nil or id < 1 or id > 4) then
+		return
+	end
+	local animId = "HQ_up_" .. id
+	game:stopDrawingXSprite(animId)
+	local xsprite = XSprite() xsprite:playAnim(hqUpAnims[id])
+	if (filter ~= nil) then
+		xsprite:setFilter(filter)
+	end
+	xsprite:SetPosition(GameEntity.tilesToPixels(relativePosition(pos, UP)))
+	game:startDrawingXSprite(xsprite, animId)
+end
 
 -- Called when a building is placed on map (function  Map::placeBuilding)
 function onBuildingPlaced(building, map)
 	if (building == nil or map == nil) then
 		return
 	end
-	-- Removing older HQ if needed
-	if (building:type() == "HQ") then
-		local id, faction = -1, building:faction()
-		if (building:faction() == "Orange Star") then
-			id = 1
-		elseif (building:faction() == "Blue Moon") then
-			id = 2		
-		elseif (building:faction() == "Green Earth") then
-			id = 3		
-		elseif (building:faction() == "Yellow Comet") then
-			id = 4
-		end
-		if (id > 0 and id < 5) then
-			if (hqPos[id] ~= building:position()) then -- would remove the placed HQ!
+	local id = factionToID(building:faction())
+	if (building:type() == "HQ" and id >= 1 and id <= 4) then
+		-- Removing older HQ if needed
+		if (hqPos[id] ~= building:position()) then -- would remove the placed HQ
+				local buildingType = map:getBuildingType(hqPos[id])
+			if (buildingType == "" or buildingType == "HQ") then
 				map:removeBuilding(hqPos[id])
 				hqPos[id] = building:position()
 				-- Finally checking if placed over another HQ
@@ -496,6 +526,7 @@ function onBuildingPlaced(building, map)
 				end
 			end
 		end
+		drawHqUpperPart(hqPos[id], id)
 	end
 end
 
@@ -532,5 +563,9 @@ function onMapLoaded(map)
 			checkCoherency(pos, map) -- checking tile graphical coherency
 			eraseUnitIfNeeded(pos) -- to delete when unit will be saved with the map
 		end
+	end
+	-- Checking HQ graphical coherency
+	for i = 1, 4, 1 do
+		drawHqUpperPart(hqPos[i], i)
 	end
 end
