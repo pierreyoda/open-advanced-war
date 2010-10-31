@@ -128,6 +128,13 @@ function onEditorGuiButtonClicked(buttonId)
 		if (game:loadMap("map.xml")) then
 			printElapsedTime(timer, false)
 		end
+	elseif (buttonId == "testButton") then
+		local vector = v_string()
+			vector:push_back("Soldier\t1000")
+			vector:push_back("Tank\t7000")
+			vector:push_back("DCA\t8000")
+		local choice = game:getChoiceFromVector(vector, sf.FloatRect(10, 10, 150, 300))
+		print(choice)
 	end
 end
 
@@ -160,5 +167,9 @@ function buildEditorGui(editorGui)
 	editorGui:addButton("loadButton",
 		trans:tr("Load"),
 		sf.Vector2f(80, 40),
-		sf.Vector2f(700, 55))
+		sf.Vector2f(700, 55))	
+	editorGui:addButton("testButton",
+		trans:tr("Test"),
+		sf.Vector2f(80, 40),
+		sf.Vector2f(200, 55))
 end

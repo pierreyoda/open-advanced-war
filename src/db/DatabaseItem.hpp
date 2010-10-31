@@ -5,6 +5,7 @@
 #include <string>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/version.hpp>
+#include <boost/serialization/nvp.hpp>
 
 typedef std::list<std::string> l_string;
 

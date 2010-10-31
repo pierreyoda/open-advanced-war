@@ -1,6 +1,7 @@
 #ifndef GAME_HPP
 #define GAME_HPP
 
+#include <luabind/luabind.hpp>
 #include <list>
 #include <vector>
 #include <SFML/Window/Event.hpp>
@@ -26,10 +27,10 @@ class Game : public Singleton<Game>
     friend class boost::serialization::access;
 
     public:
-        void setTarget(sf::RenderTarget *ntarget)
+        void setApp(sf::RenderWindow *app)
         {
-            if (ntarget != 0)
-                target = ntarget;
+            if (app != 0)
+                App = app;
         }
 
         void initTestMap();
@@ -62,6 +63,9 @@ class Game : public Singleton<Game>
         void setEditorUnit(const std::string &type) { m_unit = type; } // to delete (call lua instead)
         void setEditorFaction(const std::string &faction) { m_faction = faction; } // to delete (call lua instead)
 
+        int getChoiceFromVector(const std::vector<std::string> &vector,
+            sf::FloatRect &rect);
+
         // internal (ugly)
         void unitDeleted(const sf::Vector2i &pos) { m_unitDeleted = true; m_unitDeletedPos = pos; }
 
@@ -79,7 +83,7 @@ class Game : public Singleton<Game>
             ar &m_globalAffectors;
         }
 
-        sf::RenderTarget *target;
+        sf::RenderWindow *App;
         Map *m_mapPtr;
         std::vector<ArmyGeneral*> m_armies;
         std::list<p_renderingInfos> m_renderingList;

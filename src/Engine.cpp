@@ -15,7 +15,7 @@ Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H+GUI_PART_H, 32), "Open Advan
     App.SetFramerateLimit(60);
     App.UseVerticalSync(true);
     App.ShowMouseCursor(false);
-    gGame.setTarget(&App);
+    gGame.setApp(&App);
     gGame.initTestMap();
 
     // Window icon

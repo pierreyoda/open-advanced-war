@@ -138,12 +138,136 @@ void LuaBinds::exportDatabase(lua_State *lua)
 
 #ifndef DB_EXPORTER
 
+namespace sf
+{
+    class KeyBind
+    { };
+}
+
+void exportInputAndEvents(lua_State *lua) /// Code from sfengine (http://code.google.com/p/sfengine/)
+{
+    module(lua, "sf")
+    [
+        class_<sf::KeyBind>("Key")
+            .enum_("Code")
+            [
+                value("A", 'a'),
+                value("B", 'b'),
+                value("C", 'c'),
+                value("D", 'd'),
+                value("E", 'e'),
+                value("F", 'f'),
+                value("G", 'g'),
+                value("H", 'h'),
+                value("I", 'i'),
+                value("J", 'j'),
+                value("K", 'k'),
+                value("L", 'l'),
+                value("M", 'm'),
+                value("N", 'n'),
+                value("O", 'o'),
+                value("P", 'p'),
+                value("Q", 'q'),
+                value("R", 'r'),
+                value("S", 's'),
+                value("T", 't'),
+                value("U", 'u'),
+                value("V", 'v'),
+                value("W", 'w'),
+                value("X", 'x'),
+                value("Y", 'y'),
+                value("Z", 'z'),
+                value("Num0", '0'),
+                value("Num1", '1'),
+                value("Num2", '2'),
+                value("Num3", '3'),
+                value("Num4", '4'),
+                value("Num5", '5'),
+                value("Num6", '6'),
+                value("Num7", '7'),
+                value("Num8", '8'),
+                value("Num9", '9'),
+                value("Escape", 256),
+                value("LControl", 257),
+                value("LShift", 258),
+                value("LAlt", 259),
+                value("LSystem", 260),
+                value("RControl", 261),
+                value("RShift", 262),
+                value("RAlt", 263),
+                value("RSystem", 264),
+                value("Menu", 265),
+                value("LBracket", 266),
+                value("RBracket", 267),
+                value("SemiColon", 268),
+                value("Coma", 269),
+                value("Period", 270),
+                value("Quote", 271),
+                value("Slash", 272),
+                value("BackSlash", 273),
+                value("Tilde", 274),
+                value("Equal", 275),
+                value("Dash", 276),
+                value("Space", 277),
+                value("Return", 278),
+                value("Back", 279),
+                value("Tab", 280),
+                value("PageUp", 281),
+                value("PageDown", 282),
+                value("End", 283),
+                value("Home", 284),
+                value("Insert", 285),
+                value("Delete", 286),
+                value("Add", 287),
+                value("Subtract", 288),
+                value("Multiply", 289),
+                value("Divide", 290),
+                value("Left", 291),
+                value("Right", 292),
+                value("Up", 293),
+                value("Down", 294),
+                value("Numpad0", 295),
+                value("Numpad1", 296),
+                value("Numpad2", 297),
+                value("Numpad3", 298),
+                value("Numpad4", 299),
+                value("Numpad5", 300),
+                value("Numpad6", 301),
+                value("Numpad7", 302),
+                value("Numpad8", 303),
+                value("Numpad9", 304),
+                value("F1", 305),
+                value("F2", 306),
+                value("F3", 307),
+                value("F4", 308),
+                value("F5", 309),
+                value("F6", 310),
+                value("F7", 311),
+                value("F8", 312),
+                value("F9", 313),
+                value("F10", 314),
+                value("F11", 315),
+                value("F12", 316),
+                value("F13", 317),
+                value("F14", 318),
+                value("F15", 319),
+                value("Pause", 320),
+                value("Count", 321)
+            ]
+    ];
+}
+
 void LuaBinds::exportTools(lua_State *lua)
 {
     module(lua)
     [
+        // std::vector<std::string>
+        class_< std::vector<std::string> >("v_string")
+            .def(luabind::constructor<>())
+            .def("push_back", &std::vector<std::string>::push_back)
+            .def("at",(std::string&(std::vector<std::string>::*)(size_t))&std::vector<std::string>::at)
         // "Namespace" sf (SFML)
-        namespace_("sf")
+        , namespace_("sf")
         [
             // sf::Vector2i (sf::Vector2<int>)
             class_<sf::Vector2i>("Vector2i")
@@ -215,6 +339,7 @@ void LuaBinds::exportTools(lua_State *lua)
             DEF(FilesPathHandler, getFilepath)
             DEF(FilesPathHandler, scanDirectory)
     ];
+    exportInputAndEvents(lua);
 }
 
 void LuaBinds::exportGame(lua_State *lua)
@@ -226,6 +351,7 @@ void LuaBinds::exportGame(lua_State *lua)
         class_<Game>("Game")
             DEF(Game, startDrawingXSprite)
             DEF(Game, stopDrawingXSprite)
+            DEF(Game, getChoiceFromVector)
             DEF(Game, spawnUnit)
             DEF(Game, isUnitPresent)
             DEF(Game, getGlobalAffector)

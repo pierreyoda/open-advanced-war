@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFGUI/Align.hpp>
 #include "Game.hpp"
 #include "db/DatabaseSerialization.hpp"
 #include "lua/LuaVirtualMachine.hpp"
@@ -13,7 +14,7 @@ Game &gGame = Game::getInstance();
 
 using namespace std;
 
-Game::Game() : m_mapPtr(0), m_unitDeleted(false), m_editorGui()
+Game::Game() : App(0), m_mapPtr(0), m_unitDeleted(false), m_editorGui()
 {
 
 }
@@ -70,7 +71,7 @@ void Game::initTestMap()
         "buildEditorGui", error, &m_editorGui)
 
     m_mapPtr = new Map(); // for test - loading default map
-    m_armies.push_back(new ArmyGeneral(m_armies.size(), "US"));
+    m_armies.push_back(new ArmyGeneral(m_armies.size(), "Orange Star"));
 }
 
 bool Game::saveMap(const string &filename)
@@ -243,24 +244,23 @@ void Game::setGlobalAffector(const string &name, const int &value)
 
 void Game::renderGame(const float &frametime)
 {
-    if (target == 0)
+    if (App == 0)
         return;
-    m_editorGui.render(*target, frametime);
+    m_editorGui.render(*App, frametime);
     /*static sf::Shape mask = sf::Shape::Rectangle(sf::FloatRect(0, 0, SCREEN_W, SCREEN_H), sf::Color::Black);
-    target->Draw(mask); // to mask sfgui's cursor in game (map) part*/
-/// TODO (Pierre-Yves#1#): Units/building drawing order ; example : unit "behind" HQ
+    App->Draw(mask); // to mask sfgui's cursor in game (map) part*/
     if (m_mapPtr != 0)
-        m_mapPtr->renderTo(*target);
+        m_mapPtr->renderTo(*App);
     for (unsigned int i = 0; i < m_armies.size(); i++)
     {
         if (m_armies[i] != 0)
-            drawArmy(*target, *m_armies[i]);
+            drawArmy(*App, *m_armies[i]);
     }
     for (list<p_renderingInfos>::iterator iter = m_renderingList.begin();
         iter != m_renderingList.end(); iter++)
     {
         iter->first.update();
-        target->Draw(iter->first);
+        App->Draw(iter->first);
     }
 }
 
@@ -292,4 +292,110 @@ void Game::stopDrawingXSprite(const string &id)
            return;
         }
     }
+}
+
+struct MakeChoiceGui
+{
+    MakeChoiceGui(const vector<string> &vector, sf::FloatRect &rect) :
+        m_gui(rect), m_list(sfg::StringListbox::Create(rect)), m_selected(false),
+        m_lastSelected(-1)
+    {
+        m_gui.LoadSkinFromFile("data/default.skin");
+        for (unsigned int i = 0; i < vector.size(); i++)
+            if (!vector[i].empty())
+                m_list->AddItem(vector[i]);
+        m_gui.AddWidget(m_list);
+        /*sfg::AlignWidgetInRect(
+            *m_list,
+            rect,
+            sfg::AlignLeft | sfg::AlignTop,
+            sf::Vector2f());*/
+        m_list->Selected = sfg::Slot<sfg::StringListbox::SelectSlot>(
+            &MakeChoiceGui::listItemSelected, this);
+    }
+
+    sfg::GUI &getGui() { return m_gui; }
+
+    bool getSelected(int &selected)
+    {
+        if (selected != -1)
+            m_lastSelected = selected;
+        if (m_selected)
+        {
+            m_selected = false;
+            selected = m_list->GetSelectedIndex();
+            return (m_lastSelected == selected); // selected twice (double clic)
+        }
+        selected = -1;
+        return false;
+    }
+
+    private:
+        void listItemSelected(sfg::Widget::Ptr widget)
+        {
+            m_selected = true;
+        }
+        sfg::GUI m_gui;
+        sfg::StringListbox::Ptr m_list;
+        bool m_selected;
+        int m_lastSelected;
+};
+
+int Game::getChoiceFromVector(const vector<string> &vector, sf::FloatRect &rect)
+{
+    if (App == 0)
+        return -1; // no choice made
+    bool takeScreen = false;
+    int selected = -1;
+    MakeChoiceGui gui(vector, rect);
+    sf::Image screen;
+    screen.CopyScreen(*App);
+    sf::Sprite screenSprite(screen);
+    while (App->IsOpened())
+    {
+        sf::Event Event;
+        bool chose = false;
+        while (App->GetEvent(Event))
+        {
+            if (Event.Type == sf::Event::Closed)
+                //App->Close();
+                exit(0);
+            if (Event.Type == sf::Event::KeyPressed)
+            {
+                if (Event.Key.Code == sf::Key::Escape)
+                    return -1;
+                if (Event.Key.Code == sf::Key::F5)
+                    takeScreen = true;
+            }
+            if (Event.Type == sf::Event::MouseButtonPressed)
+            {
+                if (Event.MouseButton.Button == sf::Mouse::Left)
+                    chose = true;
+                if (Event.MouseButton.Button == sf::Mouse::Right)
+                    return -1;
+            }
+            gui.getGui().HandleEvent(Event);
+        }
+
+        if (gui.getSelected(selected)) // double click
+        {
+            if (selected >= 0)
+                return selected;
+        }
+
+        App->Clear();
+            App->Draw(screenSprite);
+            gui.getGui().Render(*App);
+        App->Display();
+
+        if (takeScreen)
+        {
+            sf::Image screenshot;
+            screenshot.CopyScreen(*App);
+            if (!screenshot.SaveToFile("screen.jpg"))
+                std::cerr << "Error : cannot save screenshot.\n";
+            takeScreen = false;
+        }
+    }
+    return -1;
 }
