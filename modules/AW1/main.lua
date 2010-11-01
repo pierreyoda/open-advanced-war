@@ -36,3 +36,12 @@ function onGameEntityPlaced(entity)
 		onBuildingPlaced(entity, map)
 	end
 end
+
+-- Event listener
+function onEvent(event)
+	if (event.Type == sf.Event.MousePressed) then
+		if (event.MouseButton.Button == sf.Mouse.Left) then
+			print "Left button!"
+		end
+	end
+end

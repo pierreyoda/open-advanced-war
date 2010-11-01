@@ -148,6 +148,7 @@ void exportInputAndEvents(lua_State *lua) /// Code from sfengine (http://code.go
 {
     module(lua, "sf")
     [
+        // sf::Key::Code
         class_<sf::KeyBind>("Key")
             .enum_("Code")
             [
@@ -254,6 +255,54 @@ void exportInputAndEvents(lua_State *lua) /// Code from sfengine (http://code.go
                 value("Pause", 320),
                 value("Count", 321)
             ]
+        // sf::Event
+        , class_<sf::Event>("Event")
+            .def_readonly("Type", &sf::Event::Type)
+            .enum_("EventType")
+            [
+                /*value("Closed", 0),
+                value("Resized", 1),
+                value("LostFocus", 2),
+                value("GainedFocus", 3),
+                value("TextEntered", 4),*/
+                value("KeyPressed", 5),
+                value("KeyReleased", 6),
+                value("MouseWheelMoved", 7),
+                value("MousePressed", 8),
+                value("MouseReleased", 9),
+                value("MouseMoved", 10),
+                value("MouseEntered", 11)/*,
+                value("MouseLeft", 12)*/
+            ]
+            .def_readonly("Key", &sf::Event::Key)
+            .def_readonly("Mouse", &sf::Event::MouseMove)
+            .def_readonly("MouseButton", &sf::Event::MouseButton)
+        // sf::KeyEvent
+        , class_<sf::Event::KeyEvent>("KeyEvent")
+                .def_readonly("Code", &sf::Event::KeyEvent::Code)
+                .def_readonly("Alt", &sf::Event::KeyEvent::Alt)
+                .def_readonly("Control", &sf::Event::KeyEvent::Control)
+                .def_readonly("Shit", &sf::Event::KeyEvent::Shift)
+        // sf::Event::MouseMoveEvent
+        , class_<sf::Event::MouseMoveEvent>("MouseMoveEvent")
+            .def_readonly("X", &sf::Event::MouseMoveEvent::X)
+            .def_readonly("Y", &sf::Event::MouseMoveEvent::Y)
+        // sf::Event::MouseButtonEvent
+        , class_<sf::Event::MouseButtonEvent>("MouseButtonEvent")
+            .def_readonly("Button", &sf::Event::MouseButtonEvent::Button)
+            .def_readonly("X", &sf::Event::MouseButtonEvent::X)
+            .def_readonly("Y", &sf::Event::MouseButtonEvent::Y)
+        // sf::Mouse::Button
+        , class_<sf::Mouse::Button>("Mouse")
+            .enum_("Button")
+            [
+                value("Left", 0),
+                value("Right", 1),
+                value("Middle", 2),
+                value("XButton1", 3),
+                value("XButton2", 4)/*,
+                value("ButtonCount", 5)*/
+            ]
     ];
 }
 
@@ -263,7 +312,7 @@ void LuaBinds::exportTools(lua_State *lua)
     [
         // std::vector<std::string>
         class_< std::vector<std::string> >("v_string")
-            .def(luabind::constructor<>())
+            .def(constructor<>())
             .def("push_back", &std::vector<std::string>::push_back)
             .def("at",(std::string&(std::vector<std::string>::*)(size_t))&std::vector<std::string>::at)
         // "Namespace" sf (SFML)

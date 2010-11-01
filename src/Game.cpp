@@ -192,6 +192,10 @@ void Game::listenEvent(const sf::Event &Event)
         onMouseOver(sf::Vector2i(x, y));
     }
     m_editorGui.handleEvent(Event);
+    static bool luaError = false;
+    if (!luaError)
+        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, "onEvent",
+            luaError, &Event)
 }
 
 void Game::spawnUnit(const unsigned int &armyId, const string &type,
