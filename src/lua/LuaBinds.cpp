@@ -414,6 +414,8 @@ void LuaBinds::exportGame(lua_State *lua)
             DEF(Game, loadMap)
             DEF(Game, getArmy)
             DEF(Game, nbOfArmies)
+            DEF(Game, isInGame)
+            DEF(Game, isInEditor)
         // ArmyGeneral
         , class_<ArmyGeneral>("ArmyGeneral")
             DEF(ArmyGeneral, id)

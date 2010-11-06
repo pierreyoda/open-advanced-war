@@ -16,7 +16,11 @@ NONE, TILE, BUILDING, UNIT =
 	GameEntity.TILE,
 	GameEntity.BUILDING,
 	GameEntity.UNIT
+	
+-- Game variables
+editor_toPlaceType, editor_toPlace, editor_toPlaceFaction = NONE, "", ""
 
+-- Includes
 vm:include("ingame_units.lua;ingame_map.lua;ai.lua;graphic_effects.lua;editor.lua", MODULE_DIR)
 	
 gFph:scanDirectory(MODULE_DIR) -- scanning module directory (searching for resources)
@@ -41,7 +45,12 @@ end
 function onEvent(event)
 	if (event.Type == sf.Event.MousePressed) then
 		if (event.MouseButton.Button == sf.Mouse.Left) then
-			print "Left button!"
+			local pos = sf.Vector2i(event.MouseButton.X, event.MouseButton.Y)
+			pos = GameEntity.pixelsToTiles(pos)
+			if (game:isInEditor() 
+				and pos.y < GUI_START_H) then -- not in GUI part
+				editor_place(pos)
+			end
 		end
 	end
 end

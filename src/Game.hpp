@@ -66,6 +66,9 @@ class Game : public Singleton<Game>
         int getChoiceFromVector(const std::vector<std::string> &vector,
             sf::FloatRect &rect);
 
+        bool isInGame() const { return m_inGame; }
+        bool isInEditor() const { return m_inEditor; }
+
         // internal (ugly)
         void unitDeleted(const sf::Vector2i &pos) { m_unitDeleted = true; m_unitDeletedPos = pos; }
 

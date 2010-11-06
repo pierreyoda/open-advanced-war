@@ -55,6 +55,11 @@ int main(int argc, char *argv[])
     globals(luaVm())["database"] = &database;
     globals(luaVm())["trans"] = &database.translationsRef();
     globals(luaVm())["gFph"] = &gFph;
+    // Exporting constantes
+    globals(luaVm())["SCREEN_W"] = SCREEN_W;
+    globals(luaVm())["SCREEN_H"] = SCREEN_H;
+    globals(luaVm())["GUI_START_H"] = GUI_START_H;
+    globals(luaVm())["GUI_END_H"] = GUI_END_H;
 
     luaVm.include("test.lua");
 

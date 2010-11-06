@@ -14,7 +14,8 @@ Game &gGame = Game::getInstance();
 
 using namespace std;
 
-Game::Game() : App(0), m_mapPtr(0), m_unitDeleted(false), m_editorGui()
+Game::Game() : App(0), m_mapPtr(0), m_inGame(false), m_inEditor(true),
+    m_unitDeleted(false), m_editorGui()
 {
 
 }
@@ -175,12 +176,12 @@ void Game::listenInput(const sf::Input &Input)
         && m_mapPtr != 0)
     {
         prevPos = mousePosTiles;
-        if (!m_unit.empty())
+        /*if (!m_unit.empty())
             spawnUnit(0, m_unit, mousePosTiles);
         else if (!m_building.empty())
             m_mapPtr->placeBuilding(mousePosTiles, m_building, m_faction, true);
         else
-            m_mapPtr->setTile(mousePosTiles, m_tile);
+            m_mapPtr->setTile(mousePosTiles, m_tile);*/
     }
 }
 

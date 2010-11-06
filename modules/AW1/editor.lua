@@ -2,6 +2,20 @@
 Part of AW1 module for Open Advanced War
 Manages map editor. ]]
 
+function editor_place(pos)
+	local map = game:getMapPtr()
+	if (map == nil) then
+		return
+	end
+	if (editor_toPlaceType == TILE) then
+		map:setTile(pos, editor_toPlace)
+	elseif (editor_toPlaceType == BUILDING) then
+		map:placeBuilding(pos, editor_toPlace, editor_toPlaceFaction, true)
+	elseif (editor_toPlaceType == UNIT and editor_toPlaceFaction ~= "") then
+		game:spawnUnit(factionToID()-1, editor_toPlace, pos)
+	end
+end
+
 function extractAnimationFromDatabase(class, type_, anim, faction, frameId)
 	local ptr = nil
 	if (class == TILE) then
@@ -85,26 +99,17 @@ end
 function onEditorGuiListItemSelected(listName, itemId)
 	local class = GameEntity.findClassFromType(itemId)
 	if (listName == "terrain") then
-		game:setEditorFaction("") -- null faction (neutral for buildings)
+		editor_toPlaceFaction = "" -- null faction (neutral for buildings)
 	elseif (listName == "OrangeStar") then
-		game:setEditorFaction("Orange Star")
+		editor_toPlaceFaction = "Orange Star"
 	elseif (listName == "BlueMoon") then
-		game:setEditorFaction("Blue Moon")
+		editor_toPlaceFaction = "Blue Moon"
 	elseif(listName == "GreenEarth") then
-		game:setEditorFaction("Green Earth")	
+		editor_toPlaceFaction = "Green Earth"	
 	elseif(listName == "YellowComet") then
-		game:setEditorFaction("Yellow Comet")
+		editor_toPlaceFaction = "Yellow Comet"
 	end
-	if (class == BUILDING) then
-		game:setEditorBuilding(itemId)
-		game:setEditorUnit("") -- do not place unit anymore
-	elseif (class == TILE) then
-		game:setEditorTile(itemId)
-		game:setEditorBuilding("")
-		game:setEditorUnit("")
-	elseif (class == UNIT) then
-		game:setEditorUnit(itemId)
-	end
+	editor_toPlaceType, editor_toPlace = class, itemId
 end
 
 function onEditorGuiButtonClicked(buttonId)
