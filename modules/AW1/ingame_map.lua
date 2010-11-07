@@ -461,7 +461,7 @@ function eraseUnitIfNeeded(pos)
 	end
 end
 
-local nullPos = sf.Vector2i(-1, -1)
+nullPos = sf.Vector2i(-1, -1)
 local hqPos = { nullPos, nullPos, nullPos, nullPos }
 local hqUpAnims = { db.Anim("hq_up_1", "hq.png"),
 	db.Anim("hq_up_2", "hq.png"),
@@ -476,9 +476,9 @@ function factionToID(faction)
 	if (faction == "Orange Star") then
 		return 1
 	elseif (faction == "Blue Moon") then
-		return 2		
+		return 2
 	elseif (faction == "Green Earth") then
-		return 3		
+		return 3
 	elseif (faction == "Yellow Comet") then
 		return 4
 	elseif (faction == "") then

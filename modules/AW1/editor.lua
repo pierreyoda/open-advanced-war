@@ -12,7 +12,10 @@ function editor_place(pos)
 	elseif (editor_toPlaceType == BUILDING) then
 		map:placeBuilding(pos, editor_toPlace, editor_toPlaceFaction, true)
 	elseif (editor_toPlaceType == UNIT and editor_toPlaceFaction ~= "") then
-		game:spawnUnit(factionToID()-1, editor_toPlace, pos)
+		local id = factionToID(editor_toPlaceFaction)-1
+		if (id >= 0 and id <= 3) then
+			game:spawnUnit(id, editor_toPlace, pos)
+		end
 	end
 end
 

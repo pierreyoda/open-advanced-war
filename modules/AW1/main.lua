@@ -43,14 +43,19 @@ end
 
 -- Event listener
 function onEvent(event)
-	if (event.Type == sf.Event.MousePressed) then
-		if (event.MouseButton.Button == sf.Mouse.Left) then
-			local pos = sf.Vector2i(event.MouseButton.X, event.MouseButton.Y)
-			pos = GameEntity.pixelsToTiles(pos)
-			if (game:isInEditor() 
-				and pos.y < GUI_START_H) then -- not in GUI part
+end
+
+local prevPos = nullPos
+-- Input listener
+function listenInput(input)
+	if (game:isInEditor()) then
+		if (input:IsMouseButtonDown(sf.Mouse.Left)) then
+			local pos = GameEntity.pixelsToTiles(sf.Vector2i(input:GetMouseX(), 
+				input:GetMouseY()))
+			if (pos ~= prevPos) then
 				editor_place(pos)
 			end
+			prevPos = pos
 		end
 	end
 end

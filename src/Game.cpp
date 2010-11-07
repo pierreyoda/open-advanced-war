@@ -183,6 +183,10 @@ void Game::listenInput(const sf::Input &Input)
         else
             m_mapPtr->setTile(mousePosTiles, m_tile);*/
     }
+    static bool luaError = false;
+    if (!luaError)
+        CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, "listenInput",
+            luaError, &Input)
 }
 
 void Game::listenEvent(const sf::Event &Event)

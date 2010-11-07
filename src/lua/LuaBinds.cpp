@@ -303,6 +303,12 @@ void exportInputAndEvents(lua_State *lua) /// Code from sfengine (http://code.go
                 value("XButton2", 4)/*,
                 value("ButtonCount", 5)*/
             ]
+        , class_<sf::Input>("Input")
+            .def(luabind::constructor<>())
+            .def("IsKeyDown", &sf::Input::IsKeyDown)
+            .def("GetMouseX", &sf::Input::GetMouseX)
+            .def("GetMouseY", &sf::Input::GetMouseY)
+            .def("IsMouseButtonDown", &sf::Input::IsMouseButtonDown)
     ];
 }
 
