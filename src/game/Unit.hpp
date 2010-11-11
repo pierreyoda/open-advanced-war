@@ -16,6 +16,8 @@ class Unit : public GameEntity
         unsigned int id() const { return m_id; }
 
     private:
+        Unit() : GameEntity("", ""), m_id(0) { }
+
         template <typename Archive>
         void serialize(Archive &ar, const unsigned int &version)
         {

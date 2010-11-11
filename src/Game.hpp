@@ -63,8 +63,8 @@ class Game : public Singleton<Game>
         void setEditorUnit(const std::string &type) { m_unit = type; } // to delete (call lua instead)
         void setEditorFaction(const std::string &faction) { m_faction = faction; } // to delete (call lua instead)
 
-        int getChoiceFromVector(const std::vector<std::string> &vector,
-            sf::FloatRect &rect);
+        int getChoiceFromTable(const luabind::object &table,
+            const unsigned int &size, sf::FloatRect &rect);
 
         bool isInGame() const { return m_inGame; }
         bool isInEditor() const { return m_inEditor; }

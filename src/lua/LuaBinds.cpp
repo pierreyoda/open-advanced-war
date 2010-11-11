@@ -316,13 +316,7 @@ void LuaBinds::exportTools(lua_State *lua)
 {
     module(lua)
     [
-        // std::vector<std::string>
-        class_< std::vector<std::string> >("v_string")
-            .def(constructor<>())
-            .def("push_back", &std::vector<std::string>::push_back)
-            .def("at",(std::string&(std::vector<std::string>::*)(size_t))&std::vector<std::string>::at)
-        // "Namespace" sf (SFML)
-        , namespace_("sf")
+        namespace_("sf")
         [
             // sf::Vector2i (sf::Vector2<int>)
             class_<sf::Vector2i>("Vector2i")
@@ -406,7 +400,7 @@ void LuaBinds::exportGame(lua_State *lua)
         class_<Game>("Game")
             DEF(Game, startDrawingXSprite)
             DEF(Game, stopDrawingXSprite)
-            DEF(Game, getChoiceFromVector)
+            DEF(Game, getChoiceFromTable)
             DEF(Game, spawnUnit)
             DEF(Game, isUnitPresent)
             DEF(Game, getGlobalAffector)

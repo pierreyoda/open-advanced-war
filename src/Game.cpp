@@ -86,6 +86,7 @@ bool Game::saveMap(const string &filename)
             throw string("cannot save map to " + filename + ".");
         boost::archive::xml_oarchive archive(file);
         archive << boost::serialization::make_nvp("map", *m_mapPtr);
+        archive << BOOST_SERIALIZATION_NVP(m_armies);
     }
     catch (const string &error)
     {
@@ -112,15 +113,16 @@ bool Game::loadMap(const string &filename)
             throw string("cannot load map from " + filename + ".");
         boost::archive::xml_iarchive archive(file);
         archive >> boost::serialization::make_nvp("map", *m_mapPtr);
+        archive >> BOOST_SERIALIZATION_NVP(m_armies);
     }
     catch (const string &error)
     {
-        cout << "[Map saving] Error : " << error << "\n";
+        cout << "[Map loading] Error : " << error << "\n";
         return false;
     }
     catch (const exception &exception)
     {
-        cout << "[Map saving] Error : " << exception.what()
+        cout << "[Map loading] Error : " << exception.what()
          << "\n";
         return false;
     }
@@ -350,13 +352,33 @@ struct MakeChoiceGui
         int m_lastSelected;
 };
 
-int Game::getChoiceFromVector(const vector<string> &vector, sf::FloatRect &rect)
+int Game::getChoiceFromTable(const luabind::object &table,
+    const unsigned int &size, sf::FloatRect &rect)
 {
-    if (App == 0)
+    static const unsigned int LIMIT = 25; // table size limit
+    if (App == 0 || !table.is_valid() || luabind::type(table) != LUA_TTABLE)
         return -1; // no choice made
+    // Converting table
+    vector<string> convertedTable;
+    try
+    {
+        for (unsigned int i = 1; i <= size && i <= LIMIT; i++)
+        {
+            convertedTable.push_back(luabind::object_cast<std::string>(table[i]));
+        }
+    }
+    catch (const exception &exception)
+    {
+        cout << "[Game - getChoiceFromVector] Error while converting table : "
+            << exception.what() << "\n";
+        return -1;
+    }
+    if (convertedTable.empty())
+        return -1;
+    // Selection Loop
     bool takeScreen = false;
     int selected = -1;
-    MakeChoiceGui gui(vector, rect);
+    MakeChoiceGui gui(convertedTable, rect);
     sf::Image screen;
     screen.CopyScreen(*App);
     sf::Sprite screenSprite(screen);
@@ -402,7 +424,7 @@ int Game::getChoiceFromVector(const vector<string> &vector, sf::FloatRect &rect)
             sf::Image screenshot;
             screenshot.CopyScreen(*App);
             if (!screenshot.SaveToFile("screen.jpg"))
-                std::cerr << "Error : cannot save screenshot.\n";
+                cerr << "Error : cannot save screenshot.\n";
             takeScreen = false;
         }
     }

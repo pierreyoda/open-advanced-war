@@ -54,6 +54,8 @@ void GameEntity::playAnim(const std::string &anim, const bool &loop)
 
 Classes GameEntity::findClassFromType(const std::string &type)
 {
+    if (type.empty())
+            return NONE;
     if (database.findTile(type) != 0)
         return TILE;
     if (database.findBuilding(type) != 0)

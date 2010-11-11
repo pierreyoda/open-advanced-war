@@ -137,11 +137,16 @@ function onEditorGuiButtonClicked(buttonId)
 			printElapsedTime(timer, false)
 		end
 	elseif (buttonId == "testButton") then
-		local vector = v_string()
-			vector:push_back("Soldier\t1000")
-			vector:push_back("Tank\t7000")
-			vector:push_back("DCA\t8000")
-		local choice = game:getChoiceFromVector(vector, sf.FloatRect(10, 10, 150, 300))
+		local possible =
+		{
+			"Soldier\t1000",
+			"Bazooka\t3000",
+			"Tank\t7000",
+			"DCA\t8000"
+		}
+		-- NB : #possible = table.getn(possible)
+		local choice = game:getChoiceFromTable(possible, #possible, 
+			sf.FloatRect(10, 10, 150, 300))
 		print(choice)
 	end
 end

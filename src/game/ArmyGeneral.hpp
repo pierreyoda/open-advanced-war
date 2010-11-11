@@ -37,6 +37,8 @@ class ArmyGeneral
         unsigned int id() const { return m_id; }
 
     private:
+        ArmyGeneral() : m_id(0), m_faction("") { }
+
         l_units::iterator getUnitIter(const sf::Vector2i &pos);
 
         template <typename Archive>
