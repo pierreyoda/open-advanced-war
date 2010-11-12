@@ -139,21 +139,31 @@ function onEditorGuiButtonClicked(buttonId)
 		end
 	elseif (buttonId == "testButton") then
 		local function alignRight(table_, index, separator, caracLimit)
-			local size = #table_[index]
-			local separatorPos = table_[index]:find(separator)
+			local text = table_[index]
+			local size, separatorPos = #text, text:find(separator)
 			if (separatorPos == nil) then -- not found
 				return
 			end
 			-- Adding first part
-			local temp = table_[index]:sub(0, separatorPos-1)
-			local temp2 = table_[index]:sub(separatorPos+1, size)
+			local temp = text:sub(0, separatorPos-1)
+			local temp2 = text:sub(separatorPos+1, size)
 			-- Adding needed spaces
 			local needed = caracLimit - #temp - #temp2
-			for i = 1, needed, 1 do
+			if (#temp2 < 5) then -- again, determined by some tests
+				needed = needed+1
+			end
+			for i = 1, needed do
 				temp = temp .. " "
 			end
 			-- Adding second part
-			table_[index] = temp .. temp2
+			table_[index] = temp .. temp2 -- text is a copy!
+		end
+		local function formatTable(table1, caracLimit)
+			local table2 = deepcopy(table1)
+			for i = 1, #table2 do
+				alignRight(table2, i, "=", caracLimit)
+			end
+			return table2
 		end
 		local possible =
 		{
@@ -165,16 +175,22 @@ function onEditorGuiButtonClicked(buttonId)
 		}
 		local width = 300
 		local caracLimit = width / CARAC_SIZE
-		for i = 1, #possible, 1 do
-			alignRight(possible, i, "=", caracLimit)
+		for i = 1, 20 do
+			possible[#possible+1] = "Test_" .. i .. "=" .. i*15
 		end
 		-- NB : #possible = table.getn(possible)
-		local choice = game:getChoiceFromTable(possible, #possible, 
+		local choice = game:getChoiceFromTable(formatTable(possible, caracLimit), #possible, 
 			sf.FloatRect(10, 10, width, 300))
-		if (choice < 0) then
+		if (choice < 0 or choice+1 >= #possible) then
 			print("No selection made.")
 		else
-			io.write("Item n.", choice+1, " selected.\n")
+			io.write("Item n.", choice+1, " selected.")
+			local selected = possible[choice+1]
+			local separatorPos = selected:find("=")
+			if (separatorPos ~= nil) then
+				io.write(" To build : '", selected:sub(0, separatorPos-1), "'.")
+			end
+			print()
 		end
 	end
 end

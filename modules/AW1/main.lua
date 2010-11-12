@@ -21,6 +21,7 @@ NONE, TILE, BUILDING, UNIT =
 editor_toPlaceType, editor_toPlace, editor_toPlaceFaction = NONE, "", ""
 
 -- Includes
+vm:include("tools.lua", "modules/")
 vm:include("ingame_units.lua;ingame_map.lua;ai.lua;graphic_effects.lua;editor.lua", MODULE_DIR)
 	
 gFph:scanDirectory(MODULE_DIR) -- scanning module directory (searching for resources)
