@@ -115,6 +115,7 @@ function onEditorGuiListItemSelected(listName, itemId)
 	editor_toPlaceType, editor_toPlace = class, itemId
 end
 
+local CARAC_SIZE = 7 -- determined with tests
 function onEditorGuiButtonClicked(buttonId)
 	local function printElapsedTime(timer, save)
 		if (save) then
@@ -137,17 +138,44 @@ function onEditorGuiButtonClicked(buttonId)
 			printElapsedTime(timer, false)
 		end
 	elseif (buttonId == "testButton") then
+		local function alignRight(table_, index, separator, caracLimit)
+			local size = #table_[index]
+			local separatorPos = table_[index]:find(separator)
+			if (separatorPos == nil) then -- not found
+				return
+			end
+			-- Adding first part
+			local temp = table_[index]:sub(0, separatorPos-1)
+			local temp2 = table_[index]:sub(separatorPos+1, size)
+			-- Adding needed spaces
+			local needed = caracLimit - #temp - #temp2
+			for i = 1, needed, 1 do
+				temp = temp .. " "
+			end
+			-- Adding second part
+			table_[index] = temp .. temp2
+		end
 		local possible =
 		{
-			"Soldier\t1000",
-			"Bazooka\t3000",
-			"Tank\t7000",
-			"DCA\t8000"
+			"Soldier=1000",
+			"Mech=3000",
+			"Tank=7000",
+			"Medium Tank=16000",
+			"DCA=8000"
 		}
+		local width = 300
+		local caracLimit = width / CARAC_SIZE
+		for i = 1, #possible, 1 do
+			alignRight(possible, i, "=", caracLimit)
+		end
 		-- NB : #possible = table.getn(possible)
 		local choice = game:getChoiceFromTable(possible, #possible, 
-			sf.FloatRect(10, 10, 150, 300))
-		print(choice)
+			sf.FloatRect(10, 10, width, 300))
+		if (choice < 0) then
+			print("No selection made.")
+		else
+			io.write("Item n.", choice+1, " selected.\n")
+		end
 	end
 end
 

@@ -308,7 +308,8 @@ void Game::stopDrawingXSprite(const string &id)
 struct MakeChoiceGui
 {
     MakeChoiceGui(const vector<string> &vector, sf::FloatRect &rect) :
-        m_gui(rect), m_list(sfg::StringListbox::Create(rect)), m_selected(false),
+        m_gui(sf::FloatRect(rect.Left, rect.Top, rect.Width+10, rect.Height+10)), // otherwise some elements are cut
+        m_list(sfg::StringListbox::Create(rect)), m_selected(false),
         m_lastSelected(-1)
     {
         m_gui.LoadSkinFromFile("data/default.skin");
