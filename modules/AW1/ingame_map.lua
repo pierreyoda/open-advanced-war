@@ -422,19 +422,18 @@ function onTilePlaced(tile, map)
 	if (tile == nil or map == nil) then
 		return
 	end
-	if (not called) then -- test road intersection
-		called = true
-		for i = 0, 25, 1 do
-			map:setTile(i, 2, "Forest")
-		end
-		game:spawnUnit(0, "Tank", sf.Vector2i(15, 10))
-		game:spawnUnit(0, "Infantry", sf.Vector2i(20, 10))
-		map:placeBuilding(20, 20, "Base", "", true)
-		map:placeBuilding(10, 20, "Base", "Orange Star", true)
-	end
 	-- Transitions (specific)
 	local pos = tile:position()
-	map:removeBuilding(pos)
+	local building = map:getBuilding(pos)
+	if (building ~= nil) then -- if building there
+		if (building:type() == "HQ") then
+			local id = factionToID(building:faction())
+			if (id >= 1 and id <= 4) then
+				game:stopDrawingXSprite("HQ_up_" .. id)
+			end
+		end
+		map:removeBuilding(pos)
+	end
 	checkCoherencyAround(pos, map)
 	checkCoherency(pos, map)
 	eraseUnitIfNeeded(pos) -- Deleting present unit if needed

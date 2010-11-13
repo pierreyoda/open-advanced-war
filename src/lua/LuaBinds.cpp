@@ -431,6 +431,7 @@ void LuaBinds::exportGame(lua_State *lua)
                  &Map::placeBuilding)
             DEF(Map, removeBuilding)
             DEF(Map, isBuildingPresent)
+            DEF(Map, getBuilding)
             DEF(Map, getBuildingType)
             DEF(Map, findBuildingPos)
             // Tiles - modifiers

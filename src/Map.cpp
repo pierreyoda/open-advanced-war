@@ -160,14 +160,21 @@ bool Map::isBuildingPresent(const sf::Vector2i &pos)
 {
     return (getBuildingType(pos).empty());
 }
-string Map::getBuildingType(const sf::Vector2i &pos)
+GameEntity *Map::getBuilding(const sf::Vector2i &pos)
 {
     if (!isInsideMap(pos))
-        return "";
+        return 0;
     for (list<GameEntity*>::iterator iter = m_buildings.begin();
         iter != m_buildings.end(); iter++)
         if ((*iter) && (*iter)->position() == pos)
-            return (*iter)->type();
+            return (*iter);
+    return 0;
+}
+string Map::getBuildingType(const sf::Vector2i &pos)
+{
+    const GameEntity *ptr = getBuilding(pos);
+    if (ptr != 0)
+        return ptr->type();
     return "";
 }
 

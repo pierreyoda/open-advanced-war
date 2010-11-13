@@ -23,7 +23,8 @@ IN_GAME, IN_EDITOR = false, false
 
 -- Includes
 vm:include("tools.lua", "modules/")
-vm:include("ingame_units.lua;ingame_map.lua;ai.lua;graphic_effects.lua;editor.lua", MODULE_DIR)
+vm:include("ingame_units.lua;ingame_map.lua;ai.lua;graphic_effects.lua;"
+	.. "editor.lua;map_randomizer.lua", MODULE_DIR)
 	
 gFph:scanDirectory(MODULE_DIR) -- scanning module directory (searching for resources)
 
@@ -34,12 +35,16 @@ function mainMenu()
 	while (selection <= 0) do -- while no selection
 		selection = game:getChoiceFromTable(options, #options, 
 			sf.FloatRect(0, 0, SCREEN_W, SCREEN_H))+1
-		if (selection == 2) then
+		if (selection == 1) then
+			IN_GAME = true
+			game:newMap()
+			game:loadMap("map.xml")
+		elseif (selection == 2) then
 			IN_EDITOR = true
 			game:newMap()
+			randomMap(game:getMapPtr())
 			return
 		end
-		print(selection)
 	end
 end
 
@@ -54,7 +59,6 @@ function onGameEntityPlaced(entity)
 		local dbUnit = database:findUnit(entity:type())
 		entity:setIntCaracteristic("move", dbUnit:findIntCaracteristic("move"))
 		entity:setIntCaracteristic("fuel", dbUnit:findIntCaracteristic("fuel"))
-		print(dbUnit:findIntCaracteristic("move"))
 	elseif (class == BUILDING and map ~= nil) then
 		onBuildingPlaced(entity, map)
 	end
