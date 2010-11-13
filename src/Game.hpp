@@ -34,6 +34,7 @@ class Game : public Singleton<Game>
         }
 
         void initTestMap();
+        void newMap();
         bool saveMap(const std::string &filename);
         bool loadMap(const std::string &filename);
 
@@ -62,8 +63,8 @@ class Game : public Singleton<Game>
         int getChoiceFromTable(const luabind::object &table,
             const unsigned int &size, sf::FloatRect &rect);
 
-        bool isInGame() const { return m_inGame; }
-        bool isInEditor() const { return m_inEditor; }
+        /*bool isInGame() const { return m_inGame; }
+        bool isInEditor() const { return m_inEditor; }*/
 
         // internal (ugly)
         void unitDeleted(const sf::Vector2i &pos) { m_unitDeleted = true; m_unitDeletedPos = pos; }
@@ -87,7 +88,7 @@ class Game : public Singleton<Game>
         std::vector<ArmyGeneral*> m_armies;
         std::list<p_renderingInfos> m_renderingList;
         std::list<db::IntCaracteristic> m_globalAffectors;
-        bool m_inGame, m_inEditor, m_unitDeleted;
+        bool m_unitDeleted;
         sf::Vector2i m_unitDeletedPos;
         //InGameGui m_ingameGui;
         EditorGui m_editorGui;

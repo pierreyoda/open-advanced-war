@@ -124,6 +124,7 @@ end
 local CARAC_SIZE = 7 -- determined with tests
 local width = 300
 local caracLimit = width / CARAC_SIZE
+local MAP_FILE = "map.xml"
 function onEditorGuiButtonClicked(buttonId)
 	local function printElapsedTime(timer, save)
 		if (save) then
@@ -137,12 +138,12 @@ function onEditorGuiButtonClicked(buttonId)
 	local timer = PausableClock(true)
 	if (buttonId == "saveButton") then
 		timer:start()
-		if (game:saveMap("map.xml")) then
+		if (game:saveMap(MAP_FILE)) then
 			printElapsedTime(timer, true)
 		end
 	elseif (buttonId == "loadButton") then
 		timer:start()
-		if (game:loadMap("map.xml")) then
+		if (game:loadMap(MAP_FILE)) then
 			printElapsedTime(timer, false)
 		end
 	elseif (buttonId == "testButton") then

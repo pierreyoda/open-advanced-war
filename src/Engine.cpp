@@ -34,6 +34,14 @@ Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H+GUI_PART_H, 32), "Open Advan
 
     // Exposing game
     luabind::globals(LuaVM::getInstance().getLua())["game"] = &gGame;
+    // Main menu
+    bool error = false;
+    CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, "mainMenu", error, 0)
+    if (error)
+    {
+        std::cerr << "Main menu error. Game will now exit.\n";
+        exit(1);
+    }
 }
 
 Engine::~Engine()
@@ -43,9 +51,6 @@ Engine::~Engine()
 
 void Engine::run()
 {
-    Map *map = gGame.getMapPtr();
-    map->setTile(3, 0, "Forest");
-
     const Input &Input = App.GetInput();
     while (App.IsOpened())
     {

@@ -19,12 +19,29 @@ NONE, TILE, BUILDING, UNIT =
 	
 -- Game variables
 editor_toPlaceType, editor_toPlace, editor_toPlaceFaction = NONE, "", ""
+IN_GAME, IN_EDITOR = false, false
 
 -- Includes
 vm:include("tools.lua", "modules/")
 vm:include("ingame_units.lua;ingame_map.lua;ai.lua;graphic_effects.lua;editor.lua", MODULE_DIR)
 	
 gFph:scanDirectory(MODULE_DIR) -- scanning module directory (searching for resources)
+
+-- Main menu
+function mainMenu()
+	local options = { "Play game", "Launch map editor" }
+	local selection = -1
+	while (selection <= 0) do -- while no selection
+		selection = game:getChoiceFromTable(options, #options, 
+			sf.FloatRect(0, 0, SCREEN_W, SCREEN_H))+1
+		if (selection == 2) then
+			IN_EDITOR = true
+			game:newMap()
+			return
+		end
+		print(selection)
+	end
+end
 
 -- Called when a GameEntity is placed on map.
 function onGameEntityPlaced(entity)
@@ -37,6 +54,7 @@ function onGameEntityPlaced(entity)
 		local dbUnit = database:findUnit(entity:type())
 		entity:setIntCaracteristic("move", dbUnit:findIntCaracteristic("move"))
 		entity:setIntCaracteristic("fuel", dbUnit:findIntCaracteristic("fuel"))
+		print(dbUnit:findIntCaracteristic("move"))
 	elseif (class == BUILDING and map ~= nil) then
 		onBuildingPlaced(entity, map)
 	end
@@ -49,7 +67,7 @@ end
 local prevPos = nullPos
 -- Input listener
 function listenInput(input)
-	if (game:isInEditor()) then
+	if (IN_EDITOR and not IN_GAME) then
 		if (input:IsMouseButtonDown(sf.Mouse.Left)) then
 			if (input:GetMouseY() <= GUI_START_H) then -- not in GUI space
 				local pos = GameEntity.pixelsToTiles(sf.Vector2i(input:GetMouseX(), 

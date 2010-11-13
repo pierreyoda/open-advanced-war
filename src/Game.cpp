@@ -1,5 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFGUI/Align.hpp>
+/*#include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/binary_oarchive.hpp>*/
 #include "Game.hpp"
 #include "db/DatabaseSerialization.hpp"
 #include "lua/LuaVirtualMachine.hpp"
@@ -14,8 +16,7 @@ Game &gGame = Game::getInstance();
 
 using namespace std;
 
-Game::Game() : App(0), m_mapPtr(0), m_inGame(false), m_inEditor(true),
-    m_unitDeleted(false), m_editorGui()
+Game::Game() : App(0), m_mapPtr(0), m_unitDeleted(false), m_editorGui()
 {
 
 }
@@ -70,12 +71,13 @@ void Game::initTestMap()
     bool error = false;
     CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
         "buildEditorGui", error, &m_editorGui)
+}
 
-    m_mapPtr = new Map(); // for test - loading default map
-    m_armies.push_back(new ArmyGeneral(m_armies.size(), "Orange Star"));
-    m_armies.push_back(new ArmyGeneral(m_armies.size(), "Blue Moon"));
-    m_armies.push_back(new ArmyGeneral(m_armies.size(), "Green Earth"));
-    m_armies.push_back(new ArmyGeneral(m_armies.size(), "Yellow Comet"));
+void Game::newMap()
+{
+    if (m_mapPtr != 0)
+        delete m_mapPtr;
+    m_mapPtr = new Map();
 }
 
 bool Game::saveMap(const string &filename)
