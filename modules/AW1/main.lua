@@ -51,12 +51,14 @@ local prevPos = nullPos
 function listenInput(input)
 	if (game:isInEditor()) then
 		if (input:IsMouseButtonDown(sf.Mouse.Left)) then
-			local pos = GameEntity.pixelsToTiles(sf.Vector2i(input:GetMouseX(), 
-				input:GetMouseY()))
-			if (pos ~= prevPos) then
-				editor_place(pos)
+			if (input:GetMouseY() <= GUI_START_H) then -- not in GUI space
+				local pos = GameEntity.pixelsToTiles(sf.Vector2i(input:GetMouseX(), 
+					input:GetMouseY()))
+				if (pos ~= prevPos) then
+					editor_place(pos)
+					prevPos = pos
+				end
 			end
-			prevPos = pos
 		end
 	end
 end

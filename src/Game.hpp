@@ -47,6 +47,7 @@ class Game : public Singleton<Game>
         void startDrawingXSprite(XSprite *xsprite, const std::string &id);
         void stopDrawingXSprite(const std::string &id);
 
+        void addArmy(const unsigned int &id, const std::string &name);
         void spawnUnit(const unsigned int &armyId, const std::string &type,
             const sf::Vector2i &pos);
         bool isUnitPresent(const sf::Vector2i &pos);
@@ -57,11 +58,6 @@ class Game : public Singleton<Game>
         void setGlobalAffector(const std::string &name, const int &value);
 
         Map *getMapPtr() { return m_mapPtr; }
-
-        void setEditorTile(const std::string &type) { m_tile = type; } // to delete (call lua instead)
-        void setEditorBuilding(const std::string &type) { m_building = type; } // to delete (call lua instead)
-        void setEditorUnit(const std::string &type) { m_unit = type; } // to delete (call lua instead)
-        void setEditorFaction(const std::string &faction) { m_faction = faction; } // to delete (call lua instead)
 
         int getChoiceFromTable(const luabind::object &table,
             const unsigned int &size, sf::FloatRect &rect);
@@ -95,8 +91,6 @@ class Game : public Singleton<Game>
         sf::Vector2i m_unitDeletedPos;
         //InGameGui m_ingameGui;
         EditorGui m_editorGui;
-        std::string m_tile, m_building, m_unit;
-        std::string m_faction;
 };
 
 extern Game &gGame;

@@ -35,6 +35,7 @@ class ArmyGeneral
         Unit *getUnitPtr(const sf::Vector2i &pos);
 
         unsigned int id() const { return m_id; }
+        std::string faction() const { return m_faction; }
 
     private:
         ArmyGeneral() : m_id(0), m_faction("") { }

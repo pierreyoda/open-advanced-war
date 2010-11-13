@@ -41,7 +41,7 @@ bool ArmyGeneral::addUnit(const sf::Vector2i &pos, const string &type,
             "canPlaceUnit", luaError, unitDb, pos)
     if (luaError || !canSpawnUnit)
         return false;
-    Unit *unit = new Unit(type, usedFaction, m_units.size());
+    Unit *unit = new Unit(type, usedFaction, m_units.size()+1);
         unit->setPosition(pos);
         unit->playAnim("base");
     if (!luaError2)

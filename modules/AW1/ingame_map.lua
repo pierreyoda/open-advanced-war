@@ -427,9 +427,8 @@ function onTilePlaced(tile, map)
 		for i = 0, 25, 1 do
 			map:setTile(i, 2, "Forest")
 		end
-		game:setEditorFaction("Orange Star")
 		game:spawnUnit(0, "Tank", sf.Vector2i(15, 10))
-		game:spawnUnit(0, "Soldier", sf.Vector2i(20, 10))
+		game:spawnUnit(0, "Infantry", sf.Vector2i(20, 10))
 		map:placeBuilding(20, 20, "Base", "", true)
 		map:placeBuilding(10, 20, "Base", "Orange Star", true)
 	end

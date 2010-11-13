@@ -14,6 +14,9 @@ function editor_place(pos)
 	elseif (editor_toPlaceType == UNIT and editor_toPlaceFaction ~= "") then
 		local id = factionToID(editor_toPlaceFaction)-1
 		if (id >= 0 and id <= 3) then
+			if (game:getArmy(id) == nil) then -- no army of that faction
+				game:addArmy(id, editor_toPlaceFaction)
+			end
 			game:spawnUnit(id, editor_toPlace, pos)
 		end
 	end
@@ -83,20 +86,23 @@ end
 function buildEditorOrangeStarList(verticalSpriteList)
 	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(0, 2, 20, 38))
 	addOrangeStarSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
-	addOrangeStarSpriteItemToList(verticalSpriteList, UNIT, "Soldier", "base")
+	addOrangeStarSpriteItemToList(verticalSpriteList, UNIT, "Infantry", "base")
 	addOrangeStarSpriteItemToList(verticalSpriteList, UNIT, "Tank", "base")
 end
 function buildEditorBlueMoonList(verticalSpriteList)
 	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(20, 2, 20, 38))
 	addBlueMoonSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
+	addBlueMoonSpriteItemToList(verticalSpriteList, UNIT, "Infantry", "base")
 end
 function buildEditorGreenEarthList(verticalSpriteList)
 	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(40, 2, 20, 38))
 	addGreenEarthSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
+	addGreenEarthSpriteItemToList(verticalSpriteList, UNIT, "Infantry", "base")
 end
 function buildEditorYellowCometList(verticalSpriteList)
 	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(60, 2, 20, 38))
 	addYellowCometSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
+	addYellowCometSpriteItemToList(verticalSpriteList, UNIT, "Infantry", "base")
 end
 
 function onEditorGuiListItemSelected(listName, itemId)
@@ -116,6 +122,8 @@ function onEditorGuiListItemSelected(listName, itemId)
 end
 
 local CARAC_SIZE = 7 -- determined with tests
+local width = 300
+local caracLimit = width / CARAC_SIZE
 function onEditorGuiButtonClicked(buttonId)
 	local function printElapsedTime(timer, save)
 		if (save) then
@@ -167,14 +175,12 @@ function onEditorGuiButtonClicked(buttonId)
 		end
 		local possible =
 		{
-			"Soldier=1000",
+			"Infantry=1000",
 			"Mech=3000",
 			"Tank=7000",
 			"Medium Tank=16000",
 			"DCA=8000"
 		}
-		local width = 300
-		local caracLimit = width / CARAC_SIZE
 		for i = 1, 20 do
 			possible[#possible+1] = "Test_" .. i .. "=" .. i*15
 		end

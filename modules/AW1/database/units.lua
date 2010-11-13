@@ -2,11 +2,13 @@
 Part of AW1 module for Open Advanced War
 Describes units. ]]
 
--- Soldier
-soldier = db.Unit("Soldier") soldier:setPropulsion("InfantryProp")
+-- Infantry
+soldier = db.Unit("Infantry") soldier:setPropulsion("InfantryProp")
 anim = db.Anim("base", "soldier.png") anim:addFrame(0, 0)
-soldier:addAnim(anim, "Orange Star")
-soldier:addIntCaracteristic("move", 3):addIntCaracteristic("cost", 1000)
+soldier:addIntCaracteristic("move", 3):addIntCaracteristic("cost", 1000):addAnim(anim, "Orange Star")
+anim:clear():addFrame(20, 0) soldier:addAnim(anim, "Blue Moon")
+anim:clear():addFrame(40, 0) soldier:addAnim(anim, "Green Earth")
+anim:clear():addFrame(60, 0) soldier:addAnim(anim, "Yellow Comet")
 
 -- Tank (basic)
 tank = db.Unit("Tank") tank:setPropulsion("TreadsProp")

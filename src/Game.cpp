@@ -73,6 +73,9 @@ void Game::initTestMap()
 
     m_mapPtr = new Map(); // for test - loading default map
     m_armies.push_back(new ArmyGeneral(m_armies.size(), "Orange Star"));
+    m_armies.push_back(new ArmyGeneral(m_armies.size(), "Blue Moon"));
+    m_armies.push_back(new ArmyGeneral(m_armies.size(), "Green Earth"));
+    m_armies.push_back(new ArmyGeneral(m_armies.size(), "Yellow Comet"));
 }
 
 bool Game::saveMap(const string &filename)
@@ -205,6 +208,23 @@ void Game::listenEvent(const sf::Event &Event)
             luaError, &Event)
 }
 
+void Game::addArmy(const unsigned int &id, const std::string &name)
+{
+    if (name.empty())
+    {
+        cerr << "[Game - addArmy] Error : cannot add an army with an empty name"
+            << "\n";
+        return;
+    }
+    if (getArmy(id) != 0) // already exists
+    {
+        cerr << "[Game - addArmy] Error : army with ID '" << id
+            << "' already exists.\n";
+        return;
+    }
+    m_armies.push_back(new ArmyGeneral(id, name));
+}
+
 void Game::spawnUnit(const unsigned int &armyId, const string &type,
     const sf::Vector2i &pos)
 {
@@ -216,7 +236,9 @@ void Game::spawnUnit(const unsigned int &armyId, const string &type,
         cerr << "Error : no army of identifier '" << armyId << "'.\n";
         return;
     }
-    ptr->addUnit(pos, type, m_faction);
+    if (isUnitPresent(pos))
+        return;
+    ptr->addUnit(pos, type, ptr->faction());
 }
 
 bool Game::isUnitPresent(const sf::Vector2i &pos)
@@ -328,17 +350,14 @@ struct MakeChoiceGui
 
     sfg::GUI &getGui() { return m_gui; }
 
-    bool getSelected(int &selected)
+    bool getSelected(int &selected, int &prevSelected)
     {
-        if (selected != -1)
-            m_lastSelected = selected;
         if (m_selected)
         {
+            prevSelected = selected, selected = m_list->GetSelectedIndex();
             m_selected = false;
-            selected = m_list->GetSelectedIndex();
-            return (m_lastSelected == selected); // selected twice (double clic)
+            return true;
         }
-        selected = -1;
         return false;
     }
 
@@ -377,8 +396,8 @@ int Game::getChoiceFromTable(const luabind::object &table,
     if (convertedTable.empty())
         return -1;
     // Selection Loop
-    bool takeScreen = false;
-    int selected = -1;
+    bool takeScreen = false, pressedReturn = false;
+    int selected = -1, prevSelected = -1;
     MakeChoiceGui gui(convertedTable, rect);
     sf::Image screen;
     screen.CopyScreen(*App);
@@ -386,7 +405,6 @@ int Game::getChoiceFromTable(const luabind::object &table,
     while (App->IsOpened())
     {
         sf::Event Event;
-        bool chose = false;
         while (App->GetEvent(Event))
         {
             if (Event.Type == sf::Event::Closed)
@@ -398,21 +416,23 @@ int Game::getChoiceFromTable(const luabind::object &table,
                     return -1;
                 if (Event.Key.Code == sf::Key::F5)
                     takeScreen = true;
+                if (Event.Key.Code == sf::Key::Return)
+                    pressedReturn = true;
             }
             if (Event.Type == sf::Event::MouseButtonPressed)
             {
-                if (Event.MouseButton.Button == sf::Mouse::Left)
-                    chose = true;
                 if (Event.MouseButton.Button == sf::Mouse::Right)
                     return -1;
             }
             gui.getGui().HandleEvent(Event);
         }
 
-        if (gui.getSelected(selected)) // double click
+        if ((gui.getSelected(selected, prevSelected) && selected == prevSelected)
+            || pressedReturn)
         {
             if (selected >= 0)
                 return selected;
+            pressedReturn = false;
         }
 
         App->Clear();
