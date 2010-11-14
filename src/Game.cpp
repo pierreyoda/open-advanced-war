@@ -16,7 +16,7 @@ Game &gGame = Game::getInstance();
 
 using namespace std;
 
-Game::Game() : App(0), m_mapPtr(0), m_unitDeleted(false), m_editorGui()
+Game::Game() : App(0), m_mapPtr(0), m_unitDeleted(false)
 {
 
 }
@@ -24,6 +24,9 @@ Game::Game() : App(0), m_mapPtr(0), m_unitDeleted(false), m_editorGui()
 Game::~Game()
 {
     delete m_mapPtr;
+    for (map<string, GuiSpace*>::iterator iter = m_GUIs.begin();
+        iter != m_GUIs.end(); iter++)
+        delete iter->second;
 }
 
 void criticalModuleError()
@@ -67,10 +70,6 @@ void Game::initTestMap()
         cerr << "Error, module and database does not have the same names.\n";
         criticalModuleError();
     }
-
-    bool error = false;
-    CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
-        "buildEditorGui", error, &m_editorGui)
 }
 
 void Game::newMap()
@@ -203,14 +202,54 @@ void Game::listenEvent(const sf::Event &Event)
         const int x = Event.MouseMove.X, y = Event.MouseMove.Y;
         onMouseOver(sf::Vector2i(x, y));
     }
-    m_editorGui.handleEvent(Event);
+    if (!m_currentGui.empty() && m_GUIs[m_currentGui] != 0)
+        m_GUIs[m_currentGui]->handleEvent(Event);
     static bool luaError = false;
     if (!luaError)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, "onEvent",
             luaError, &Event)
 }
 
-void Game::addArmy(const unsigned int &id, const std::string &name)
+void Game::addGui(const string &name, const bool &setAsCurrent)
+{
+    if (name.empty())
+    {
+        cerr << "[Game - addGui] Error : cannot add a GUI with an empty name.\n";
+        return;
+    }
+    if (m_GUIs[name] != 0) // does exist
+    {
+        cerr << "[Game - addGui] Error : GUI name '" << name
+            << "' already exists.\n";
+        return;
+    }
+    GuiSpace *newGui = new GuiSpace(name);
+    bool luaError = false;
+    string functionName = "build" + newGui->inFunctionName();
+    CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void, functionName.c_str(),
+        luaError, newGui)
+    if (luaError)
+    {
+        cerr << "[Game - addGui] Error, cannot build GUI '" << name << "'.\n";
+        delete newGui;
+        return;
+    }
+    m_GUIs[name] = newGui;
+    if (setAsCurrent)
+        m_currentGui = name;
+}
+
+void Game::setCurrentGui(const string &name)
+{
+    if (name.empty() || m_GUIs[name] == 0)
+    {
+        cerr << "[Game - setCurrentGui] Error :  invalid name.\n";
+        return;
+    }
+    m_currentGui = name;
+}
+
+void Game::addArmy(const unsigned int &id, const string &name)
 {
     if (name.empty())
     {
@@ -281,7 +320,8 @@ void Game::renderGame(const float &frametime)
 {
     if (App == 0)
         return;
-    m_editorGui.render(*App, frametime);
+    if (!m_currentGui.empty() && m_GUIs[m_currentGui] != 0)
+        m_GUIs[m_currentGui]->render(*App, frametime);
     /*static sf::Shape mask = sf::Shape::Rectangle(sf::FloatRect(0, 0, SCREEN_W, SCREEN_H), sf::Color::Black);
     App->Draw(mask); // to mask sfgui's cursor in game (map) part*/
     if (m_mapPtr != 0)
@@ -386,7 +426,7 @@ int Game::getChoiceFromTable(const luabind::object &table,
     {
         for (unsigned int i = 1; i <= size && i <= LIMIT; i++)
         {
-            convertedTable.push_back(luabind::object_cast<std::string>(table[i]));
+            convertedTable.push_back(luabind::object_cast<string>(table[i]));
         }
     }
     catch (const exception &exception)

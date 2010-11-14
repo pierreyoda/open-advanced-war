@@ -9,7 +9,7 @@
 #include <SFML/Graphics/Rect.hpp>
 #include "db/Unit.hpp"
 #include "game/XSprite.hpp"
-#include "gui/EditorGui.hpp"
+#include "gui/GuiSpace.hpp"
 
 namespace sf
 {
@@ -47,6 +47,10 @@ class Game : public Singleton<Game>
 
         void startDrawingXSprite(XSprite *xsprite, const std::string &id);
         void stopDrawingXSprite(const std::string &id);
+
+        void addGui(const std::string &name) { addGui(name, true); }
+        void addGui(const std::string &name, const bool &setAsCurrent);
+        void setCurrentGui(const std::string &name);
 
         void addArmy(const unsigned int &id, const std::string &name);
         void spawnUnit(const unsigned int &armyId, const std::string &type,
@@ -90,8 +94,8 @@ class Game : public Singleton<Game>
         std::list<db::IntCaracteristic> m_globalAffectors;
         bool m_unitDeleted;
         sf::Vector2i m_unitDeletedPos;
-        //InGameGui m_ingameGui;
-        EditorGui m_editorGui;
+        std::map<std::string, GuiSpace*> m_GUIs;
+        std::string m_currentGui;
 };
 
 extern Game &gGame;

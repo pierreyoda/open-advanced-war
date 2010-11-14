@@ -129,10 +129,10 @@
 		<Unit filename="game\UnitMoveFinder.hpp" />
 		<Unit filename="game\XSprite.cpp" />
 		<Unit filename="game\XSprite.hpp" />
-		<Unit filename="gui\EditorGui.cpp" />
-		<Unit filename="gui\EditorGui.hpp" />
 		<Unit filename="gui\GuiManager.cpp" />
 		<Unit filename="gui\GuiManager.hpp" />
+		<Unit filename="gui\GuiSpace.cpp" />
+		<Unit filename="gui\GuiSpace.hpp" />
 		<Unit filename="lua\LuaBinds.cpp" />
 		<Unit filename="lua\LuaBinds.hpp" />
 		<Unit filename="lua\LuaVirtualMachine.hpp" />

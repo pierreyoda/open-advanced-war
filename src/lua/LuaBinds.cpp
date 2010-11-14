@@ -5,7 +5,7 @@
     #define db_member def_readonly // Read-only access
     #include "../Map.hpp"
     #include "../Game.hpp"
-    #include "../gui/EditorGui.hpp"
+    #include "../gui/GuiSpace.hpp"
     #include "../game/Unit.hpp"
     #include "../game/ArmyGeneral.hpp"
     #include "../tools/PausableClock.hpp"
@@ -398,6 +398,10 @@ void LuaBinds::exportGame(lua_State *lua)
     [
         // Game
         class_<Game>("Game")
+            .def("addGui", (void(Game::*)(const std::string&))&Game::addGui)
+            .def("addGui", (void(Game::*)(const std::string&, const bool&))
+                 &Game::addGui)
+            DEF(Game, setCurrentGui)
             DEF(Game, startDrawingXSprite)
             DEF(Game, stopDrawingXSprite)
             DEF(Game, getChoiceFromTable)
@@ -548,9 +552,10 @@ void LuaBinds::exportGame(lua_State *lua)
         , class_<Unit, bases<GameEntity> >("GameUnit")
             DEF(Unit, id)
         // GUI
-        , class_<EditorGui>("EditorGui")
-            DEF(EditorGui, addVerticalSpriteList)
-            DEF(EditorGui, addButton)
+        , class_<GuiSpace>("GuiSpace")
+            DEF(GuiSpace, addButton)
+            DEF(GuiSpace, addVerticalSpriteList)
+            DEF(GuiSpace, name)
         , class_<VerticalSpriteItemList>("VerticalSpriteItemList")
             DEF(VerticalSpriteItemList, addItem)
     ];

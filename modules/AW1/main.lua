@@ -24,7 +24,7 @@ IN_GAME, IN_EDITOR = false, false
 -- Includes
 vm:include("tools.lua", "modules/")
 vm:include("ingame_units.lua;ingame_map.lua;ai.lua;graphic_effects.lua;"
-	.. "editor.lua;map_randomizer.lua", MODULE_DIR)
+	.. "editor.lua;game.lua;map_randomizer.lua", MODULE_DIR)
 	
 gFph:scanDirectory(MODULE_DIR) -- scanning module directory (searching for resources)
 
@@ -37,10 +37,12 @@ function mainMenu()
 			sf.FloatRect(0, 0, SCREEN_W, SCREEN_H))+1
 		if (selection == 1) then
 			IN_GAME = true
+			game:addGui("GameGui")
 			game:newMap()
 			game:loadMap("map.xml")
 		elseif (selection == 2) then
 			IN_EDITOR = true
+			game:addGui("EditorGui")
 			game:newMap()
 			randomMap(game:getMapPtr())
 			return
