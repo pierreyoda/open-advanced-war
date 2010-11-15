@@ -148,6 +148,13 @@ function onEditorGuiButtonClicked(buttonId)
 		end
 	elseif (buttonId == "randomButton") then
 		randomMap(game:getMapPtr())
+	elseif (buttonId == "toGameButton") then
+		IN_GAME, IN_EDITOR = true, false
+		if (game:guiExists("GameGui")) then
+			game:setCurrentGui("GameGui")
+		else
+			game:addGui("GameGui")
+		end
 	end
 end
 
@@ -186,5 +193,9 @@ function buildEditorGui(editorGui)
 	editorGui:addButton("randomButton",
 		trans:tr("Random"),
 		sf.Vector2f(80, 40),
-		sf.Vector2f(200, 55))
+		sf.Vector2f(200, 55))	
+	editorGui:addButton("toGameButton",
+		trans:tr("To game"),
+		sf.Vector2f(80, 40),
+		sf.Vector2f(200, 5))
 end

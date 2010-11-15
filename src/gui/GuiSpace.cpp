@@ -107,10 +107,10 @@ void GuiSpace::addButton(const std::string &id, const std::string &text,
 
 void GuiSpace::onButtonClicked(sfg::Widget::Ptr widget)
 {
-    static bool ok = !m_name.empty();
+    bool ok = !m_name.empty();
     if (!ok)
         return;
-    static std::string functionName = "on" + m_inFunctionName + "ButtonClicked";
+    std::string functionName = "on" + m_inFunctionName + "ButtonClicked";
     CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
         functionName.c_str(), ok, widget->GetId())
 }
@@ -149,7 +149,7 @@ void GuiSpace::addVerticalSpriteList(const std::string &name,
 
 void GuiSpace::onListItemSelected(sfg::Widget::Ptr widget)
 {
-    static bool ok = !m_name.empty();
+    bool ok = !m_name.empty();
     if (!ok)
         return;
     VerticalSpriteItemList *ptr = 0;
@@ -160,7 +160,7 @@ void GuiSpace::onListItemSelected(sfg::Widget::Ptr widget)
     if (ptr == 0)
         return;
     std::string id = ptr->getIdFromIndex(ptr->getList()->GetSelectedIndex());
-    static std::string functionName = "on" + m_inFunctionName + "ListItemSelected";
+    std::string functionName = "on" + m_inFunctionName + "ListItemSelected";
     CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
         functionName.c_str(), ok, ptr->name(), id)
 }

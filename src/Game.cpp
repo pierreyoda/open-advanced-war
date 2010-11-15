@@ -202,7 +202,7 @@ void Game::listenEvent(const sf::Event &Event)
         const int x = Event.MouseMove.X, y = Event.MouseMove.Y;
         onMouseOver(sf::Vector2i(x, y));
     }
-    if (!m_currentGui.empty() && m_GUIs[m_currentGui] != 0)
+    if (guiExists(m_currentGui))
         m_GUIs[m_currentGui]->handleEvent(Event);
     static bool luaError = false;
     if (!luaError)
@@ -241,12 +241,17 @@ void Game::addGui(const string &name, const bool &setAsCurrent)
 
 void Game::setCurrentGui(const string &name)
 {
-    if (name.empty() || m_GUIs[name] == 0)
+    if (!guiExists(name))
     {
         cerr << "[Game - setCurrentGui] Error :  invalid name.\n";
         return;
     }
     m_currentGui = name;
+}
+
+bool Game::guiExists(const std::string &name)
+{
+    return !(name.empty() || m_GUIs[name] == 0);
 }
 
 void Game::addArmy(const unsigned int &id, const string &name)
@@ -320,7 +325,7 @@ void Game::renderGame(const float &frametime)
 {
     if (App == 0)
         return;
-    if (!m_currentGui.empty() && m_GUIs[m_currentGui] != 0)
+    if (guiExists(m_currentGui))
         m_GUIs[m_currentGui]->render(*App, frametime);
     /*static sf::Shape mask = sf::Shape::Rectangle(sf::FloatRect(0, 0, SCREEN_W, SCREEN_H), sf::Color::Black);
     App->Draw(mask); // to mask sfgui's cursor in game (map) part*/

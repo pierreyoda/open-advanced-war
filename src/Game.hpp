@@ -51,6 +51,8 @@ class Game : public Singleton<Game>
         void addGui(const std::string &name) { addGui(name, true); }
         void addGui(const std::string &name, const bool &setAsCurrent);
         void setCurrentGui(const std::string &name);
+        bool guiExists(const std::string &name);
+        std::string currentGui() const { return m_currentGui; }
 
         void addArmy(const unsigned int &id, const std::string &name);
         void spawnUnit(const unsigned int &armyId, const std::string &type,
