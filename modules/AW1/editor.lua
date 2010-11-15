@@ -147,6 +147,10 @@ function onEditorGuiButtonClicked(buttonId)
 			printElapsedTime(timer, false)
 		end
 	elseif (buttonId == "randomButton") then
+		for i = 1, 4 do
+			game:stopDrawingXSprite("HQ_up_ " .. i)
+		end
+		game:newMap()
 		randomMap(game:getMapPtr())
 	elseif (buttonId == "toGameButton") then
 		IN_GAME, IN_EDITOR = true, false

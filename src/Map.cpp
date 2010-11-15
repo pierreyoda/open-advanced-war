@@ -109,15 +109,15 @@ void Map::onMouseOver(const sf::Vector2i &tilePos, const bool &nomore)
     }
 }
 
-void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
+bool Map::placeBuilding(const sf::Vector2i &pos, const string &type,
     const string &faction, const bool &force)
 {
     if (type.empty())
-        return;
+        return false;
     if (database.findBuilding(type) == 0) // tile not existing
     {
         cout << "[Map] placeBuilding : Error, building name '" << type << "' not in database.\n";
-        return;
+        return false;
     }
     bool ok = false;
     static bool luaError = false, luaError2 = false;
@@ -125,7 +125,7 @@ void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
         CALL_LUA_RFUNCTION(LuaVM::getInstance().getLua(), bool, ok,
            "canPlaceBuilding", luaError, type, pos, this, force)
     if (!ok)
-        return;
+        return false;
     GameEntity *building = new GameEntity(type, faction);
         building->setPosition(pos);
         building->playAnim("base", true);
@@ -133,11 +133,12 @@ void Map::placeBuilding(const sf::Vector2i &pos, const string &type,
     if (!luaError2)
         CALL_LUA_FUNCTION(LuaVM::getInstance().getLua(), void,
             "onGameEntityPlaced", luaError2, building)
+    return true;
 }
-void Map::placeBuilding(const unsigned int &x, const unsigned int &y,
+bool Map::placeBuilding(const unsigned int &x, const unsigned int &y,
     const string &type, const string &faction,  const bool &force)
 {
-    placeBuilding(sf::Vector2i(x, y), type, faction, force);
+    return placeBuilding(sf::Vector2i(x, y), type, faction, force);
 }
 
 void Map::removeBuilding(const sf::Vector2i &pos)

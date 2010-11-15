@@ -429,10 +429,10 @@ void LuaBinds::exportGame(lua_State *lua)
         , class_<Map>("Map")
             DEF(Map, size)
             // Building
-            .def("placeBuilding", (void(Map::*)(const unsigned int&,
+            .def("placeBuilding", (bool(Map::*)(const unsigned int&,
                 const unsigned int&, const std::string&, const std::string&,
                 const bool&))&Map::placeBuilding)
-            .def("placeBuilding", (void(Map::*)(const sf::Vector2i&,
+            .def("placeBuilding", (bool(Map::*)(const sf::Vector2i&,
                 const std::string&, const std::string&, const bool&))
                  &Map::placeBuilding)
             DEF(Map, removeBuilding)
