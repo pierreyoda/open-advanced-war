@@ -10,7 +10,6 @@ namespace sf
 {
     class RenderTarget;
     typedef Vector2<int> Vector2i;
-    typedef Vector2<unsigned int> Vector2ui; // For convenience
 }
 
 /// TODO (Pierre-Yves#3#): Add documentation to all functions getTile... and setTile... .
@@ -21,7 +20,7 @@ class Map
     friend class boost::serialization::access;
 
     public:
-        Map(const sf::Vector2ui &size = sf::Vector2ui(gg.screen_w/gg.case_w,
+        Map(const sf::Vector2i &size = sf::Vector2i(gg.screen_w/gg.case_w,
             gg.screen_h/gg.case_h));
         ~Map();
 
@@ -29,9 +28,7 @@ class Map
 
         sf::Vector2i size() const
         {
-            if (m_tiles.empty())
-                return sf::Vector2i();
-            return sf::Vector2i(m_tiles[0].size(), m_tiles.size());
+           return m_size;
         }
 
         void onMouseOver(const sf::Vector2i &tilePos, const bool &nomore = false);
@@ -79,11 +76,15 @@ class Map
         {
             ar &BOOST_SERIALIZATION_NVP(m_tiles);
             ar &BOOST_SERIALIZATION_NVP(m_buildings);
+            m_size = sf::Vector2i(0, m_tiles.size());
+            if (m_size.y >= 1)
+                m_size.x = m_tiles[0].size();
         }
 
         std::vector< std::vector<GameEntity*> > m_tiles; /**<  Vector of tiles.*/
         std::list<GameEntity*> m_buildings; /**< List of buildings. */
         GameEntity *m_prevMouseOver;
+        sf::Vector2i m_size;
 };
 
 #endif /* MAP_HPP */

@@ -18,9 +18,9 @@
 				</Compiler>
 				<Linker>
 					<Add option="-lluabindd" />
-					<Add option="-lboost_serialization-mgw44-mt-sd-1_43" />
-					<Add option="-lboost_filesystem-mgw44-mt-sd-1_43" />
-					<Add option="-lboost_system-mgw44-mt-sd-1_43" />
+					<Add option="-lboost_serialization-mgw45-mt-sd-1_44" />
+					<Add option="-lboost_filesystem-mgw45-mt-sd-1_44" />
+					<Add option="-lboost_system-mgw45-mt-sd-1_44" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -36,9 +36,9 @@
 				<Linker>
 					<Add option="-s" />
 					<Add option="-lluabind" />
-					<Add option="-lboost_serialization-mgw44-mt-sd-1_43" />
-					<Add option="-lboost_filesystem-mgw44-mt-s-1_43" />
-					<Add option="-lboost_system-mgw44-mt-s-1_43" />
+					<Add option="-lboost_serialization-mgw45-mt-sd-1_44" />
+					<Add option="-lboost_filesystem-mgw45-mt-s-1_44" />
+					<Add option="-lboost_system-mgw45-mt-s-1_44" />
 				</Linker>
 			</Target>
 		</Build>

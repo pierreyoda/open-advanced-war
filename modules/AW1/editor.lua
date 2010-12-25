@@ -83,26 +83,33 @@ function buildEditorTerrainList(verticalSpriteList)
 	addSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
 end
 
+landUnits = { "Infantry", "Mech", "Recon", "APC", "Tank", "Tank M", "Artillery",
+	"Rockets", "Anti-Air", "Missiles" }
+function addUnitsToList(list, faction, table_)
+	for i = 1, #table_ do
+		addSpriteItemToList(list, UNIT, table_[i], "base", faction)
+	end
+end
+
 function buildEditorOrangeStarList(verticalSpriteList)
 	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(0, 2, 20, 38))
 	addOrangeStarSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
-	addOrangeStarSpriteItemToList(verticalSpriteList, UNIT, "Infantry", "base")
-	addOrangeStarSpriteItemToList(verticalSpriteList, UNIT, "Tank", "base")
+	addUnitsToList(verticalSpriteList, "Orange Star", landUnits)
 end
 function buildEditorBlueMoonList(verticalSpriteList)
 	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(20, 2, 20, 38))
 	addBlueMoonSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
-	addBlueMoonSpriteItemToList(verticalSpriteList, UNIT, "Infantry", "base")
+	addUnitsToList(verticalSpriteList, "Blue Moon", landUnits)
 end
 function buildEditorGreenEarthList(verticalSpriteList)
 	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(40, 2, 20, 38))
 	addGreenEarthSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
-	addGreenEarthSpriteItemToList(verticalSpriteList, UNIT, "Infantry", "base")
+	addUnitsToList(verticalSpriteList, "Green Earth", landUnits)
 end
 function buildEditorYellowCometList(verticalSpriteList)
 	verticalSpriteList:addItem("HQ", gFph:getFilepath("hq.png"), sf.IntRect(60, 2, 20, 38))
 	addYellowCometSpriteItemToList(verticalSpriteList, BUILDING, "Base", "base")
-	addYellowCometSpriteItemToList(verticalSpriteList, UNIT, "Infantry", "base")
+	addUnitsToList(verticalSpriteList, "Yellow Comet", landUnits)
 end
 
 function onEditorGuiListItemSelected(listName, itemId)
@@ -121,9 +128,7 @@ function onEditorGuiListItemSelected(listName, itemId)
 	editor_toPlaceType, editor_toPlace = class, itemId
 end
 
-local CARAC_SIZE = 7 -- determined with tests
-local width = 300
-local caracLimit = width / CARAC_SIZE
+
 local MAP_FILE = "map.xml"
 function onEditorGuiButtonClicked(buttonId)
 	local function printElapsedTime(timer, save)
@@ -143,8 +148,13 @@ function onEditorGuiButtonClicked(buttonId)
 		end
 	elseif (buttonId == "loadButton") then
 		timer:start()
+		for i = 1, 4 do
+			game:stopDrawingXSprite("HQ_up_ " .. i)
+		end
 		if (game:loadMap(MAP_FILE)) then
 			printElapsedTime(timer, false)
+		else
+			game:newMap()
 		end
 	elseif (buttonId == "randomButton") then
 		for i = 1, 4 do

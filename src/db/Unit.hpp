@@ -3,35 +3,16 @@
 
 #include "XSpriteItem.hpp"
 
-namespace
-{
-    /** \brief A tri-bool enumeration.
-    */
-    enum Tribool
-    {
-        INDETERMINATE,
-        TRUE_ = 1,
-        FALSE_ = 0
-    };
-
-    Tribool boolToTribool(const bool &boolean)
-    {
-        if (boolean)
-            return TRUE_;
-        return FALSE_;
-    }
-} /* anonymous namespace */
-
 namespace db
 {
-    /** \brief A (template) class that represents a caracteristic (name and [maximum in most case] value).
+    /** \brief A (template) class that represents a Feature (name and [maximum in most case] value).
     */
     template <typename Type>
-    struct Caracteristic
+    struct Feature
     {
         friend class boost::serialization::access;
 
-        Caracteristic(const std::string &name, const Type &value) :
+        Feature(const std::string &name, const Type &value) :
             name(name), value(value)
         { }
 
@@ -39,11 +20,11 @@ namespace db
         Type value;
 
         private:
-            Caracteristic() : name(), value(Type())
+            Feature() : name(), value(Type())
             { }
     };
     template <class Archive, typename Type>
-    void serialize(Archive &ar, Caracteristic<Type> &carac,
+    void serialize(Archive &ar, Feature<Type> &carac,
         const unsigned int &version)
     {
         ar &boost::serialization::make_nvp("name",
@@ -53,39 +34,38 @@ namespace db
     }
 
     template <typename Type>
-    void addCaracteristic(const std::string &name, const Type &value,
-        std::list< Caracteristic<Type> > &in)
+    void addFeature(const std::string &name, const Type &value,
+        std::list< Feature<Type> > &in)
     {
-        Caracteristic<Type> *ptr = findCaracteristic(name, in);
+        Feature<Type> *ptr = findFeature(name, in);
         if (ptr != 0) // found
             ptr->value = value;
         else
-            in.push_back(Caracteristic<Type>(name, value));
+            in.push_back(Feature<Type>(name, value));
     }
     template <typename Type>
-    Caracteristic<Type> *findCaracteristic(const std::string &name,
-        std::list< Caracteristic<Type> > &in)
+    Feature<Type> *findFeature(const std::string &name,
+        std::list< Feature<Type> > &in)
     {
-        for (typename std::list< Caracteristic<Type> >::iterator
+        for (typename std::list< Feature<Type> >::iterator
             iter = in.begin(); iter != in.end(); iter++)
             if (iter->name == name)
                 return &*iter;
         return 0;
     }
     template <typename Type>
-    const Caracteristic<Type> *findCaracteristicConst(const std::string &name,
-        const std::list< Caracteristic<Type> > &in)
+    const Feature<Type> *findFeatureConst(const std::string &name,
+        const std::list< Feature<Type> > &in)
     {
-        for (typename std::list< Caracteristic<Type> >::const_iterator
+        for (typename std::list< Feature<Type> >::const_iterator
             iter = in.begin(); iter != in.end(); iter++)
             if (iter->name == name)
                 return &*iter;
         return 0;
     }
 
-    typedef Caracteristic<int> IntCaracteristic;
-    typedef Caracteristic<bool> BoolCaracteristic;
-    typedef Caracteristic<std::string> StringCaracteristic;
+    typedef Feature<int> IntFeature;
+    typedef Feature<std::string> StringFeature;
 
     /**
     * \brief Contains informations to create a tile.
@@ -119,53 +99,29 @@ namespace db
             */
             std::string propulsion() const { return m_propulsion; }
 
-            /** \brief Add a caracteristic, integer. If already existing, will be replaced.
+            /** \brief Add a Feature, integer. If already existing, will be replaced.
             *
-            * \param name Caracteristic's name.
-            * \param value Caracteristic's value.
+            * \param name Feature's name.
+            * \param value Feature's value.
             * \return Reference to self.
             */
-            Unit &addIntCaracteristic(const std::string &name, const int &value)
+            Unit &addIntFeature(const std::string &name, const int &value)
             {
-                addCaracteristic<int>(name, value, m_intCaracteristics);
-                return *this;
-            }
-            /** \brief Add a caracteristic, boolean. If already existing, will be replaced.
-            *
-            * \param name Caracteristic's name.
-            * \param value Caracteristic's value.
-            * \return Reference to self.
-            */
-            Unit &addBoolCaracteristic(const std::string &name, const bool &value)
-            {
-                addCaracteristic<bool>(name, value, m_boolCaracteristics);
+                addFeature<int>(name, value, m_intFeatures);
                 return *this;
             }
 
-            /** \brief Find a caracteristic., integer Returns default value (0) if not found.
+            /** \brief Find a feature, integer Returns default value (0) if not found.
             *
-            * \param name Caracteristic's name.
+            * \param name Feature's name.
             */
-            int findIntCaracteristic(const std::string &name) const
+            int findIntFeature(const std::string &name) const
             {
-                const IntCaracteristic *ptr = findCaracteristicConst<int>(name,
-                    m_intCaracteristics);
+                const IntFeature *ptr = findFeatureConst<int>(name,
+                    m_intFeatures);
                 if (ptr == 0) // not found
                     return 0;
                 return ptr->value;
-            }
-
-            /** \brief Find a caracteristic., boolean. Returns "indeterminate" value if not found.
-            *
-            * \param name Caracteristic's name.
-            */
-            Tribool findBoolCaracteristic(const std::string &name) const
-            {
-                const BoolCaracteristic *ptr = findCaracteristicConst<bool>(name,
-                    m_boolCaracteristics);
-                if (ptr == 0) // not found
-                    return INDETERMINATE;
-                return boolToTribool(ptr->value);
             }
 
         private:
@@ -178,13 +134,11 @@ namespace db
                 ar &boost::serialization::make_nvp("XSpriteItem",
                     boost::serialization::base_object<XSpriteItem>(*this));
                 ar &BOOST_SERIALIZATION_NVP(m_propulsion);
-                ar &BOOST_SERIALIZATION_NVP(m_intCaracteristics);
-                ar &BOOST_SERIALIZATION_NVP(m_boolCaracteristics);
+                ar &BOOST_SERIALIZATION_NVP(m_intFeatures);
             }
 
             std::string m_propulsion;
-            std::list<IntCaracteristic> m_intCaracteristics;
-            std::list<BoolCaracteristic> m_boolCaracteristics;
+            std::list<IntFeature> m_intFeatures;
     };
 } /* End of namespace db */
 

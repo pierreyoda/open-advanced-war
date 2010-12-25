@@ -14,9 +14,11 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-pg" />
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
+					<Add option="-pg -lgmon" />
 					<Add option="-lsfml2-audio-s-d" />
 					<Add option="-lsfml2-graphics-s-d" />
 					<Add option="-lsfml2-window-s-d" />
@@ -57,10 +59,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 			<Add option="-DLUABIND_DYNAMIC_LINK" />
-			<Add directory="$(#sfml2.include)" />
-			<Add directory="$(#boost.include)" />
-			<Add directory="$(#lua.include)" />
-			<Add directory="$(#luabind.include)" />
+			<Add directory="F:\Prog\SFML-SVN\branches\sfml2\include" />
+			<Add directory="C:\boost_install" />
+			<Add directory="F:\Prog\Lua\5.1\include" />
+			<Add directory="F:\Prog\Lua\luabind-0.9" />
 			<Add directory="F:\Prog\sfgui2\include" />
 			<Add directory="F:\Prog\sfgui2\ext\yaml-cpp-0.2.2\include" />
 		</Compiler>

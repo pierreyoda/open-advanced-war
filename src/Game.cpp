@@ -77,6 +77,9 @@ void Game::newMap()
     if (m_mapPtr != 0)
         delete m_mapPtr;
     m_mapPtr = new Map();
+    for (unsigned int i = 0; i < m_armies.size(); i++)
+        delete m_armies[i];
+    m_armies.clear();
 }
 
 bool Game::saveMap(const string &filename)
@@ -110,6 +113,12 @@ bool Game::loadMap(const string &filename)
 {
     if (m_mapPtr == 0)
         return false;
+    m_unitDeleted = true;
+    delete m_mapPtr;
+    m_mapPtr = new Map(sf::Vector2i()); // empty map
+    for (unsigned int i = 0; i < m_armies.size(); i++)
+        delete m_armies[i];
+    m_armies.clear();
     try
     {
         ifstream file(filename.c_str());
@@ -310,15 +319,14 @@ unsigned int Game::nbOfArmies() const
 
 int Game::getGlobalAffector(const string &name)
 {
-    db::IntCaracteristic *ptr = db::findCaracteristic<int>(name,
-        m_globalAffectors);
+    db::IntFeature *ptr = db::findFeature<int>(name, m_globalAffectors);
     if (ptr == 0) // not found
         return 0;
     return ptr->value;
 }
 void Game::setGlobalAffector(const string &name, const int &value)
 {
-    db::addCaracteristic<int>(name, value, m_globalAffectors);
+    db::addFeature<int>(name, value, m_globalAffectors);
 }
 
 void Game::renderGame(const float &frametime)

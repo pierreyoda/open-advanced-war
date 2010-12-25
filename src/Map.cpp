@@ -6,12 +6,12 @@
 
 using namespace std;
 
-Map::Map(const sf::Vector2ui &size) : m_prevMouseOver(0)
+Map::Map(const sf::Vector2i &size) : m_prevMouseOver(0), m_size(size)
 {
-    for (unsigned int i = 0; i < size.y; i++)
+    for (unsigned int i = 0; i < (unsigned int)size.y; i++)
     {
         m_tiles.push_back(vector<GameEntity*>());
-        for (unsigned int j = 0; j < size.x; j++)
+        for (unsigned int j = 0; j < (unsigned int)size.x; j++)
         {
             GameEntity *tile = new GameEntity("Plain", "");
             tile->setPosition(j, i);

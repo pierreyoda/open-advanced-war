@@ -56,16 +56,16 @@ class GameEntity
         XSprite &xsprite() { return m_xsprite; }
         const XSprite &xspriteConst() const { return m_xsprite; }
 
-        GameEntity &setIntCaracteristic(const std::string &name,
+        GameEntity &setIntFeature(const std::string &name,
             const int &value);
-        GameEntity &setBoolCaracteristic(const std::string &name,
+        GameEntity &setBoolFeature(const std::string &name,
             const bool &value);
-        GameEntity &setStringCaracteristic(const std::string &name,
+        GameEntity &setStringFeature(const std::string &name,
             const std::string &value);
-        int getIntCaracteristic(const std::string &name,
-            const int &default_ = 0);
-        Tribool getBoolCaracteristic(const std::string &name);
-        std::string getStringCaracteristic(const std::string &name);
+        int getIntFeature(const std::string &name) {
+            return getIntFeature(name, -1); }
+        int getIntFeature(const std::string &name, const int &default_);
+        std::string getStringFeature(const std::string &name);
 
         static Classes findClassFromType(const std::string &type);
         static sf::Vector2i pixelsToTiles(const sf::Vector2i &pos);
@@ -89,6 +89,11 @@ class GameEntity
             ar &BOOST_SERIALIZATION_NVP(m_faction);
             ar &BOOST_SERIALIZATION_NVP(m_ownerId);
             ar &BOOST_SERIALIZATION_NVP(m_orientation);
+            if (version >= 1)
+            {
+                ar &BOOST_SERIALIZATION_NVP(m_intFeatures);
+                ar &BOOST_SERIALIZATION_NVP(m_stringFeatures);
+            }
             // Specific
             std::string animToPlay(m_xsprite.currentAnimPlayed());
             ar &boost::serialization::make_nvp("anim_played",
@@ -107,6 +112,11 @@ class GameEntity
             ar &BOOST_SERIALIZATION_NVP(m_faction);
             ar &BOOST_SERIALIZATION_NVP(m_ownerId);
             ar &BOOST_SERIALIZATION_NVP(m_orientation);
+            if (version >= 1)
+            {
+                ar &BOOST_SERIALIZATION_NVP(m_intFeatures);
+                ar &BOOST_SERIALIZATION_NVP(m_stringFeatures);
+            }
             // Specific
             std::string animToPlay;
             ar &boost::serialization::make_nvp("anim_played",
@@ -122,11 +132,12 @@ class GameEntity
         std::string m_alias; /**< Entity alias (optionnal; ex : "leaderA", "VIP"). */
         std::string m_faction; /**< Entity faction (null by default). */
         unsigned int m_ownerId; /**< Entity (eventual) owner identifier (army ID). */
-        std::list<db::IntCaracteristic> m_intCaracteristics; /**< List of int caracteristics. */
-        std::list<db::BoolCaracteristic> m_boolCaracteristics; /**< List of bool caracteristics. */
-        std::list<db::StringCaracteristic> m_stringCaracteristics; /**< List of string caracteristics. */
+        std::list<db::IntFeature> m_intFeatures; /**< List of int features. */
+        std::list<db::StringFeature> m_stringFeatures; /**< List of string features. */
         Orientation m_orientation; /**< Entity's orientation (by default right). */
         XSprite m_xsprite; /**< Entity's eXtended sprite. */
 };
+
+BOOST_CLASS_VERSION(GameEntity, 1)
 
 #endif /* GAMEENTITY_HPP */

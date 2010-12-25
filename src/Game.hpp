@@ -69,9 +69,6 @@ class Game : public Singleton<Game>
         int getChoiceFromTable(const luabind::object &table,
             const unsigned int &size, sf::FloatRect &rect);
 
-        /*bool isInGame() const { return m_inGame; }
-        bool isInEditor() const { return m_inEditor; }*/
-
         // internal (ugly)
         void unitDeleted(const sf::Vector2i &pos) { m_unitDeleted = true; m_unitDeletedPos = pos; }
 
@@ -79,21 +76,11 @@ class Game : public Singleton<Game>
         Game();
         ~Game();
 
-        template <class Archive>
-        void serialize(Archive &ar, const unsigned int &version)
-        {
-            /*ar &boost::serialization::make_nvp("map",
-                (*m_mapPtr));*/
-            ar &BOOST_SERIALIZATION_NVP(m_armies);
-            //ar &BOOST_SERIALIZATION_NVP(m_renderingList);
-            ar &m_globalAffectors;
-        }
-
         sf::RenderWindow *App;
         Map *m_mapPtr;
         std::vector<ArmyGeneral*> m_armies;
         std::list<p_renderingInfos> m_renderingList;
-        std::list<db::IntCaracteristic> m_globalAffectors;
+        std::list<db::IntFeature> m_globalAffectors;
         bool m_unitDeleted;
         sf::Vector2i m_unitDeletedPos;
         std::map<std::string, GuiSpace*> m_GUIs;

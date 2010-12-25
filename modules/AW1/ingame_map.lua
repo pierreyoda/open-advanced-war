@@ -40,8 +40,10 @@ function onTileOriented(tile, map, pos)
 (there are not in this module for now). ]]
 end
 
-function isTileOfGivenType(type_, pos, map)
-	return (map:getTileType(pos) == type_)
+function isTileOfGivenType(type_, pos, map, building)
+	return (map:getTileType(pos) == type_ or 
+		(building ~= nil and building ~= "" 
+		and map:getBuildingType(pos) == building))
 end
 
 --[[ [EXTERNAL] NB : method from project OpenAWars, under GPL licence.
@@ -52,19 +54,19 @@ function checkCoherencyForRoad(pos, map)
 	local verticalRoad, horizontalRoad = false, false -- is vertical/horizontal road
 	local onLeft, onRight, onUp, onDown = false, false, false, false
 	-- Checking around cases
-	if (isTileOfGivenType("Road", relativePosition(pos, LEFT), map)) then
+	if (isTileOfGivenType("Road", relativePosition(pos, LEFT), map, "HQ")) then
 		roadAround = roadAround+1
 		horizontalRoad, onLeft = true, true
 	end	
-	if (isTileOfGivenType("Road", relativePosition(pos, RIGHT), map)) then
+	if (isTileOfGivenType("Road", relativePosition(pos, RIGHT), map, "HQ")) then
 		roadAround = roadAround+1
 		horizontalRoad, onRight = true, true
 	end	
-	if (isTileOfGivenType("Road", relativePosition(pos, UP), map)) then
+	if (isTileOfGivenType("Road", relativePosition(pos, UP), map, "HQ")) then
 		roadAround = roadAround+1
 		verticalRoad, onUp = true, true
 	end
-	if (isTileOfGivenType("Road", relativePosition(pos, DOWN), map)) then
+	if (isTileOfGivenType("Road", relativePosition(pos, DOWN), map, "HQ")) then
 		roadAround = roadAround+1
 		verticalRoad, onDown = true, true
 	end
@@ -422,8 +424,8 @@ function onTilePlaced(tile, map)
 	if (tile == nil or map == nil) then
 		return
 	end
-	-- Transitions (specific)
 	local pos = tile:position()
+	-- Checking for buildings and units
 	local building = map:getBuilding(pos)
 	if (building ~= nil) then -- if building there
 		if (building:type() == "HQ") then
@@ -434,9 +436,10 @@ function onTilePlaced(tile, map)
 		end
 		map:removeBuilding(pos)
 	end
+	eraseUnitIfNeeded(pos) -- Deleting present unit if needed
+	-- Transitions (specific)
 	checkCoherencyAround(pos, map)
 	checkCoherency(pos, map)
-	eraseUnitIfNeeded(pos) -- Deleting present unit if needed
 end
 
 -- Erase a unit if present and if cannot stay there
@@ -559,8 +562,7 @@ function onMapLoaded(map)
 	for i = 0, size.y, 1 do
 		for j = 0, size.x, 1 do
 			local pos = sf.Vector2i(j, i)
-			checkCoherency(pos, map) -- checking tile graphical coherency
-			eraseUnitIfNeeded(pos) -- to delete when unit will be saved with the map
+			checkCoherency(pos, map) -- checking tile graphical coherency (could be an older version...)
 		end
 	end
 	-- Checking HQ graphical coherency

@@ -25,6 +25,41 @@ function canUnitMoveTo(unitDb, tile)
 	return (propulsionDb:canMoveTo(tile))
 end
 
+function highlighPossibleMoveTo(pos)
+	local map = game:getMapPtr()
+	if (map == nil) then
+		return
+	end
+	local unit = findUnit(pos)
+	if (unit == nil) then -- unit not found
+		return
+	end
+	local dbUnit = database:findUnit(unit:type())
+	if (dbUnit == nil) then
+		return
+	end
+	-- getting move points (speed)
+	local move = unit:getIntFeature("move", 0)
+	if (move <= 0) then -- if not found, search in database
+		move = dbUnit:findIntFeature("move")
+		if (move <= 0) then
+			return
+		end
+		unit:setIntFeature("move", dbUnit:findIntFeature("move"))
+	end
+	-- finding possible cases where unit can move to
+	for i = -move, move do
+		local absI = math.abs(i)
+		for j = -(move-absI), move-absI do
+			local pos2 = sf.Vector2i(pos.x + i, pos.y + j)
+			if (pos2 ~= pos and not game:isUnitPresent(pos2) and
+				canUnitMoveTo(dbUnit, map:getTileType(pos2))) then
+				applyEffectOnTile(pos2, sf.Color(255, 230, 255, 128))
+			end
+		end
+	end
+end
+
 --[[ Decides if a unit can be placed.
 name Unit's type.
 pos Unit's position.

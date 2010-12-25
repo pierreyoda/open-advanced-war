@@ -65,49 +65,35 @@ Classes GameEntity::findClassFromType(const std::string &type)
     return NONE;
 }
 
-GameEntity &GameEntity::setIntCaracteristic(const std::string &name,
+GameEntity &GameEntity::setIntFeature(const std::string &name,
     const int &value)
 {
-    db::addCaracteristic<int>(name, value, m_intCaracteristics);
+    db::addFeature<int>(name, value, m_intFeatures);
     return *this;
 }
-GameEntity &GameEntity::setBoolCaracteristic(const std::string &name,
-    const bool &value)
-{
-    db::addCaracteristic<bool>(name, value, m_boolCaracteristics);
-    return *this;
-}
-GameEntity &GameEntity::setStringCaracteristic(const std::string &name,
+GameEntity &GameEntity::setStringFeature(const std::string &name,
     const std::string &value)
 {
-    db::addCaracteristic<std::string>(name, value, m_stringCaracteristics);
+    db::addFeature<std::string>(name, value, m_stringFeatures);
     return *this;
 }
 
-int GameEntity::getIntCaracteristic(const std::string &name,
+int GameEntity::getIntFeature(const std::string &name,
     const int &default_)
 {
-    db::IntCaracteristic *ptr = db::findCaracteristic<int>(name,
-        m_intCaracteristics);
+    db::IntFeature *ptr = db::findFeature<int>(name,
+        m_intFeatures);
     if (ptr == 0) // not found
         return default_;
     return ptr->value;
 }
-std::string GameEntity::getStringCaracteristic(const std::string &name)
+std::string GameEntity::getStringFeature(const std::string &name)
 {
-    db::StringCaracteristic *ptr = db::findCaracteristic<std::string>(name,
-        m_stringCaracteristics);
+    db::StringFeature *ptr = db::findFeature<std::string>(name,
+        m_stringFeatures);
     if (ptr == 0) // not found
         return std::string();
     return ptr->value;
-}
-Tribool GameEntity::getBoolCaracteristic(const std::string &name)
-{
-    db::BoolCaracteristic *ptr = db::findCaracteristic<bool>(name,
-        m_boolCaracteristics);
-    if (ptr == 0) // not found
-        return INDETERMINATE; // indeterminated value
-    return boolToTribool(ptr->value);
 }
 
 sf::Vector2i GameEntity::pixelsToTiles(const sf::Vector2i &pos)

@@ -8,6 +8,18 @@ local cursorFrame = db.Frame(0, 0, 32, 32, 1)
 local cursorAnim = db.Anim("base", "cursor.png") cursorAnim:addFrame(cursorFrame)
 local cursor = XSprite() cursor:playAnim(cursorAnim)
 
+function applyEffectOnTile(pos, effect)
+	local map = game:getMapPtr()
+	if (pos == nil or map == nil) then
+		return
+	end
+	local tile = map:getTilePtr(pos)
+	if (tile == nil) then
+		return
+	end
+	tile:xsprite():setFilter(effect)
+end
+
 function tileOvered(tile)
 	tile:xsprite():setFilter(tileOveredFilter)
 end

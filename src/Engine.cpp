@@ -23,7 +23,7 @@ Engine::Engine() : App(VideoMode(SCREEN_W, SCREEN_H+GUI_PART_H, 32), "Open Advan
         ICON_VARIABLE);
     if (!icon.empty()) // Extraction was OK
     {
-        std::string toLoad = gFph(icon);
+        std::string toLoad = icon;
         if (toLoad.empty())
             toLoad = icon;
         Image *imagePtr = gImageManager.getResource(toLoad);

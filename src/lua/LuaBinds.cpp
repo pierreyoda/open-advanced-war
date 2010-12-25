@@ -2,7 +2,6 @@
 #include "../db/Database.hpp"
 
 #ifndef DB_EXPORTER
-    #define db_member def_readonly // Read-only access
     #include "../Map.hpp"
     #include "../Game.hpp"
     #include "../gui/GuiSpace.hpp"
@@ -100,10 +99,8 @@ void LuaBinds::exportDatabase(lua_State *lua)
         // Unit
         , class_<db::Unit, bases<XSpriteItem> >("Unit")
             .def(constructor<const std::string&>())
-            DEF(db::Unit, addIntCaracteristic)
-            DEF(db::Unit, addBoolCaracteristic)
-            DEF(db::Unit, findIntCaracteristic)
-            DEF(db::Unit, findBoolCaracteristic)
+            DEF(db::Unit, addIntFeature)
+            DEF(db::Unit, findIntFeature)
             DEF(db::Unit, propulsion)
             DEF(db::Unit, setPropulsion)
             .enum_("Tribool")
@@ -521,10 +518,16 @@ void LuaBinds::exportGame(lua_State *lua)
             .def("setOrientation", &GameEntity::setOrientation)
             .def("xsprite", &GameEntity::xsprite)
             .def("xspriteConst", &GameEntity::xspriteConst)
-            // Caracteristics
-            .def("setIntCaracteristic", &GameEntity::setIntCaracteristic)
-            .def("setBoolCaracteristic", &GameEntity::setIntCaracteristic)
-            .def("setStringCaracteristic", &GameEntity::setIntCaracteristic)
+            // Features
+            .def("setIntFeature", &GameEntity::setIntFeature)
+            .def("setBoolFeature", &GameEntity::setIntFeature)
+            .def("setStringFeature", &GameEntity::setIntFeature)
+            .def("getIntFeature", (int(GameEntity::*)(const std::string&))
+                 &GameEntity::getIntFeature)
+            .def("getIntFeature", (int(GameEntity::*)(const std::string&,
+                const int&))&GameEntity::getIntFeature)
+            .def("getStringFeature", &GameEntity::getStringFeature)
+            // Enums
             .enum_("Orientation") // ENUM - Orientation
             [
                 value("UNDEFINED", 0),
